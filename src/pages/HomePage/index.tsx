@@ -1,14 +1,18 @@
+import { useDisclosure } from "@mantine/hooks";
+import { Button } from "@mantine/core";
 import { Link } from "react-router-dom";
 function HomePage() {
+  const [opened, { open, close }] = useDisclosure(false);
   return (
-    <div className="container flex gap-3 mt-3 flex-col justify-center items-center h-full">
-      Home page
-      <Link to={"/"}>
-        {" "}
-        <button className="btn btn-primary">Login</button>
-      </Link>
+    <div className="flex flex-col gap-2 h-screen container justify-center items-center pt-20">
+      Homepage
+      <Button variant="light" color="cyan" radius="xl">
+        Login
+      </Button>
       <Link to={"/register"}>
-        <button className="btn btn-secondary">Register</button>
+        <Button variant="light" color="yellow" radius="xl">
+          Sign up
+        </Button>
       </Link>
     </div>
   );

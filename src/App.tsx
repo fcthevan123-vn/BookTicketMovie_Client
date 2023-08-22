@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import GlobalStyles from "./components/GlobalStyles";
 import router from "./router";
 import { Suspense, FC, ReactNode } from "react";
+import { MantineProvider, createEmotionCache } from "@mantine/core";
 
 type LayoutComponent = FC<{ children: ReactNode }>;
 const route = createBrowserRouter(
@@ -66,10 +67,22 @@ const route = createBrowserRouter(
   )
 );
 
+const myCache = createEmotionCache({
+  key: "mantine",
+  prepend: false,
+});
+
 function App() {
   return (
     <GlobalStyles>
-      <RouterProvider router={route} />
+      <MantineProvider
+        emotionCache={myCache}
+        theme={{ colorScheme: "light" }}
+        withGlobalStyles
+        withNormalizeCSS
+      >
+        <RouterProvider router={route} />
+      </MantineProvider>
     </GlobalStyles>
   );
 }

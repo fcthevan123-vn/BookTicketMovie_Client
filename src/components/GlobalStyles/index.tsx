@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import "./GlobalStyles.css";
+import "./GlobalStyles.scss";
 type GlobalStylesProps = {
   children: ReactNode;
 };
