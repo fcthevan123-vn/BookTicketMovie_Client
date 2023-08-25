@@ -1,24 +1,28 @@
 import FormRegister from "../../components/Forms/FormRegister";
 import pageLost from "../../assets/Image/page-lost.svg";
 import groupPeople from "../../assets/Image/group-of-happy-business-people.svg";
-import { motion, transform } from "framer-motion";
 import { Image, Tabs, Transition } from "@mantine/core";
 import { AiOutlineUser } from "react-icons/ai";
 import { IoCreateOutline } from "react-icons/io5";
 import FormLogin from "../../components/Forms/FormLogin";
+import styles from "./RegisterPage.module.scss";
+import classNames from "classNames/bind";
+
+const cx = classNames.bind(styles);
+
 function RegisterPage() {
   return (
-    <div className="grid grid-cols-5 py-10 px-10  h-screen ">
+    <div className="bg-sky-500 sm:bg-transparent  grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-4 sm:py-10 sm:px-10 px-5 py-5 h-screen  ">
       <div
-        className="col-span-3 relative bg-sky-500 drop-shadow-2xl	rounded-lg flex flex-col items-center justify-center "
+        className="lg:col-span-3 md:col-span-2 sm:col-span-2 hidden  relative bg-sky-500 drop-shadow-2xl	rounded-lg sm:flex flex-col items-center justify-center "
         style={{ boxShadow: "0 10px 50px rgba(2,132,199,0.7)" }}
       >
         <div className="absolute z-10 ">
-          <p className="text-center text-4xl  mt-3 italic text-white font-medium">
+          <p className="text-center mx-3 text-4xl mt-3 italic text-white font-medium">
             Welcome to Show Star Bookings!
           </p>
 
-          <p className="text-lg italic indent-8 text-white mt-2 text-justify px-3 ">
+          <p className="text-lg mx-3 italic indent-8 text-white mt-2 text-justify px-3 ">
             Register an account now to experience the excitement of convenient
             movie ticket booking. Share your passion for movies, discover
             captivating films, and indulge in fantastic entertainment
@@ -34,7 +38,7 @@ function RegisterPage() {
         </div>
       </div>
       <div
-        className="col-span-2 pt-3 my-4  rounded-r-lg w-full fade-in-fwd"
+        className="bg-white col-span-2 md:col-span-2 sm:col-span-2 pt-3 my-4 rounded-lg	sm:rounded-none sm:rounded-r-lg w-full fade-in-fwd"
         style={{
           boxShadow:
             "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
@@ -46,7 +50,7 @@ function RegisterPage() {
           radius="xl"
           defaultValue="Login"
         >
-          <Tabs.List className="float-right pr-5 absolute z-10 right-4">
+          <Tabs.List className="float-right pr-5 absolute z-10 right-4 ">
             <Tabs.Tab value="Login" icon={<AiOutlineUser size="0.8rem" />}>
               Login
             </Tabs.Tab>
@@ -56,7 +60,7 @@ function RegisterPage() {
           </Tabs.List>
 
           <Tabs.Panel
-            className="absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 w-full "
+            className="absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 w-full px-7 sm:px-0 "
             value="SignUp"
             pt="xs"
           >
@@ -64,11 +68,27 @@ function RegisterPage() {
           </Tabs.Panel>
 
           <Tabs.Panel
-            className="absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 w-full "
+            className="absolute  top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4  w-full px-7 sm:px-0"
             value="Login"
             pt="xs"
           >
+            <p
+              className={cx(
+                "text-login-top",
+                "block text-center mx-3 text-2xl mb-14 italic font-medium"
+              )}
+            >
+              Log in to your account
+            </p>
             <FormLogin></FormLogin>
+            <p
+              className={cx(
+                "text-login-bottom",
+                "block text-center mx-1 sm:mx-8 text-2xl mt-14 italic  font-medium"
+              )}
+            >
+              And get ready to explore a world of online movie ticket booking.
+            </p>
           </Tabs.Panel>
         </Tabs>
       </div>

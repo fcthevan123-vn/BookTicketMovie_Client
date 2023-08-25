@@ -1,7 +1,9 @@
 import { lazy } from "react";
 import { ReactNode, FC } from "react";
 const HomePage = lazy(() => import("../pages/HomePage"));
+const MoviePage = lazy(() => import("../pages/MoviePage"));
 const RegisterPage = lazy(() => import("../pages/RegisterPage"));
+const ErrorPage = lazy(() => import("../pages/ErrorPage"));
 
 import { DefaultLayout } from "../layouts";
 
@@ -17,15 +19,33 @@ interface IRouter {
 const router: IRouter[] = [
   {
     path: "/",
-    isProtected: null,
-    layout: "None",
+    isProtected: true,
+    layout: DefaultLayout,
     element: HomePage,
+  },
+  {
+    path: "/home",
+    isProtected: true,
+    layout: DefaultLayout,
+    element: HomePage,
+  },
+  {
+    path: "/movie",
+    isProtected: null,
+    layout: DefaultLayout,
+    element: MoviePage,
   },
   {
     path: "/register",
     isProtected: null,
-    layout: DefaultLayout,
+    layout: "None",
     element: RegisterPage,
+  },
+  {
+    path: "*",
+    isProtected: null,
+    layout: "None",
+    element: ErrorPage,
   },
 ];
 

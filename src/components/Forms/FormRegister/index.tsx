@@ -3,26 +3,35 @@ import {
   Divider,
   Group,
   Input,
+  Notification,
   PasswordInput,
   Radio,
   TextInput,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { userServices } from "../../../services";
+import { useState } from "react";
+import { notifications } from "@mantine/notifications";
+import { AxiosError } from "axios";
+import { BiErrorCircle } from "react-icons/bi";
+import { AiOutlineCheckCircle } from "react-icons/ai";
 
 function FormRegister() {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const form = useForm({
     initialValues: {
-      name: "",
+      fullName: "",
       email: "",
       address: "",
       password: "",
       confirmPassword: "",
       sex: "",
+      phone: "",
     },
 
     // functions will be used to validate values at corresponding key
     validate: {
-      name: (value) =>
+      fullName: (value) =>
         value.length < 2 ? "Name must have at least 2 letters" : null,
       email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
       address: (value) =>
@@ -35,12 +44,55 @@ function FormRegister() {
           : "Password invalid",
       confirmPassword: (value, values) =>
         value == values.password ? null : "Confirm password does not match",
+      phone: (value) =>
+        /(84|0[3|5|7|8|9])+([0-9]{8})\b/g.test(value) ? null : "Phone invalid",
+      sex: (value) => (value.length == 0 ? "Please select your gender" : null),
     },
     validateInputOnChange: true,
   });
 
-  function handleSubmit(_data: object) {
-    console.log(_data);
+  async function handleSubmit(_data: object) {
+    setIsLoading(true);
+    notifications.show({
+      id: "load-data",
+      loading: true,
+      radius: "md",
+      title: "Create your account",
+      message: "It can take some minutes",
+      autoClose: false,
+      withCloseButton: false,
+      withBorder: true,
+    });
+    try {
+      const res = await userServices.handleRegister(_data);
+      if (res.statusCode === 0) {
+        setIsLoading(false);
+        notifications.update({
+          id: "load-data",
+          radius: "md",
+          color: "teal",
+          title: <p className="text-teal-600">Success</p>,
+          message: res.message,
+          withBorder: true,
+          icon: <AiOutlineCheckCircle size="1.2rem" />,
+          autoClose: 2000,
+        });
+        form.reset();
+      }
+    } catch (error) {
+      const err = error as AxiosError;
+      notifications.update({
+        id: "load-data",
+        radius: "md",
+        color: "red",
+        title: <p className="text-red-700">Error</p>,
+        message: err.response?.data?.message,
+        withBorder: true,
+        icon: <BiErrorCircle size="1.2rem" />,
+        autoClose: 2000,
+      });
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -52,12 +104,12 @@ function FormRegister() {
             variant="unstyled"
             id="userName"
             placeholder="Name"
-            value={form.values.name}
-            onChange={(e) => form.setFieldValue("name", e.target.value)}
+            value={form.values.fullName}
+            onChange={(e) => form.setFieldValue("fullName", e.target.value)}
           />
         </Input.Wrapper>
-        {form.errors.name ? (
-          <p className="error-form-auth">{form.errors.name}</p>
+        {form.errors.fullName ? (
+          <p className="error-form-auth">{form.errors.fullName}</p>
         ) : null}
 
         <Input.Wrapper id="address" withAsterisk label="Address:" mt="sm">
@@ -73,20 +125,39 @@ function FormRegister() {
         {form.errors.address ? (
           <p className="error-form-auth">{form.errors.address}</p>
         ) : null}
+        <div className="flex justify-between gap-10">
+          <div className="w-1/2">
+            <Input.Wrapper id="email" withAsterisk label="Email:" mt="sm">
+              <Input
+                className="border-b-2 px-3 border-sky-300"
+                variant="unstyled"
+                id="email"
+                placeholder="Email"
+                value={form.values.email}
+                onChange={(e) => form.setFieldValue("email", e.target.value)}
+              />
+            </Input.Wrapper>
+            {form.errors.email ? (
+              <p className="error-form-auth">{form.errors.email}</p>
+            ) : null}
+          </div>
 
-        <Input.Wrapper id="email" withAsterisk label="Email:" mt="sm">
-          <Input
-            className="border-b-2 px-3 border-sky-300"
-            variant="unstyled"
-            id="email"
-            placeholder="Email"
-            value={form.values.email}
-            onChange={(e) => form.setFieldValue("email", e.target.value)}
-          />
-        </Input.Wrapper>
-        {form.errors.email ? (
-          <p className="error-form-auth">{form.errors.email}</p>
-        ) : null}
+          <div className="w-1/2">
+            <Input.Wrapper id="phone" withAsterisk label="Phone:" mt="sm">
+              <Input
+                className="border-b-2 px-3 border-sky-300"
+                variant="unstyled"
+                id="phone"
+                placeholder="Phone"
+                value={form.values.phone}
+                onChange={(e) => form.setFieldValue("phone", e.target.value)}
+              />
+            </Input.Wrapper>
+            {form.errors.phone ? (
+              <p className="error-form-auth">{form.errors.phone}</p>
+            ) : null}
+          </div>
+        </div>
 
         <Input.Wrapper
           id="password"
@@ -114,7 +185,6 @@ function FormRegister() {
           withAsterisk
           label="Confirm Password:"
           mt="sm"
-          description="Confirm password must matches the password"
         >
           <PasswordInput
             className="border-b-2 px-1 border-sky-300"
@@ -150,6 +220,7 @@ function FormRegister() {
 
         <div className="flex justify-center">
           <Button
+            disabled={isLoading}
             className="transition-all hover:scale-110"
             size="sm"
             radius="xl"

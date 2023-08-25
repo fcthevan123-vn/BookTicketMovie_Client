@@ -2,11 +2,12 @@
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      // colors: {
+      //   primary: colors.blue,
+      //   secondary: colors.slate,
+      // },
+    },
   },
-  // eslint-disable-next-line no-undef
-  // plugins: [require("daisyui")],
-  // daisyui: {
-  //   themes: false,
-  // },
+  // plugins: [require("@tailwindcss/typography"), require("@tailwindcss/forms")],
 };
