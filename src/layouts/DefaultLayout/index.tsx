@@ -1,7 +1,7 @@
-import { ReactNode } from "react";
 import styles from "./DefaultLayout.module.scss";
 import classNames from "classNames/bind";
 import DefaultHeader from "../../components/Headers/DefaultHeader";
+import { FooterComponent } from "../../components/FooterComponent";
 
 const cx = classNames.bind(styles);
 
@@ -16,7 +16,9 @@ function DefaultLayout({ children }: DefaultLayoutProps) {
       <div className={cx("child")} style={{ paddingTop: "110px" }}>
         {children}
       </div>
-      <div>{/* <Footer></Footer> */}</div>
+      <div>
+        <FooterComponent></FooterComponent>
+      </div>
     </div>
   );
 }

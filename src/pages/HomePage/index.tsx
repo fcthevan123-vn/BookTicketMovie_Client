@@ -1,11 +1,13 @@
 import { Button } from "@mantine/core";
 import { Link } from "react-router-dom";
 import { TrendingMovie } from "../../components/Sections/TrendingMovie";
+import { StatusMovie } from "../../components/Sections/StatusMovie";
 
 function HomePage() {
   return (
     <div className="">
       <TrendingMovie></TrendingMovie>
+      <StatusMovie></StatusMovie>
     </div>
   );
 }

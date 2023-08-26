@@ -40,6 +40,7 @@ const useStyles = createStyles((theme) => ({
     top: 0,
     left: 0,
     right: 0,
+    zIndex: 10,
     paddingTop: theme.spacing.sm,
     backgroundColor: theme.fn.variant({
       variant: "filled",
@@ -268,7 +269,6 @@ export default function DefaultHeader() {
                         sx={{
                           lineHeight: 1,
                           color: theme.white,
-                          fontStyle: "italic",
                         }}
                         mr={3}
                       >

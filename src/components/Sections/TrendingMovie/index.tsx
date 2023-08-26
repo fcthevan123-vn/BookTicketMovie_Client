@@ -9,7 +9,11 @@ import {
   Image,
   BackgroundImage,
   Center,
+  Divider,
+  Group,
+  ActionIcon,
 } from "@mantine/core";
+import { AiFillFire } from "react-icons/ai";
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -101,6 +105,9 @@ const useStyles = createStyles((theme) => ({
       width: "100%",
     },
   },
+  devider: {
+    color: "red",
+  },
 }));
 
 const images = [
@@ -162,15 +169,50 @@ export function TrendingMovie() {
   ));
 
   return (
-    <div className={classes.root + " md:w-10/12 mx-auto py-16 w-11/12"}>
-      <div
-        style={{ height: 500, display: "flex" }}
-        className={classes.carousel + " shadow-xl drop-shadow-2xl"}
-      >
-        <Carousel loop orientation="vertical" height="100%" sx={{ flex: 1 }}>
-          {slides}
-        </Carousel>
-      </div>
+    <div>
+      <Container size="lg">
+        <div className={classes.root + " py-3 "}>
+          <Divider
+            size="sm"
+            my="xs"
+            label={
+              <Text
+                variant="gradient"
+                gradient={{ from: "#f74c06", to: "#f9bc2c", deg: 45 }}
+                ta="center"
+                fz="xl"
+                fw={700}
+              >
+                <div className="flex gap-2">
+                  <ActionIcon
+                    radius="md"
+                    variant="gradient"
+                    gradient={{ from: "#f74c06", to: "#f9bc2c", deg: 45 }}
+                  >
+                    <AiFillFire size="1.125rem" />
+                  </ActionIcon>
+                  <p>Trending Movie</p>
+                </div>
+              </Text>
+            }
+            labelPosition="center"
+            className={"py-3 px-8"}
+          />
+          <div
+            style={{ height: 500, display: "flex" }}
+            className={classes.carousel + " shadow-xl drop-shadow-2xl"}
+          >
+            <Carousel
+              loop
+              orientation="vertical"
+              height="100%"
+              sx={{ flex: 1 }}
+            >
+              {slides}
+            </Carousel>
+          </div>
+        </div>
+      </Container>
     </div>
   );
 }
