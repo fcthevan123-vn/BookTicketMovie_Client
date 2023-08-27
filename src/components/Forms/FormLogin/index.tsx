@@ -29,7 +29,6 @@ function FormLogin() {
   const getProfile = async () => {
     const res = await userServices.getProfile();
     if (res.statusCode === 0) {
-      console.log("res", res);
       dispatch(
         userSlice.actions.handleLogin({
           id: res.data.id,

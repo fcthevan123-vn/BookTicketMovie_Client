@@ -306,11 +306,14 @@ export default function DefaultHeader() {
                 </Menu.Item>
                 <Menu.Divider className={classes.menuItem} />
                 <Menu.Label>Settings</Menu.Label>
-                <Menu.Item
-                  icon={<AiOutlineSetting size="0.9rem" stroke={1.5} />}
-                >
-                  Account settings
-                </Menu.Item>
+                <Link to="/user/123/profile">
+                  <Menu.Item
+                    icon={<AiOutlineSetting size="0.9rem" stroke={1.5} />}
+                  >
+                    Account settings
+                  </Menu.Item>
+                </Link>
+
                 <Menu.Item
                   icon={<AiOutlineCheckCircle size="0.9rem" stroke={1.5} />}
                 >

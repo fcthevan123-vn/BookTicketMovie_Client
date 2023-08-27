@@ -66,12 +66,10 @@ function App() {
         withGlobalStyles
         withNormalizeCSS
       >
-        {/* <SpotlightProvider actions={[]}> */}
         <Notifications position="top-right" />
         <Suspense fallback={<LoaderPage></LoaderPage>}>
           <RouterProvider router={route} />
         </Suspense>
-        {/* </SpotlightProvider> */}
       </MantineProvider>
     </GlobalStyles>
   );

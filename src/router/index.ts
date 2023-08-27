@@ -4,8 +4,9 @@ const HomePage = lazy(() => import("../pages/HomePage"));
 const MoviePage = lazy(() => import("../pages/MoviePage"));
 const RegisterPage = lazy(() => import("../pages/RegisterPage"));
 const ErrorPage = lazy(() => import("../pages/ErrorPage"));
+const UserProfilePage = lazy(() => import("../pages/UserPage/UserProfilePage"));
 
-import { DefaultLayout } from "../layouts";
+import { DefaultLayout, UserLayout } from "../layouts";
 
 type LayoutComponent = FC<{ children: ReactNode }>;
 
@@ -40,6 +41,12 @@ const router: IRouter[] = [
     isProtected: null,
     layout: "None",
     element: RegisterPage,
+  },
+  {
+    path: "/user/:id/profile",
+    isProtected: null,
+    layout: UserLayout,
+    element: UserProfilePage,
   },
   {
     path: "*",

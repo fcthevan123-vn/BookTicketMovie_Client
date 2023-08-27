@@ -44,7 +44,11 @@ const useStyles = createStyles((theme) => ({
   carousel: {
     borderRadius: theme.radius.lg,
     overflow: "hidden",
-    // position: "relative",
+    height: rem(500),
+    display: "flex",
+    [theme.fn.smallerThan("sm")]: {
+      height: rem(420),
+    },
   },
 
   carouselSlide: {
@@ -198,10 +202,7 @@ export function TrendingMovie() {
             labelPosition="center"
             className={"py-3 px-8"}
           />
-          <div
-            style={{ height: 500, display: "flex" }}
-            className={classes.carousel + " shadow-xl drop-shadow-2xl"}
-          >
+          <div className={classes.carousel + " shadow-xl drop-shadow-2xl"}>
             <Carousel
               loop
               orientation="vertical"
