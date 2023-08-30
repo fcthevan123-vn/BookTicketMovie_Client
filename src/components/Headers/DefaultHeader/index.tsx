@@ -13,9 +13,7 @@ import {
   Badge,
   ActionIcon,
   Stack,
-  Input,
 } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
 import { Link, useLocation } from "react-router-dom";
 import { useAuthenticate } from "../../../hooks";
 import {
@@ -150,6 +148,7 @@ export default function DefaultHeader() {
     user: {
       name: dataUser?.fullName,
       email: dataUser?.email,
+      type: dataUser?.type,
       image:
         "https://images.unsplash.com/photo-1692005561659-cdba32d1e4a1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80",
     },
@@ -306,13 +305,21 @@ export default function DefaultHeader() {
                 </Menu.Item>
                 <Menu.Divider className={classes.menuItem} />
                 <Menu.Label>Settings</Menu.Label>
-                <Link to="/user/123/profile">
+                <Link to={`/user/${dataUser.id}/profile`}>
                   <Menu.Item
                     icon={<AiOutlineSetting size="0.9rem" stroke={1.5} />}
                   >
                     Account settings
                   </Menu.Item>
                 </Link>
+
+                {data.user.type == "admin" ? (
+                  <Menu.Item
+                    icon={<AiOutlineCheckCircle size="0.9rem" stroke={1.5} />}
+                  >
+                    Switch to admin
+                  </Menu.Item>
+                ) : null}
 
                 <Menu.Item
                   icon={<AiOutlineCheckCircle size="0.9rem" stroke={1.5} />}

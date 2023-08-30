@@ -14,6 +14,8 @@ import { useMediaQuery } from "@mantine/hooks";
 import { BiRocket } from "react-icons/bi";
 import { RiSlideshow2Line } from "react-icons/ri";
 import MotiveItem from "../../MovieItem";
+import { useRef } from "react";
+import Autoplay from "embla-carousel-autoplay";
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -85,6 +87,7 @@ export function StatusMovie() {
   const { classes } = useStyles();
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
+  const autoplay = useRef(Autoplay({ delay: 5000 }));
   const slides = data.map((item) => (
     <Carousel.Slide key={item.title}>
       <MotiveItem {...item} />
@@ -136,6 +139,9 @@ export function StatusMovie() {
         align="start"
         loop
         slidesToScroll={mobile ? 2 : 4}
+        plugins={[autoplay.current]}
+        onMouseEnter={autoplay.current.stop}
+        onMouseLeave={autoplay.current.reset}
       >
         {slides}
       </Carousel>

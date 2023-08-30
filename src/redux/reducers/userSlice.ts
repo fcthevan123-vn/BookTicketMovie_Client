@@ -5,15 +5,15 @@ const initialState = {
   isLoggedIn: false,
   isLoading: false,
   userData: {},
+  error: false || "",
 };
 
 export const reloadInfo = createAsyncThunk(
   "user/reloadInfo",
   async (_, thunkApi) => {
     const userData = thunkApi.getState().user.userData;
-    const res = await userServices.getUserById(userData._id);
-
-    return res.dataUser;
+    const res = await userServices.getUserById(userData.id);
+    return res.data;
   }
 );
 
@@ -44,12 +44,15 @@ const userSlice = createSlice({
       .addCase(reloadInfo.fulfilled, (state, action) => {
         state.isLoading = false;
         state.userData = {
-          _id: action.payload._id,
+          id: action.payload.id,
           email: action.payload.email,
           type: action.payload.type,
+          phone: action.payload.phone,
+          address: action.payload.address,
+          gender: action.payload.sex == 0 ? "male" : "female",
           fullName: action.payload.fullName,
-          avatar: action.payload.avatar,
-          emailVerified: action.payload.emailVerified,
+          age: action.payload.age,
+          isVerifyEmail: action.payload.isVerifyEmail,
         };
       })
       .addCase(reloadInfo.rejected, (state) => {

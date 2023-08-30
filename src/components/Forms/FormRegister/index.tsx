@@ -4,6 +4,7 @@ import {
   Group,
   Input,
   Notification,
+  NumberInput,
   PasswordInput,
   Radio,
   TextInput,
@@ -12,7 +13,6 @@ import { useForm } from "@mantine/form";
 import { userServices } from "../../../services";
 import { useState } from "react";
 import { notifications } from "@mantine/notifications";
-import { AxiosError } from "axios";
 import { BiErrorCircle } from "react-icons/bi";
 import { AiOutlineCheckCircle } from "react-icons/ai";
 
@@ -27,6 +27,7 @@ function FormRegister() {
       confirmPassword: "",
       sex: "",
       phone: "",
+      age: "",
     },
 
     // functions will be used to validate values at corresponding key
@@ -47,6 +48,10 @@ function FormRegister() {
       phone: (value) =>
         /(84|0[3|5|7|8|9])+([0-9]{8})\b/g.test(value) ? null : "Phone invalid",
       sex: (value) => (value.length == 0 ? "Please select your gender" : null),
+      age: (value) =>
+        value.length == 0 || parseInt(value) < 8
+          ? "Age must larger than 8"
+          : null,
     },
     validateInputOnChange: true,
   });
@@ -54,7 +59,7 @@ function FormRegister() {
   async function handleSubmit(_data: object) {
     setIsLoading(true);
     notifications.show({
-      id: "load-data",
+      id: "toast-register",
       loading: true,
       radius: "md",
       title: "Create your account",
@@ -68,7 +73,7 @@ function FormRegister() {
       if (res.statusCode === 0) {
         setIsLoading(false);
         notifications.update({
-          id: "load-data",
+          id: "toast-register",
           radius: "md",
           color: "teal",
           title: <p className="text-teal-600">Success</p>,
@@ -80,13 +85,12 @@ function FormRegister() {
         form.reset();
       }
     } catch (error) {
-      const err = error as AxiosError;
       notifications.update({
-        id: "load-data",
+        id: "toast-register",
         radius: "md",
         color: "red",
         title: <p className="text-red-700">Error</p>,
-        message: err.response?.data?.message,
+        message: error.response?.data?.message,
         withBorder: true,
         icon: <BiErrorCircle size="1.2rem" />,
         autoClose: 2000,
@@ -125,20 +129,37 @@ function FormRegister() {
         {form.errors.address ? (
           <p className="error-form-auth">{form.errors.address}</p>
         ) : null}
-        <div className="flex justify-between gap-10">
+
+        <Input.Wrapper id="email" withAsterisk label="Email:" mt="sm">
+          <Input
+            className="border-b-2 px-3 border-sky-300"
+            variant="unstyled"
+            id="email"
+            placeholder="Email"
+            value={form.values.email}
+            onChange={(e) => form.setFieldValue("email", e.target.value)}
+          />
+        </Input.Wrapper>
+        {form.errors.email ? (
+          <p className="error-form-auth">{form.errors.email}</p>
+        ) : null}
+
+        <div className="flex justify-between sm:gap-10 gap-6">
           <div className="w-1/2">
-            <Input.Wrapper id="email" withAsterisk label="Email:" mt="sm">
-              <Input
-                className="border-b-2 px-3 border-sky-300"
+            <Input.Wrapper id="age" withAsterisk label="Age:" mt="sm">
+              <TextInput
+                type="number"
+                id="age"
+                placeholder="Age"
                 variant="unstyled"
-                id="email"
-                placeholder="Email"
-                value={form.values.email}
-                onChange={(e) => form.setFieldValue("email", e.target.value)}
+                withAsterisk
+                className="border-b-2 px-3 border-sky-300"
+                value={form.values.age}
+                onChange={(e) => form.setFieldValue("age", e.target.value)}
               />
             </Input.Wrapper>
-            {form.errors.email ? (
-              <p className="error-form-auth">{form.errors.email}</p>
+            {form.errors.age ? (
+              <p className="error-form-auth">{form.errors.age}</p>
             ) : null}
           </div>
 

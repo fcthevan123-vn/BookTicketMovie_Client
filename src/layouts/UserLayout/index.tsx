@@ -1,13 +1,6 @@
 import React from "react";
 import { UserNav } from "../../components/Navbars/UserNav";
-import {
-  ActionIcon,
-  Box,
-  Button,
-  Drawer,
-  createStyles,
-  getStylesRef,
-} from "@mantine/core";
+import { ActionIcon, Box, Drawer, createStyles } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { AiOutlineMenu } from "react-icons/ai";
 
@@ -17,13 +10,17 @@ type Props = {
 
 const useStyles = createStyles((theme) => ({
   userLayout: {
-    height: "100vh",
-    width: "100vw",
+    // height: "100vh",
+    // width: "100vw",
+    marginLeft: "250px",
     [theme.fn.largerThan("sm")]: {
       display: "flex",
     },
     [theme.fn.smallerThan("sm")]: {
       display: "block",
+    },
+    [theme.fn.smallerThan("sm")]: {
+      marginLeft: "0",
     },
   },
 
@@ -60,6 +57,11 @@ const useStyles = createStyles((theme) => ({
   },
 
   navMobile: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 10,
     backgroundColor: theme.fn.variant({
       variant: "filled",
       color: theme.primaryColor,
@@ -83,7 +85,7 @@ const UserLayout = ({ children }: Props) => {
   return (
     <Box className={classes.userLayout}>
       <div className={classes.userNav}>
-        <UserNav></UserNav>
+        <UserNav close={null}></UserNav>
       </div>
       <div>
         <Drawer
@@ -98,7 +100,7 @@ const UserLayout = ({ children }: Props) => {
           overlayProps={{ opacity: 0.5, blur: 4 }}
         >
           <div className="h-full">
-            <UserNav></UserNav>
+            <UserNav close={close}></UserNav>
           </div>
         </Drawer>
       </div>
@@ -108,7 +110,7 @@ const UserLayout = ({ children }: Props) => {
           <AiOutlineMenu size="1.525rem" />
         </ActionIcon>
       </div>
-      <div className="w-full">{children}</div>
+      <div className="w-full sm:mt-0 mt-16">{children}</div>
     </Box>
   );
 };

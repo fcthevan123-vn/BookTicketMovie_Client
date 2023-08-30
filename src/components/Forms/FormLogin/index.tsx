@@ -1,4 +1,11 @@
-import { Input, Radio, Group, Button, PasswordInput } from "@mantine/core";
+import {
+  Input,
+  Radio,
+  Group,
+  Button,
+  PasswordInput,
+  Checkbox,
+} from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { AxiosError } from "axios";
@@ -31,12 +38,15 @@ function FormLogin() {
     if (res.statusCode === 0) {
       dispatch(
         userSlice.actions.handleLogin({
-          id: res.data.id,
-          email: res.data.email,
-          fullName: res.data.fullName,
-          isVerifyEmail: res.data.isVerifyEmail,
-          phone: res.data.phone,
-          address: res.data.address,
+          id: res?.data?.id,
+          email: res?.data?.email,
+          fullName: res?.data?.fullName,
+          isVerifyEmail: res?.data?.isVerifyEmail,
+          phone: res?.data?.phone,
+          address: res?.data?.address,
+          age: res?.data?.age,
+          gender: res?.data?.sex === 0 ? "male" : "female",
+          type: res?.data?.type,
         })
       );
       setLogin(true);
@@ -136,6 +146,8 @@ function FormLogin() {
         {form.errors.password ? (
           <p className="error-form-auth">{form.errors.password}</p>
         ) : null}
+
+        <Checkbox label="Remember me" radius="sm" className="mt-6" />
 
         <div className="flex justify-center">
           <Button

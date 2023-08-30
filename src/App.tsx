@@ -8,6 +8,7 @@ import ProtectedRoute from "./components/ProtectRoute";
 import ProviderGetProfile from "./components/ProviderGetProfile";
 import { SpotlightProvider } from "@mantine/spotlight";
 import LoaderPage from "./components/Loaders/LoaderPage";
+import { ModalsProvider } from "@mantine/modals";
 
 type LayoutComponent = FC<{ children: ReactNode }>;
 const route = createBrowserRouter(
@@ -55,7 +56,7 @@ function App() {
       <MantineProvider
         emotionCache={myCache}
         theme={{
-          globalStyles: (theme) => ({
+          globalStyles: () => ({
             "*, *::before, *::after": {
               boxSizing: "border-box",
               fontFamily: "Poppins",
@@ -67,9 +68,11 @@ function App() {
         withNormalizeCSS
       >
         <Notifications position="top-right" />
-        <Suspense fallback={<LoaderPage></LoaderPage>}>
-          <RouterProvider router={route} />
-        </Suspense>
+        <ModalsProvider>
+          <Suspense fallback={<LoaderPage></LoaderPage>}>
+            <RouterProvider router={route} />
+          </Suspense>
+        </ModalsProvider>
       </MantineProvider>
     </GlobalStyles>
   );

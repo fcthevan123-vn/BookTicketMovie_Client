@@ -13,6 +13,20 @@ const userServices = {
     const res = await axios.get(`/api/v1/authenticate/get-profile`);
     return res.data;
   },
+  async updateProfile(informationUser: object, userId: string) {
+    const res = await axios.patch(
+      `/api/v1/user/${userId}/update`,
+      informationUser
+    );
+    return res.data;
+  },
+  async changePassword(passwordData: object, userId: string) {
+    const res = await axios.patch(
+      `/api/v1/user/${userId}/update-password`,
+      passwordData
+    );
+    return res.data;
+  },
 };
 
 export default userServices;

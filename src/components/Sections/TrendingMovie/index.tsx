@@ -6,14 +6,14 @@ import {
   Text,
   Button,
   rem,
-  Image,
   BackgroundImage,
   Center,
   Divider,
-  Group,
   ActionIcon,
 } from "@mantine/core";
+import Autoplay from "embla-carousel-autoplay";
 import { AiFillFire } from "react-icons/ai";
+import { useRef } from "react";
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -127,6 +127,8 @@ const images = [
 export function TrendingMovie() {
   const { classes } = useStyles();
 
+  const autoplay = useRef(Autoplay({ delay: 3000 }));
+
   const slides = images.map((url) => (
     <Carousel.Slide key={url} className={classes.carouselSlide}>
       <BackgroundImage src={url} radius="lg">
@@ -174,6 +176,7 @@ export function TrendingMovie() {
 
   return (
     <div>
+      {/* {console.log("autoplay", autoplay.current)} */}
       <Container size="lg">
         <div className={classes.root + " py-3 "}>
           <Divider
@@ -208,6 +211,9 @@ export function TrendingMovie() {
               orientation="vertical"
               height="100%"
               sx={{ flex: 1 }}
+              plugins={[autoplay.current]}
+              onMouseEnter={autoplay.current.stop}
+              onMouseLeave={autoplay.current.reset}
             >
               {slides}
             </Carousel>

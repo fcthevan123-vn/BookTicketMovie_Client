@@ -42,8 +42,17 @@ const router: IRouter[] = [
     layout: "None",
     element: RegisterPage,
   },
+
+  // User
   {
     path: "/user/:id/profile",
+    isProtected: null,
+    layout: UserLayout,
+    element: UserProfilePage,
+  },
+
+  {
+    path: "/user/:id/change-password",
     isProtected: null,
     layout: UserLayout,
     element: UserProfilePage,
