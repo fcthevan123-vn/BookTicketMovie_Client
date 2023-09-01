@@ -1,6 +1,7 @@
 import { useAuthenticate } from "../../hooks";
 import { useNavigate } from "react-router-dom";
 import { useEffect, ReactNode } from "react";
+import LoaderPage from "../Loaders/LoaderPage";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -12,13 +13,17 @@ function ProtectedRoute({ children }: ProtectedRouteProps) {
 
   useEffect(() => {
     if (!isLogin) {
-      navigate("/register");
+      navigate("/");
     }
   }, [isLogin, navigate]);
 
-  if (!isLogin) {
-    return <></>;
-  }
+  // if (!isLogin) {
+  //   return (
+  //     <>
+  //       <LoaderPage></LoaderPage>
+  //     </>
+  //   );
+  // }
 
   return <>{children}</>;
 }

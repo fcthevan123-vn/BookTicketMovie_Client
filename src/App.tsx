@@ -1,8 +1,13 @@
 import { createBrowserRouter, Route, RouterProvider } from "react-router-dom";
 import GlobalStyles from "./components/GlobalStyles";
 import router from "./router";
-import { Suspense, FC, ReactNode } from "react";
-import { MantineProvider, createEmotionCache } from "@mantine/core";
+import { Suspense, FC, ReactNode, useState } from "react";
+import {
+  ColorScheme,
+  ColorSchemeProvider,
+  MantineProvider,
+  createEmotionCache,
+} from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 import ProtectedRoute from "./components/ProtectRoute";
 import ProviderGetProfile from "./components/ProviderGetProfile";
@@ -16,28 +21,36 @@ const route = createBrowserRouter(
     (route: {
       element: FC;
       layout: LayoutComponent | string;
+      isProtected: boolean | null;
       path: string;
     }) => {
       const Element = route.element;
       const MappingLayout = route.layout;
+      const isProtectedElement = route.isProtected;
 
       if (MappingLayout === "None") {
         return {
           path: route.path,
-          element: (
-            // <Suspense fallback={<div>Loading...</div>}>
+          element: isProtectedElement ? (
+            <ProtectedRoute>
+              <Element />
+            </ProtectedRoute>
+          ) : (
             <Element />
-            // </Suspense>
           ),
         };
       }
       return {
         path: route.path,
-        element: (
+        element: isProtectedElement ? (
+          <ProtectedRoute>
+            <MappingLayout>
+              <Element />
+            </MappingLayout>
+          </ProtectedRoute>
+        ) : (
           <MappingLayout>
-            {/* <Suspense fallback={<div>Loading...</div>}> */}
             <Element />
-            {/* </Suspense> */}
           </MappingLayout>
         ),
       };
@@ -51,29 +64,38 @@ const myCache = createEmotionCache({
 });
 
 function App() {
+  const [colorScheme, setColorScheme] = useState<ColorScheme>("light");
+  const toggleColorScheme = (value?: ColorScheme) =>
+    setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
+
   return (
     <GlobalStyles>
-      <MantineProvider
-        emotionCache={myCache}
-        theme={{
-          globalStyles: () => ({
-            "*, *::before, *::after": {
-              boxSizing: "border-box",
-              fontFamily: "Poppins",
-            },
-          }),
-          colorScheme: "light",
-        }}
-        withGlobalStyles
-        withNormalizeCSS
+      <ColorSchemeProvider
+        colorScheme={colorScheme}
+        toggleColorScheme={toggleColorScheme}
       >
-        <Notifications position="top-right" />
-        <ModalsProvider>
-          <Suspense fallback={<LoaderPage></LoaderPage>}>
-            <RouterProvider router={route} />
-          </Suspense>
-        </ModalsProvider>
-      </MantineProvider>
+        <MantineProvider
+          emotionCache={myCache}
+          theme={{
+            globalStyles: () => ({
+              "*, *::before, *::after": {
+                boxSizing: "border-box",
+                fontFamily: "Poppins",
+              },
+            }),
+            colorScheme,
+          }}
+          withGlobalStyles
+          withNormalizeCSS
+        >
+          <Notifications position="top-right" />
+          <ModalsProvider>
+            <Suspense fallback={<LoaderPage></LoaderPage>}>
+              <RouterProvider router={route} />
+            </Suspense>
+          </ModalsProvider>
+        </MantineProvider>
+      </ColorSchemeProvider>
     </GlobalStyles>
   );
 }

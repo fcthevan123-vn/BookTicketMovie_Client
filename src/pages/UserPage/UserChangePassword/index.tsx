@@ -51,6 +51,7 @@ const UserChangePassword = () => {
   });
 
   async function handleSubmit(_data: object) {
+    notifications.clean();
     setIsLoading(true);
     notifications.show({
       id: "toast-changePassword",
@@ -128,6 +129,7 @@ const UserChangePassword = () => {
               radius="md"
               w={"50%"}
               type="reset"
+              loading={isLoading}
               onClick={() => form.reset()}
             >
               Reset

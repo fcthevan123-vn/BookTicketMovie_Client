@@ -13,6 +13,7 @@ import {
   Badge,
   ActionIcon,
   Stack,
+  useMantineColorScheme,
 } from "@mantine/core";
 import { Link, useLocation } from "react-router-dom";
 import { useAuthenticate } from "../../../hooks";
@@ -24,7 +25,7 @@ import {
   AiOutlineSetting,
   AiOutlineUser,
 } from "react-icons/ai";
-import { BiMoviePlay, BiUserCircle } from "react-icons/bi";
+import { BiMoon, BiMoviePlay, BiSun, BiUserCircle } from "react-icons/bi";
 import { authenticateServices } from "../../../services";
 import { useDispatch } from "react-redux";
 import { userSlice } from "../../../redux/reducers";
@@ -141,6 +142,8 @@ export default function DefaultHeader() {
   const [defaultValueTable, setDefaultValueTable] = useState<string>("");
   const location = useLocation();
   const [isLogged, , dataUser] = useAuthenticate();
+  const { colorScheme, toggleColorScheme } = useMantineColorScheme();
+  const dark = colorScheme === "dark";
 
   const dispatch = useDispatch();
 
@@ -218,8 +221,16 @@ export default function DefaultHeader() {
           <Badge
             size="lg"
             radius="lg"
-            sx={{ padding: "22px 15px" }}
-            className="shadow-lg"
+            sx={(theme) => ({
+              // subscribe to color scheme changes
+              backgroundColor:
+                theme.colorScheme === "dark"
+                  ? theme.colors.dark[4]
+                  : theme.colors.blue[0],
+
+              padding: "22px 15px",
+            })}
+            className="shadow-l"
           >
             <Group spacing="sm">
               <ActionIcon color="blue" size="md" radius="md" variant="filled">
@@ -325,6 +336,19 @@ export default function DefaultHeader() {
                   icon={<AiOutlineCheckCircle size="0.9rem" stroke={1.5} />}
                 >
                   Check version
+                </Menu.Item>
+                <Menu.Item
+                  // closeMenuOnClick={false}
+                  onClick={() => toggleColorScheme()}
+                  icon={
+                    dark ? (
+                      <BiSun size="0.9rem" stroke={1.5} />
+                    ) : (
+                      <BiMoon size="0.9rem" stroke={1.5} />
+                    )
+                  }
+                >
+                  {dark ? "Light mode" : "Dark mode"}
                 </Menu.Item>
 
                 <Menu.Divider />

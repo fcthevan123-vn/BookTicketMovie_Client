@@ -46,20 +46,20 @@ const router: IRouter[] = [
   // User
   {
     path: "/user/:id/profile",
-    isProtected: null,
+    isProtected: true,
     layout: UserLayout,
     element: UserProfilePage,
   },
 
   {
     path: "/user/:id/change-password",
-    isProtected: null,
+    isProtected: true,
     layout: UserLayout,
     element: UserProfilePage,
   },
   {
     path: "*",
-    isProtected: null,
+    isProtected: true,
     layout: "None",
     element: ErrorPage,
   },

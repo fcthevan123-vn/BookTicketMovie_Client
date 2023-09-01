@@ -105,7 +105,7 @@ const useStyles = createStyles((theme) => ({
     fontFamily: `Greycliff CF, ${theme.fontFamily}`,
     fontSize: rem(22),
 
-    [theme.fn.smallerThan("md")]: {
+    [theme.fn.smallerThan("sm")]: {
       width: "100%",
     },
   },

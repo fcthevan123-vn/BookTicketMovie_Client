@@ -113,7 +113,7 @@ function FormLogin() {
   }
 
   return (
-    <div className="lg:mx-8 sm:mx-5 my-3 p-3 border-sky-300 boxshadow-custom rounded-lg">
+    <div className="lg:mx-8 sm:mx-5 my-3 p-3 border-sky-300  rounded-lg">
       <form
         onSubmit={form.onSubmit(() =>
           handleLogin(form.values.email, form.values.password)

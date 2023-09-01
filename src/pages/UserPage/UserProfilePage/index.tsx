@@ -7,12 +7,13 @@ import UserChangePassword from "../UserChangePassword";
 
 type Props = {};
 
-const useStyles = createStyles(() => ({
+const useStyles = createStyles((theme) => ({
   root: {
     padding: "1px 0",
     margin: "20px",
     borderRadius: "20px",
-    backgroundColor: "#fff",
+    backgroundColor:
+      theme.colorScheme === "dark" ? theme.colors.dark[5] : "#fff",
     boxShadow:
       "rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
   },
