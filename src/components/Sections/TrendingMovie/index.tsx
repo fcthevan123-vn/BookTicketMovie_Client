@@ -165,7 +165,7 @@ export function TrendingMovie() {
                 className={classes.control}
                 mt={40}
               >
-                Book Now
+                Đặt vé ngay
               </Button>
             </div>
           </div>
@@ -198,7 +198,7 @@ export function TrendingMovie() {
                   >
                     <AiFillFire size="1.125rem" />
                   </ActionIcon>
-                  <p>Trending Movie</p>
+                  <p>Phim phổ biến</p>
                 </div>
               </Text>
             }

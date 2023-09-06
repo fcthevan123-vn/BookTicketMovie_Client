@@ -15,7 +15,7 @@ import {
   Stack,
   useMantineColorScheme,
 } from "@mantine/core";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuthenticate } from "../../../hooks";
 import {
   AiOutlineCheckCircle,
@@ -32,6 +32,8 @@ import { userSlice } from "../../../redux/reducers";
 import { notifications } from "@mantine/notifications";
 import { SpotlightProvider, spotlight } from "@mantine/spotlight";
 import type { SpotlightAction } from "@mantine/spotlight";
+import { IconSwitchHorizontal } from "@tabler/icons-react";
+import { modals } from "@mantine/modals";
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -132,6 +134,12 @@ const useStyles = createStyles((theme) => ({
         variant: "filled",
         color: theme.primaryColor,
       }).background,
+
+      "&::before": {
+        height: "2.5px !important",
+        background:
+          theme.colorScheme == "dark" ? theme.colors.dark[0] : theme.white,
+      },
     },
   },
 }));
@@ -146,6 +154,7 @@ export default function DefaultHeader() {
   const dark = colorScheme === "dark";
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const data = {
     user: {
@@ -155,7 +164,21 @@ export default function DefaultHeader() {
       image:
         "https://images.unsplash.com/photo-1692005561659-cdba32d1e4a1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80",
     },
-    tabs: ["Home", "Movie", "Stream"],
+
+    tabs: [
+      {
+        label: "Trang chủ",
+        link: "home",
+      },
+      {
+        label: "Phim",
+        link: "movie",
+      },
+      {
+        label: "Xem online",
+        link: "stream",
+      },
+    ],
   };
 
   const handleLogout = async () => {
@@ -185,6 +208,28 @@ export default function DefaultHeader() {
     }
   };
 
+  const openSwitchAdmin = () =>
+    modals.openConfirmModal({
+      title: <p className="text-blue-500 font-medium">Switch to admin page</p>,
+      centered: true,
+      children: <p>Are you sure to switch to admin page?</p>,
+      zIndex: 1600,
+      labels: {
+        confirm: "Confirm",
+        cancel: "Cancel",
+      },
+      confirmProps: { color: "blue", radius: "lg" },
+      cancelProps: { color: "gray", radius: "lg" },
+      overlayProps: {
+        color: "#141517",
+        opacity: 0.55,
+        blur: 3,
+      },
+      radius: "lg",
+      onCancel: () => console.log("Cancel"),
+      onConfirm: () => navigate(`/admin/${dataUser.id}/dashboard`),
+    });
+
   const actions: SpotlightAction[] = [
     {
       title: "Home",
@@ -208,7 +253,9 @@ export default function DefaultHeader() {
 
   useEffect(() => {
     const pathName = location.pathname;
-    const modifiedPath = pathName.charAt(1).toUpperCase() + pathName.slice(2);
+
+    const modifiedPath = pathName.slice(1);
+    console.log(modifiedPath);
     setDefaultValueTable(modifiedPath);
   }, [location]);
 
@@ -222,7 +269,6 @@ export default function DefaultHeader() {
             size="lg"
             radius="lg"
             sx={(theme) => ({
-              // subscribe to color scheme changes
               backgroundColor:
                 theme.colorScheme === "dark"
                   ? theme.colors.dark[4]
@@ -326,7 +372,8 @@ export default function DefaultHeader() {
 
                 {data.user.type == "admin" ? (
                   <Menu.Item
-                    icon={<AiOutlineCheckCircle size="0.9rem" stroke={1.5} />}
+                    onClick={openSwitchAdmin}
+                    icon={<IconSwitchHorizontal size="0.9rem" stroke={1.5} />}
                   >
                     Switch to admin
                   </Menu.Item>
@@ -383,7 +430,7 @@ export default function DefaultHeader() {
       <Container size="lg">
         <Group position="apart" spacing="xs">
           <Tabs
-            value={defaultValueTable ? defaultValueTable : "Home"}
+            value={defaultValueTable ? defaultValueTable : "home"}
             variant="outline"
             classNames={{
               tabsList: classes.tabsList,
@@ -392,9 +439,9 @@ export default function DefaultHeader() {
           >
             <Tabs.List>
               {data.tabs.map((tab) => (
-                <Link to={`/${tab.toLowerCase()}`} key={tab}>
-                  <Tabs.Tab value={tab} key={tab}>
-                    {tab}
+                <Link to={`/${tab.link}`} key={tab.link}>
+                  <Tabs.Tab value={tab.link} key={tab.label}>
+                    {tab.label}
                   </Tabs.Tab>
                 </Link>
               ))}

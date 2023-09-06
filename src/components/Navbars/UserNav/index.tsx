@@ -74,9 +74,9 @@ const useStyles = createStyles((theme) => ({
     alignItems: "center",
     textDecoration: "none",
     fontSize: theme.fontSizes.sm,
-    color: theme.white,
+    color: theme.colorScheme === "dark" ? theme.colors.gray[3] : theme.white,
     padding: `${theme.spacing.xs} ${theme.spacing.sm}`,
-    borderRadius: theme.radius.sm,
+    borderRadius: theme.radius.md,
     fontWeight: 500,
     cursor: "pointer",
 

@@ -4,9 +4,9 @@ const HomePage = lazy(() => import("../pages/HomePage"));
 const MoviePage = lazy(() => import("../pages/MoviePage"));
 const RegisterPage = lazy(() => import("../pages/RegisterPage"));
 const ErrorPage = lazy(() => import("../pages/ErrorPage"));
-const UserProfilePage = lazy(() => import("../pages/UserPage/UserProfilePage"));
-
-import { DefaultLayout, UserLayout } from "../layouts";
+const UserPage = lazy(() => import("../pages/UserPage"));
+const AdminPage = lazy(() => import("../pages/AdminPage"));
+import { AdminLayout, DefaultLayout, UserLayout } from "../layouts";
 
 type LayoutComponent = FC<{ children: ReactNode }>;
 
@@ -48,20 +48,35 @@ const router: IRouter[] = [
     path: "/user/:id/profile",
     isProtected: true,
     layout: UserLayout,
-    element: UserProfilePage,
+    element: UserPage,
   },
 
   {
     path: "/user/:id/change-password",
     isProtected: true,
     layout: UserLayout,
-    element: UserProfilePage,
+    element: UserPage,
   },
   {
     path: "*",
     isProtected: true,
     layout: "None",
     element: ErrorPage,
+  },
+
+  // admin
+  {
+    path: "/admin/:id/dashboard",
+    isProtected: true,
+    layout: AdminLayout,
+    element: AdminPage,
+  },
+
+  {
+    path: "/admin/:id/add-a-movie",
+    isProtected: true,
+    layout: AdminLayout,
+    element: AdminPage,
   },
 ];
 

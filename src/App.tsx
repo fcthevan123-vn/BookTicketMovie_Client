@@ -10,8 +10,6 @@ import {
 } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 import ProtectedRoute from "./components/ProtectRoute";
-import ProviderGetProfile from "./components/ProviderGetProfile";
-import { SpotlightProvider } from "@mantine/spotlight";
 import LoaderPage from "./components/Loaders/LoaderPage";
 import { ModalsProvider } from "@mantine/modals";
 
@@ -80,7 +78,7 @@ function App() {
             globalStyles: () => ({
               "*, *::before, *::after": {
                 boxSizing: "border-box",
-                fontFamily: "Poppins",
+                fontFamily: "Be Vietnam Pro",
               },
             }),
             colorScheme,

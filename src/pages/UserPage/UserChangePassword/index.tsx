@@ -45,9 +45,9 @@ const UserChangePassword = () => {
         }
       },
       confirmPassword: (value, values) =>
-        value == values.newPassword ? null : "Confirm password does not match",
+        value === values.newPassword ? null : "Confirm password does not match",
     },
-    validateInputOnChange: true,
+    // validateInputOnChange: true,
   });
 
   async function handleSubmit(_data: object) {

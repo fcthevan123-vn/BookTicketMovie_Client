@@ -1,9 +1,9 @@
 import { createStyles } from "@mantine/core";
-import UserProfileTop from "./UserProfileTop";
-import UserProfileInformation from "./UserProfileInformation";
 import { useLocation } from "react-router-dom";
 import { Fragment } from "react";
-import UserChangePassword from "../UserChangePassword";
+import DashboardPage from "./DashboardPage";
+import AddMoviePage from "./AddMoviePage";
+import { useEffect } from "react";
 
 type Props = {};
 
@@ -21,36 +21,27 @@ const useStyles = createStyles((theme) => ({
 
 const allPath = [
   {
-    urlInclude: "profile",
+    urlInclude: "dashboard",
     jsx: (
-      <>
-        <div>
-          <UserProfileTop></UserProfileTop>
-        </div>
-        <div className="sm:mt-36 mt-40">
-          <UserProfileInformation></UserProfileInformation>
-        </div>
-      </>
+      <div>
+        <DashboardPage></DashboardPage>
+      </div>
     ),
   },
   {
-    urlInclude: "password",
-    jsx: (
-      <>
-        <div>
-          <UserChangePassword></UserChangePassword>
-        </div>
-      </>
-    ),
+    urlInclude: "addamovie",
+    jsx: <AddMoviePage></AddMoviePage>,
   },
 ];
 
-const UserProfilePage = (props: Props) => {
+const AdminPage = (props: Props) => {
   const { classes } = useStyles();
   const location = useLocation();
+  const urlConverted = location.pathname.replace(/-/g, "");
+  console.log(urlConverted);
 
   const element = allPath.map((path) => {
-    if (location.pathname.includes(path.urlInclude) === true) {
+    if (urlConverted.includes(path.urlInclude) === true) {
       return <Fragment key={path.urlInclude}>{path.jsx}</Fragment>;
     }
   });
@@ -58,4 +49,4 @@ const UserProfilePage = (props: Props) => {
   return <div className={classes.root}>{element}</div>;
 };
 
-export default UserProfilePage;
+export default AdminPage;

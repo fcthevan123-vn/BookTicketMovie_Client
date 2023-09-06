@@ -33,24 +33,27 @@ function FormRegister() {
     // functions will be used to validate values at corresponding key
     validate: {
       fullName: (value) =>
-        value.length < 2 ? "Name must have at least 2 letters" : null,
-      email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
+        value.length < 2 ? "Tên phải có ít nhất 2 chữ cái" : null,
+      email: (value) => (/^\S+@\S+$/.test(value) ? null : "Email không hợp lệ"),
       address: (value) =>
-        value.length < 5 ? "Address must have at least 5 letters" : null,
+        value.length < 5 ? "Địa chỉ phải có ít nhất 5 chữ cái" : null,
       password: (value) =>
         /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/.test(
           value
         )
           ? null
-          : "Password invalid",
+          : "Mật khẩu không hợp lệ",
       confirmPassword: (value, values) =>
-        value == values.password ? null : "Confirm password does not match",
+        value == values.password ? null : "Mật khẩu nhập lại không khớp",
       phone: (value) =>
-        /(84|0[3|5|7|8|9])+([0-9]{8})\b/g.test(value) ? null : "Phone invalid",
-      sex: (value) => (value.length == 0 ? "Please select your gender" : null),
+        /(84|0[3|5|7|8|9])+([0-9]{8})\b/g.test(value)
+          ? null
+          : "Số điện thoại không hợp lệ",
+      sex: (value) =>
+        value.length == 0 ? "Vui lòng chọn giới tính của bạn" : null,
       age: (value) =>
         value.length == 0 || parseInt(value) < 8
-          ? "Age must larger than 8"
+          ? "Độ tuổi phải lớn hơn 8"
           : null,
     },
     validateInputOnChange: true,
@@ -102,12 +105,12 @@ function FormRegister() {
   return (
     <div className="lg:mx-8 sm:mx-5 py-3 ">
       <form onSubmit={form.onSubmit(() => handleSubmit(form.values))}>
-        <Input.Wrapper id="userName" withAsterisk label="Name:" mt="sm">
+        <Input.Wrapper id="userName" withAsterisk label="Họ và tên:" mt="sm">
           <Input
             className="border-b-2 px-3 border-sky-300"
             variant="unstyled"
             id="userName"
-            placeholder="Name"
+            placeholder="Full name"
             value={form.values.fullName}
             onChange={(e) => form.setFieldValue("fullName", e.target.value)}
           />
@@ -116,7 +119,7 @@ function FormRegister() {
           <p className="error-form-auth">{form.errors.fullName}</p>
         ) : null}
 
-        <Input.Wrapper id="address" withAsterisk label="Address:" mt="sm">
+        <Input.Wrapper id="address" withAsterisk label="Địa chỉ:" mt="sm">
           <Input
             className="border-b-2 px-3 border-sky-300"
             variant="unstyled"
@@ -146,7 +149,7 @@ function FormRegister() {
 
         <div className="flex justify-between sm:gap-10 gap-6">
           <div className="w-1/2">
-            <Input.Wrapper id="age" withAsterisk label="Age:" mt="sm">
+            <Input.Wrapper id="age" withAsterisk label="Tuổi:" mt="sm">
               <TextInput
                 type="number"
                 id="age"
@@ -164,7 +167,12 @@ function FormRegister() {
           </div>
 
           <div className="w-1/2">
-            <Input.Wrapper id="phone" withAsterisk label="Phone:" mt="sm">
+            <Input.Wrapper
+              id="phone"
+              withAsterisk
+              label="Số điện thoại:"
+              mt="sm"
+            >
               <Input
                 className="border-b-2 px-3 border-sky-300"
                 variant="unstyled"
@@ -183,9 +191,9 @@ function FormRegister() {
         <Input.Wrapper
           id="password"
           withAsterisk
-          label="Password:"
+          label="Mật khẩu:"
           mt="sm"
-          description="Password minimum eight characters, at least one letter, one number and one special character"
+          description="Mật khẩu tối thiểu 8 ký tự, ít nhất 1 chữ cái, 1 số và 1 ký tự đặc biệt"
         >
           <PasswordInput
             className="border-b-2  border-sky-300"
@@ -204,7 +212,7 @@ function FormRegister() {
         <Input.Wrapper
           id="confirmPassword"
           withAsterisk
-          label="Confirm Password:"
+          label="Nhập lại mật khẩu:"
           mt="sm"
         >
           <PasswordInput
@@ -225,14 +233,14 @@ function FormRegister() {
         <Radio.Group
           mt={"sm"}
           name="sex"
-          label="Select your gender"
+          label="Giới tính"
           withAsterisk
           value={form.values.sex}
           onChange={(e) => form.setFieldValue("sex", e)}
         >
           <Group mt="xs">
-            <Radio value="0" label="Male" />
-            <Radio value="1" label="Female" />
+            <Radio value="0" label="Nam" />
+            <Radio value="1" label="Nữ" />
           </Group>
         </Radio.Group>
         {form.errors.sex ? (
@@ -250,7 +258,7 @@ function FormRegister() {
             variant="gradient"
             gradient={{ from: "indigo", to: "cyan" }}
           >
-            Sign Up
+            Đăng ký ngay
           </Button>
         </div>
       </form>

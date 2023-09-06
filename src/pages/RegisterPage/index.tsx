@@ -22,18 +22,6 @@ function RegisterPage() {
       {/* <div className="lg:col-span-3  md:col-span-2	sm:col-span-2 hidden boxshadow-custom rounded-l-xl relative bg-gradient-to-r from-cyan-500 to-blue-500 sm:flex flex-col items-center justify-center ">
        */}
       <div className="lg:col-span-3  md:col-span-2 	sm:col-span-2 hidden boxshadow-custom rounded-l-xl relative sm:flex flex-col items-center justify-center ">
-        {/* <div className="absolute z-10 ">
-          <p className="text-center mx-3 text-4xl mt-3 italic text-white font-medium">
-            Welcome to Show Booking!
-          </p>
-
-          <p className="text-lg mx-3 italic indent-8 text-white mt-2 text-justify px-3 ">
-            Register an account now to experience the excitement of convenient
-            movie ticket booking. Share your passion for movies, discover
-            captivating films, and indulge in fantastic entertainment
-            experiences right here.
-          </p>
-        </div> */}
         <div className="h-full rounded-l-xl  overflow-hidden">
           <BackgroundImage
             src="https://images.unsplash.com/photo-1581250505021-88929ce95b5d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80"
@@ -42,14 +30,14 @@ function RegisterPage() {
           >
             <div className=" flex items-center backdrop-blur-sm	 flex-col justify-center h-full ">
               <p className="text-center mx-3 text-4xl mt-3 italic text-white font-medium">
-                Welcome to Show Booking!
+                Chào mừng đến với Show Booking!
               </p>
 
               <p className="text-lg mx-3 italic indent-8 text-white mt-2 text-justify px-3 ">
-                Register an account now to experience the excitement of
-                convenient movie ticket booking. Share your passion for movies,
-                discover captivating films, and indulge in fantastic
-                entertainment experiences right here.
+                Hãy đăng ký tài khoản ngay để trải nghiệm sự thú vị của đặt vé
+                xem phim thuận tiện. Chia sẻ niềm đam mê phim ảnh của bạn, khám
+                phá những bộ phim hấp dẫn và thưởng thức những điều tuyệt vời
+                trải nghiệm giải trí ngay tại đây.
               </p>
             </div>
           </BackgroundImage>
@@ -64,10 +52,10 @@ function RegisterPage() {
         >
           <Tabs.List className="float-right pr-5 absolute z-10 right-4 ">
             <Tabs.Tab value="Login" icon={<AiOutlineUser size="0.8rem" />}>
-              Login
+              Đăng nhập
             </Tabs.Tab>
             <Tabs.Tab value="SignUp" icon={<IoCreateOutline size="0.8rem" />}>
-              Sign Up
+              Đăng ký
             </Tabs.Tab>
           </Tabs.List>
 
@@ -90,7 +78,7 @@ function RegisterPage() {
                 "block text-center mx-3 text-2xl mb-14 italic font-medium"
               )}
             >
-              Log in to your account
+              Đăng nhập ngay
             </p>
             <FormLogin></FormLogin>
             <p
@@ -99,7 +87,7 @@ function RegisterPage() {
                 "block text-center mx-1 sm:mx-8 text-2xl mt-14 italic  font-medium"
               )}
             >
-              And get ready to explore a world of online movie ticket booking.
+              Và sẵn sàng khám phá thế giới đặt vé xem phim trực tuyến.
             </p>
           </Tabs.Panel>
         </Tabs>

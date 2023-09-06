@@ -1,21 +1,11 @@
-import {
-  Input,
-  Radio,
-  Group,
-  Button,
-  PasswordInput,
-  Checkbox,
-} from "@mantine/core";
+import { Input, Button, PasswordInput, Checkbox } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { notifications } from "@mantine/notifications";
-import { AxiosError } from "axios";
 import { useState } from "react";
-import { AiOutlineCheckCircle } from "react-icons/ai";
-import { BiErrorCircle } from "react-icons/bi";
 import { authenticateServices, userServices } from "../../../services";
 import { useNavigate } from "react-router-dom";
 import { userSlice } from "../../../redux/reducers";
 import { useDispatch } from "react-redux";
+import { loadingApi } from "../../../untils/loadingApi";
 
 function FormLogin() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -58,58 +48,67 @@ function FormLogin() {
 
   async function handleLogin(email: string, password: string) {
     setIsLoading(true);
-    notifications.show({
-      id: "load-data",
-      loading: true,
-      radius: "md",
-      title: "Login...",
-      message: "It can take some minutes",
-      autoClose: false,
-      withCloseButton: false,
-      withBorder: true,
-    });
-    try {
-      const res = await authenticateServices.handleLogin(email, password);
-      if (res.statusCode === 0) {
-        notifications.update({
-          id: "load-data",
-          radius: "lg",
-          color: "teal",
-          title: <p className="text-teal-600">Success</p>,
-          message: res.message,
-          withBorder: true,
-          icon: <AiOutlineCheckCircle size="1.2rem" />,
-          autoClose: 2000,
-        });
-        // form.reset();
-        getProfile();
-      } else {
-        notifications.update({
-          id: "load-data",
-          radius: "lg",
-          color: "red",
-          title: <p className="text-red-700">Error</p>,
-          message: res?.message,
-          withBorder: true,
-          icon: <BiErrorCircle size="1.2rem" />,
-          autoClose: 2000,
-        });
-      }
-      setIsLoading(false);
-    } catch (error) {
-      const err = error as AxiosError;
-      notifications.update({
-        id: "load-data",
-        radius: "md",
-        color: "red",
-        title: <p className="text-red-700">Error</p>,
-        message: err.response?.data?.message,
-        withBorder: true,
-        icon: <BiErrorCircle size="1.2rem" />,
-        autoClose: 2000,
-      });
-      setIsLoading(false);
+    // notifications.show({
+    //   id: "load-data",
+    //   loading: true,
+    //   radius: "md",
+    //   title: "Login...",
+    //   message: "It can take some minutes",
+    //   autoClose: false,
+    //   withCloseButton: false,
+    //   withBorder: true,
+    // });
+    // try {
+    //   const res = await authenticateServices.handleLogin(email, password);
+    //   if (res.statusCode === 0) {
+    //     notifications.update({
+    //       id: "load-data",
+    //       radius: "lg",
+    //       color: "teal",
+    //       title: <p className="text-teal-600">Success</p>,
+    //       message: res.message,
+    //       withBorder: true,
+    //       icon: <AiOutlineCheckCircle size="1.2rem" />,
+    //       autoClose: 2000,
+    //     });
+    //     // form.reset();
+    //     getProfile();
+    //   } else {
+    //     notifications.update({
+    //       id: "load-data",
+    //       radius: "lg",
+    //       color: "red",
+    //       title: <p className="text-red-700">Error</p>,
+    //       message: res?.message,
+    //       withBorder: true,
+    //       icon: <BiErrorCircle size="1.2rem" />,
+    //       autoClose: 2000,
+    //     });
+    //   }
+    //   setIsLoading(false);
+    // } catch (error) {
+    //   const err = error as AxiosError;
+    //   notifications.update({
+    //     id: "load-data",
+    //     radius: "md",
+    //     color: "red",
+    //     title: <p className="text-red-700">Error</p>,
+    //     message: err.response?.data?.message,
+    //     withBorder: true,
+    //     icon: <BiErrorCircle size="1.2rem" />,
+    //     autoClose: 2000,
+    //   });
+    //   setIsLoading(false);
+    // }
+
+    const api = authenticateServices.handleLogin(email, password);
+    const res = await loadingApi(api, "Đăng nhập");
+    if (res === true) {
+      getProfile();
+      // console.log("thanh cong");
     }
+    setIsLoading(false);
+    return res;
   }
 
   return (
@@ -119,7 +118,7 @@ function FormLogin() {
           handleLogin(form.values.email, form.values.password)
         )}
       >
-        <Input.Wrapper id="email" withAsterisk label="Email:" mt="sm">
+        <Input.Wrapper id="email" withAsterisk label="Tài khoản:" mt="sm">
           <Input
             className="border-b-2 px-4 border-sky-300"
             variant="unstyled"
@@ -133,7 +132,7 @@ function FormLogin() {
           <p className="error-form-auth">{form.errors.email}</p>
         ) : null}
 
-        <Input.Wrapper id="password" withAsterisk label="Password:" mt="sm">
+        <Input.Wrapper id="password" withAsterisk label="Mật khẩu:" mt="sm">
           <PasswordInput
             className="border-b-2 px-1 border-sky-300"
             variant="unstyled"
@@ -147,7 +146,7 @@ function FormLogin() {
           <p className="error-form-auth">{form.errors.password}</p>
         ) : null}
 
-        <Checkbox label="Remember me" radius="sm" className="mt-6" />
+        <Checkbox label="Nhớ tài khoản" radius="sm" className="mt-6" />
 
         <div className="flex justify-center">
           <Button
@@ -160,7 +159,7 @@ function FormLogin() {
             loading={isLoading}
             gradient={{ from: "teal", to: "blue", deg: 60 }}
           >
-            Login
+            Đăng nhập
           </Button>
         </div>
       </form>

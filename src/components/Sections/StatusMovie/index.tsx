@@ -109,7 +109,7 @@ export function StatusMovie() {
                 label: (
                   <Center>
                     <RiSlideshow2Line size="1.125rem" />
-                    <Box ml={10}>Now Showing</Box>
+                    <Box ml={10}>Phim đang chiếu</Box>
                   </Center>
                 ),
               },
@@ -118,7 +118,7 @@ export function StatusMovie() {
                 label: (
                   <Center>
                     <BiRocket size="1.125rem" />
-                    <Box ml={10}>Coming Soon</Box>
+                    <Box ml={10}>Phim sắp chiếu</Box>
                   </Center>
                 ),
               },
