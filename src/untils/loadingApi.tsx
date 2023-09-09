@@ -10,8 +10,9 @@ export async function loadingApi(api: Promise<ResData>, actionTitle: string) {
     loading: true,
     radius: "lg",
     title: "Loading...",
-    message: "It can take some minutes",
+    message: "Quá trình này có thể mất vài phút",
     withBorder: true,
+    autoClose: false,
     styles: () => ({
       root: {
         "&::before": { width: "8px" },
@@ -26,18 +27,20 @@ export async function loadingApi(api: Promise<ResData>, actionTitle: string) {
         title: actionTitle,
         message: res.message || "Thực hiện thành công",
         withBorder: true,
+        autoClose: 5000,
         styles: () => ({
           root: {
             "&::before": { width: "7px" },
           },
         }),
         icon: <IconChecks size="1rem" />,
-        color: "blue",
+        color: "green",
         radius: "lg",
       });
     }
     return true;
   } catch (err) {
+    console.log("err", err);
     if (axios.isAxiosError(err)) {
       if (err.response) {
         const errorMsg = err.response.data.message;
@@ -46,6 +49,7 @@ export async function loadingApi(api: Promise<ResData>, actionTitle: string) {
           title: actionTitle,
           message: errorMsg || "Đã có lỗi xảy ra",
           withBorder: true,
+          autoClose: 5000,
           styles: () => ({
             root: {
               "&::before": { width: "7px" },
@@ -61,6 +65,7 @@ export async function loadingApi(api: Promise<ResData>, actionTitle: string) {
           title: actionTitle,
           message: "Đã có lỗi từ phía server",
           withBorder: true,
+          autoClose: 5000,
           styles: () => ({
             root: {
               "&::before": { width: "7px" },
@@ -76,6 +81,7 @@ export async function loadingApi(api: Promise<ResData>, actionTitle: string) {
       const errorMsg = errorWithMsg.message || "Lỗi không xác định";
       notifications.update({
         id: "load-data",
+        autoClose: 5000,
         title: actionTitle,
         message: errorMsg,
         withBorder: true,

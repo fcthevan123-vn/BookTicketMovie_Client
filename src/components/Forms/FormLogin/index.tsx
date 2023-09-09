@@ -48,64 +48,10 @@ function FormLogin() {
 
   async function handleLogin(email: string, password: string) {
     setIsLoading(true);
-    // notifications.show({
-    //   id: "load-data",
-    //   loading: true,
-    //   radius: "md",
-    //   title: "Login...",
-    //   message: "It can take some minutes",
-    //   autoClose: false,
-    //   withCloseButton: false,
-    //   withBorder: true,
-    // });
-    // try {
-    //   const res = await authenticateServices.handleLogin(email, password);
-    //   if (res.statusCode === 0) {
-    //     notifications.update({
-    //       id: "load-data",
-    //       radius: "lg",
-    //       color: "teal",
-    //       title: <p className="text-teal-600">Success</p>,
-    //       message: res.message,
-    //       withBorder: true,
-    //       icon: <AiOutlineCheckCircle size="1.2rem" />,
-    //       autoClose: 2000,
-    //     });
-    //     // form.reset();
-    //     getProfile();
-    //   } else {
-    //     notifications.update({
-    //       id: "load-data",
-    //       radius: "lg",
-    //       color: "red",
-    //       title: <p className="text-red-700">Error</p>,
-    //       message: res?.message,
-    //       withBorder: true,
-    //       icon: <BiErrorCircle size="1.2rem" />,
-    //       autoClose: 2000,
-    //     });
-    //   }
-    //   setIsLoading(false);
-    // } catch (error) {
-    //   const err = error as AxiosError;
-    //   notifications.update({
-    //     id: "load-data",
-    //     radius: "md",
-    //     color: "red",
-    //     title: <p className="text-red-700">Error</p>,
-    //     message: err.response?.data?.message,
-    //     withBorder: true,
-    //     icon: <BiErrorCircle size="1.2rem" />,
-    //     autoClose: 2000,
-    //   });
-    //   setIsLoading(false);
-    // }
-
     const api = authenticateServices.handleLogin(email, password);
     const res = await loadingApi(api, "Đăng nhập");
     if (res === true) {
       getProfile();
-      // console.log("thanh cong");
     }
     setIsLoading(false);
     return res;
