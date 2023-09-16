@@ -15,6 +15,7 @@ interface IRouter {
   layout: LayoutComponent | string;
   element: FC;
   isProtected: boolean | null;
+  isAdmin?: boolean | null;
 }
 
 const router: IRouter[] = [
@@ -63,18 +64,33 @@ const router: IRouter[] = [
     layout: "None",
     element: ErrorPage,
   },
+  {
+    path: "/error",
+    isProtected: true,
+    layout: "None",
+    element: ErrorPage,
+  },
 
   // admin
   {
-    path: "/admin/:id/dashboard",
+    path: "/admin/dashboard",
     isProtected: true,
+    isAdmin: true,
     layout: AdminLayout,
     element: AdminPage,
   },
 
   {
-    path: "/admin/:id/add-a-movie",
+    path: "/admin/movie/add-a-movie",
     isProtected: true,
+    isAdmin: true,
+    layout: AdminLayout,
+    element: AdminPage,
+  },
+  {
+    path: "/admin/movie/all-movies",
+    isProtected: true,
+    isAdmin: true,
     layout: AdminLayout,
     element: AdminPage,
   },

@@ -1,14 +1,18 @@
-import { Button, TextInput, Textarea, MultiSelect } from "@mantine/core";
-import { useState } from "react";
+import {
+  Button,
+  TextInput,
+  Textarea,
+  MultiSelect,
+  Select,
+} from "@mantine/core";
+import { useEffect, useState } from "react";
 import { UploadImage } from "../../../components/UploadImage";
 import { DateInput } from "@mantine/dates";
+import { useForm } from "@mantine/form";
 import moment from "moment";
 import { movieServices } from "../../../services";
 import { loadingApi } from "../../../untils/loadingApi";
-import {
-  MovieFormProvider,
-  useMovieForm,
-} from "../../../components/Forms/FormProvider/FormProvider";
+import { MovieFormProvider, useMovieForm } from "../FormProvider/FormProvider";
 
 const dataGenreMovie = [
   "Hành động",
@@ -41,7 +45,10 @@ const dataGenreMovie = [
   "Thử nghiệm",
   "Không tiếng",
   "Parody",
-];
+].map((item) => ({
+  value: item,
+  label: item,
+}));
 
 const dataSubtitle = [
   "Việt Nam",
@@ -57,7 +64,10 @@ const dataSubtitle = [
   "Nga",
   "Thái Lan",
   "Mỹ",
-];
+].map((item) => ({
+  value: item,
+  label: item,
+}));
 
 // interface dataSelectProps {
 //   value: string;
@@ -65,11 +75,35 @@ const dataSubtitle = [
 //   disabled?: boolean;
 // }
 
-const AddMoviePage = () => {
+interface MovieData {
+  id: string;
+  title: string;
+  description: string;
+  directors: string[];
+  actors: string[];
+  language: string;
+  country: string;
+  subtitle: string;
+  releaseDate: string;
+  endDate: string;
+  images: { imageName: string; imageUrl: string }[];
+  genre: string[];
+  duration: string;
+  ageRequire: string;
+  price: string;
+  countBooked: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface FormEditMovieProps {
+  dataMovie: MovieData;
+}
+
+const FormEditMovie = ({ dataMovie }: FormEditMovieProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [searchValue, onSearchChange] = useState("");
   const [searchValueSubtitle, onSearchChangeSubtitle] = useState("");
-  const [isResetImg, setIsResetImg] = useState(false);
 
   const [dataActors, setDataActors] = useState([
     {
@@ -87,40 +121,27 @@ const AddMoviePage = () => {
     },
   ]);
 
-  const [dataLanguage, setDataLanguage] = useState(
-    dataSubtitle.map((data) => {
-      return {
-        value: data,
-        label: data,
-      };
-    })
-  );
+  const [dataLanguage, setDataLanguage] = useState(dataSubtitle);
 
-  const [dataCountry, setDataCountry] = useState(
-    dataSubtitle.map((data) => {
-      return {
-        value: data,
-        label: data,
-      };
-    })
-  );
+  const [dataCountry, setDataCountry] = useState(dataSubtitle);
 
   const form = useMovieForm({
     initialValues: {
-      title: "",
-      description: "",
-      directors: [],
-      actors: [],
-      ageRequire: "",
-      releaseDate: new Date(Date.now() + 3600 * 1000 * 24),
-      endDate: new Date(Date.now() + 3600 * 1000 * 24 * 2),
-      duration: "",
+      title: dataMovie.title,
+      description: dataMovie.description,
+      directors: [""],
+      actors: [""],
+      ageRequire: dataMovie.ageRequire,
+      releaseDate: new Date(dataMovie.releaseDate),
+      endDate: new Date(dataMovie.endDate),
+      duration: dataMovie.duration,
       language: "",
       country: "",
       subtitle: "",
-      price: "",
-      genre: [],
+      price: dataMovie.price,
+      genre: [""],
       images: [],
+      imagesDelete: [],
     },
 
     // functions will be used to validate values at corresponding key
@@ -180,28 +201,54 @@ const AddMoviePage = () => {
     // validateInputOnChange: true,
   });
 
-  async function handleSubmit(dataForm: typeof form.values) {
+  async function handleSubmit(dataForm: MovieData) {
     setIsLoading(true);
-    const api = movieServices.createMovie(dataForm);
-    const res = await loadingApi(api, "Tạo phim mới");
-    setIsLoading(false);
-    if (res) {
-      setIsResetImg(true);
-      form.reset();
-    }
-
-    return res;
+    console.log("dataForm: ", dataForm);
   }
 
-  return (
-    <div className="h-full">
-      <MovieFormProvider form={form}>
-        {/* {console.log("value", form.values.actors)} */}
-        <form onSubmit={form.onSubmit(() => handleSubmit(form.values))}>
-          <p className="text-xl font-medium text-sky-500 ms-6 mt-6">
-            Thêm phim mới
-          </p>
+  useEffect(() => {
+    if (dataMovie) {
+      const directorsExisted = dataMovie.directors.map((director) => ({
+        value: director,
+        disabled: false,
+        label: director,
+      }));
 
+      const actorsExisted = dataMovie.actors.map((actor) => ({
+        value: actor,
+        disabled: false,
+        label: actor,
+      }));
+      setDataDirectors((prev) => [...prev, ...directorsExisted]);
+      setDataActors((prev) => [...prev, ...actorsExisted]);
+    }
+  }, [dataMovie]);
+
+  useEffect(() => {
+    if (dataMovie) {
+      form.setFieldValue("language", dataMovie.language);
+      form.setFieldValue("country", dataMovie.country);
+      form.setFieldValue("subtitle", dataMovie.subtitle);
+      form.setFieldValue(
+        "directors",
+        dataMovie.directors.map((g) => g)
+      );
+      form.setFieldValue(
+        "actors",
+        dataMovie.actors.map((ac) => ac)
+      );
+      form.setFieldValue(
+        "genre",
+        dataMovie.genre.map((g) => g)
+      );
+    }
+  }, [dataMovie]);
+
+  return (
+    <MovieFormProvider form={form}>
+      <div className="h-full">
+        {/* {console.log("form img delete", form.values.imagesDelete)} */}
+        <form onSubmit={form.onSubmit(() => handleSubmit(form.values))}>
           <div className="flex justify-center p-5 gap-8">
             <div className="w-1/2 ">
               <div>
@@ -317,7 +364,7 @@ const AddMoviePage = () => {
             <div className="w-1/2 ">
               <div className="flex flex-col gap-3">
                 <div className="flex gap-2">
-                  <MultiSelect
+                  <Select
                     label="Ngôn ngữ"
                     className="w-1/2"
                     data={dataLanguage}
@@ -325,7 +372,6 @@ const AddMoviePage = () => {
                     searchable
                     radius="md"
                     withAsterisk
-                    maxSelectedValues={1}
                     {...form.getInputProps("language")}
                     clearable
                     creatable
@@ -340,7 +386,7 @@ const AddMoviePage = () => {
                     }}
                   />
 
-                  <MultiSelect
+                  <Select
                     label="Quốc gia"
                     className="w-1/2"
                     data={dataCountry}
@@ -348,7 +394,6 @@ const AddMoviePage = () => {
                     searchable
                     radius="md"
                     withAsterisk
-                    maxSelectedValues={1}
                     {...form.getInputProps("country")}
                     clearable
                     creatable
@@ -364,7 +409,7 @@ const AddMoviePage = () => {
                   />
                 </div>
 
-                <MultiSelect
+                <Select
                   data={dataSubtitle}
                   label="Phụ đề"
                   placeholder="Chọn phụ đề"
@@ -374,7 +419,6 @@ const AddMoviePage = () => {
                   {...form.getInputProps("subtitle")}
                   clearable
                   radius="md"
-                  maxSelectedValues={1}
                 />
 
                 <MultiSelect
@@ -407,8 +451,9 @@ const AddMoviePage = () => {
 
                 <div className="w-full">
                   <UploadImage
-                    isResetImg={isResetImg}
-                    setIsResetImg={setIsResetImg}
+                    setIsResetImg={() => undefined}
+                    // form={form}
+                    images={dataMovie.images}
                   ></UploadImage>
                   {form.errors.images ? (
                     <p className="error-form-auth">{form.errors.images}</p>
@@ -419,25 +464,22 @@ const AddMoviePage = () => {
           </div>
           <div className="flex gap-2 w-1/2  px-5 py-5">
             <Button loading={isLoading} radius="md" w={"50%"} type="submit">
-              Lưu
+              Lưu thay đổi
             </Button>
             <Button
               radius="md"
               w={"50%"}
               type="reset"
+              color="orange"
               loading={isLoading}
-              onClick={() => {
-                setIsResetImg(true);
-                form.reset();
-              }}
             >
-              Xoá tất cả
+              Huỷ
             </Button>
           </div>
         </form>
-      </MovieFormProvider>
-    </div>
+      </div>
+    </MovieFormProvider>
   );
 };
 
-export default AddMoviePage;
+export default FormEditMovie;

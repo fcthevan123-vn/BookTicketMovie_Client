@@ -1,9 +1,21 @@
 import axios from "../axios";
 
-interface dataSelectProps {
-  value: string;
-  label: string;
-  disabled?: boolean;
+interface MovieFormValuesProps {
+  title: string;
+  description: string;
+  directors: string[];
+  actors: string[];
+  ageRequire: string;
+  releaseDate: Date | string;
+  endDate: Date | string;
+  duration: string;
+  language: string;
+  country: string;
+  subtitle: string;
+  price: string;
+  genre: string[];
+  images: File[] | string[];
+  imagesDelete?: string[];
 }
 
 const movieServices = {
@@ -17,31 +29,19 @@ const movieServices = {
     endDate,
     duration,
     language,
+    price,
     country,
     subtitle,
     genre,
     images,
-  }: {
-    title: string;
-    description: string;
-    directors: never[] | dataSelectProps[];
-    actors: never[] | dataSelectProps[];
-    ageRequire: string | number;
-    releaseDate: Date;
-    endDate: Date;
-    duration: string | number;
-    language: string | dataSelectProps[];
-    country: string | dataSelectProps[];
-    subtitle: string | string[];
-    genre: string[] | never[];
-    images: never[] | File[];
-  }) {
+  }: MovieFormValuesProps) {
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
     formData.append("ageRequire", ageRequire.toString());
-    formData.append("releaseDate", releaseDate.toISOString());
-    formData.append("endDate", endDate.toISOString());
+    formData.append("price", price.toString());
+    formData.append("releaseDate", releaseDate.toString());
+    formData.append("endDate", endDate.toString());
     formData.append("duration", duration.toString());
     formData.append("language", language[0].toString());
     formData.append("country", country[0].toString());
@@ -66,6 +66,33 @@ const movieServices = {
     const res = await axios.post("/api/v1/movie/create", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
+    return res.data;
+  },
+
+  async getAllMovies({ isCount }: { isCount: boolean }) {
+    const res = await axios.get(`/api/v1/movie/all-movies?isCount=${isCount}`);
+    return res.data;
+  },
+
+  async getLimitMovie({ page, limit }: { page: number; limit: number }) {
+    const res = await axios.get(
+      `/api/v1/movie/all-limit-movies?page=${page}&limit=${limit}`
+    );
+    return res.data;
+  },
+
+  async searchMoviesByTitle({
+    title,
+    page,
+    limit,
+  }: {
+    title: string;
+    page: number;
+    limit: number;
+  }) {
+    const res = await axios.get(
+      `/api/v1/movie/search-movies-by-title?title=${title}&page=${page}&limit=${limit}`
+    );
     return res.data;
   },
 };

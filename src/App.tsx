@@ -20,17 +20,19 @@ const route = createBrowserRouter(
       element: FC;
       layout: LayoutComponent | string;
       isProtected: boolean | null;
+      isAdmin?: boolean | null;
       path: string;
     }) => {
       const Element = route.element;
       const MappingLayout = route.layout;
       const isProtectedElement = route.isProtected;
+      const checkAdmin = route.isAdmin;
 
       if (MappingLayout === "None") {
         return {
           path: route.path,
           element: isProtectedElement ? (
-            <ProtectedRoute>
+            <ProtectedRoute checkAdmin={checkAdmin}>
               <Element />
             </ProtectedRoute>
           ) : (
@@ -41,7 +43,7 @@ const route = createBrowserRouter(
       return {
         path: route.path,
         element: isProtectedElement ? (
-          <ProtectedRoute>
+          <ProtectedRoute checkAdmin={checkAdmin}>
             <MappingLayout>
               <Element />
             </MappingLayout>

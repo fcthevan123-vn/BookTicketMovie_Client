@@ -1,29 +1,27 @@
 import { useAuthenticate } from "../../hooks";
 import { useNavigate } from "react-router-dom";
-import { useEffect, ReactNode } from "react";
-import LoaderPage from "../Loaders/LoaderPage";
+import { useEffect } from "react";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
+  checkAdmin: boolean | null | undefined;
 }
 
-function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const [isLogin] = useAuthenticate();
+function ProtectedRoute({ children, checkAdmin }: ProtectedRouteProps) {
+  const [isLogin, , dataUser] = useAuthenticate();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!isLogin) {
       navigate("/");
     }
-  }, [isLogin, navigate]);
 
-  // if (!isLogin) {
-  //   return (
-  //     <>
-  //       <LoaderPage></LoaderPage>
-  //     </>
-  //   );
-  // }
+    if (checkAdmin) {
+      if (dataUser.type !== "admin") {
+        navigate("/error");
+      }
+    }
+  }, [checkAdmin, dataUser.type, isLogin, navigate]);
 
   return <>{children}</>;
 }

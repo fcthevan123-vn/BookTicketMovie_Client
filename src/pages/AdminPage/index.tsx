@@ -1,9 +1,10 @@
-import { createStyles } from "@mantine/core";
+import { Anchor, Breadcrumbs, createStyles } from "@mantine/core";
 import { useLocation } from "react-router-dom";
 import { Fragment } from "react";
 import DashboardPage from "./DashboardPage";
 import AddMoviePage from "./AddMoviePage";
 import { useEffect } from "react";
+import AllMoviesPage from "./AllMoviesPage";
 
 type Props = {};
 
@@ -22,6 +23,10 @@ const useStyles = createStyles((theme) => ({
 const allPath = [
   {
     urlInclude: "dashboard",
+    breadcrumbs: [
+      { title: "Admin", href: "#" },
+      { title: "Dashboard", href: "#" },
+    ],
     jsx: (
       <div>
         <DashboardPage></DashboardPage>
@@ -30,7 +35,21 @@ const allPath = [
   },
   {
     urlInclude: "addamovie",
+    breadcrumbs: [
+      { title: "Admin", href: "/admin/dashboard" },
+      { title: "Movie", href: "#" },
+      { title: "Add-a-movie", href: "#" },
+    ],
     jsx: <AddMoviePage></AddMoviePage>,
+  },
+  {
+    urlInclude: "allmovies",
+    breadcrumbs: [
+      { title: "Admin", href: "/admin/dashboard" },
+      { title: "Movie", href: "#" },
+      { title: "All-movies", href: "#" },
+    ],
+    jsx: <AllMoviesPage></AllMoviesPage>,
   },
 ];
 
@@ -42,7 +61,18 @@ const AdminPage = (props: Props) => {
 
   const element = allPath.map((path) => {
     if (urlConverted.includes(path.urlInclude) === true) {
-      return <Fragment key={path.urlInclude}>{path.jsx}</Fragment>;
+      return (
+        <Fragment key={path.urlInclude}>
+          <Breadcrumbs className="pt-3 px-6">
+            {path.breadcrumbs.map((item, index) => (
+              <Anchor aria-disabled italic href={item.href} key={index}>
+                {item.title}
+              </Anchor>
+            ))}
+          </Breadcrumbs>
+          {path.jsx}
+        </Fragment>
+      );
     }
   });
 

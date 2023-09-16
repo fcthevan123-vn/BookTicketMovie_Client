@@ -227,7 +227,7 @@ export default function DefaultHeader() {
       },
       radius: "lg",
       onCancel: () => console.log("Cancel"),
-      onConfirm: () => navigate(`/admin/${dataUser.id}/dashboard`),
+      onConfirm: () => navigate(`/admin/dashboard`),
     });
 
   const actions: SpotlightAction[] = [
