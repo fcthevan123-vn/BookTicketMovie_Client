@@ -47,6 +47,7 @@ const useStyles = createStyles((theme) => ({
 }));
 
 interface RowData {
+  stt?: number;
   id: string;
   title: string;
   description: string;
@@ -61,10 +62,9 @@ interface RowData {
   genre: string[];
   duration: string;
   ageRequire: string;
-  price: string;
-  countBooked: number;
-  createdAt: string;
-  updatedAt: string;
+  price: number;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 interface TableAllMoviesProps {
@@ -102,6 +102,25 @@ function Th({ children, reversed, sorted, onSort }: ThProps) {
   );
 }
 
+// function sortData(
+//   data: RowData[],
+//   payload: { sortBy: keyof RowData | null; reversed: boolean }
+// ) {
+//   const { sortBy } = payload;
+
+//   if (!sortBy) {
+//     return data;
+//   }
+
+//   return [...data].sort((a, b) => {
+//     if (payload.reversed) {
+//       return String(b[sortBy]).localeCompare(String(a[sortBy]));
+//     }
+
+//     return String(a[sortBy]).localeCompare(String(b[sortBy]));
+//   });
+// }
+
 function sortData(
   data: RowData[],
   payload: { sortBy: keyof RowData | null; reversed: boolean }
@@ -113,11 +132,21 @@ function sortData(
   }
 
   return [...data].sort((a, b) => {
-    if (payload.reversed) {
-      return b[sortBy].localeCompare(a[sortBy]);
+    const valueA = a[sortBy];
+    const valueB = b[sortBy];
+
+    if (typeof valueA === "number" && typeof valueB === "number") {
+      if (payload.reversed) {
+        return valueB - valueA;
+      }
+      return valueA - valueB;
     }
 
-    return a[sortBy].localeCompare(b[sortBy]);
+    if (payload.reversed) {
+      return String(valueB).localeCompare(String(valueA));
+    }
+
+    return String(valueA).localeCompare(String(valueB));
   });
 }
 
@@ -138,9 +167,10 @@ export function TableAllMovies({ data, isLoading }: TableAllMoviesProps) {
 
   const rows = sortedData.map((row) => (
     <tr key={row.title}>
+      <td>{row.stt}</td>
       <td>{row.title}</td>
-      <td>{Intl.NumberFormat("vi-VN").format(parseInt(row.price)) + " VND"}</td>
-
+      <td>{Intl.NumberFormat("vi-VN").format(row.price) + " VND"}</td>
+      {/* <td>{row.price + " VND"}</td> */}
       <td>
         <Tooltip position="top-start" label={row.directors?.join("-")}>
           <Text truncate>
@@ -190,6 +220,7 @@ export function TableAllMovies({ data, isLoading }: TableAllMoviesProps) {
   ));
 
   useEffect(() => {
+    console.log("data", data);
     setSortedData(data);
   }, [data]);
 
@@ -214,6 +245,13 @@ export function TableAllMovies({ data, isLoading }: TableAllMoviesProps) {
           >
             <thead>
               <tr>
+                <Th
+                  sorted={sortBy === "stt"}
+                  reversed={reverseSortDirection}
+                  onSort={() => setSorting("stt")}
+                >
+                  STT
+                </Th>
                 <Th
                   sorted={sortBy === "title"}
                   reversed={reverseSortDirection}
@@ -283,7 +321,7 @@ export function TableAllMovies({ data, isLoading }: TableAllMoviesProps) {
                   <UnstyledButton className={classes.control}>
                     <Group position="apart">
                       <Text fw={500} fz="sm">
-                        #
+                        Chỉnh sửa
                       </Text>
                     </Group>
                   </UnstyledButton>

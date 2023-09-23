@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Fragment } from "react";
 import {
   Image,
   Button,
@@ -6,6 +6,7 @@ import {
   Modal,
   Tooltip,
   SimpleGrid,
+  Skeleton,
 } from "@mantine/core";
 import { Dropzone, IMAGE_MIME_TYPE, FileWithPath } from "@mantine/dropzone";
 import { IconX } from "@tabler/icons-react";
@@ -16,14 +17,14 @@ import { useMovieFormContext } from "../Forms/FormProvider/FormProvider";
 interface Props {
   isResetImg?: boolean;
   setIsResetImg(value: boolean): void | undefined;
-  images?: { imageName: string; imageUrl: string }[];
+  images?: File[] | { imageName: string; imageUrl: string }[];
 }
 
 export function UploadImage({ isResetImg, setIsResetImg, images }: Props) {
   const [files, setFiles] = useState<FileWithPath[]>([]);
   const [imgToViewFull, setImgToViewFull] = useState("");
   const [isOpenModal, setIsOpenModal] = useState(false);
-
+  const [loading, setLoading] = useState(true);
   const form = useMovieFormContext();
 
   function handleDeleteLocalImage(
@@ -58,17 +59,18 @@ export function UploadImage({ isResetImg, setIsResetImg, images }: Props) {
     return (
       <div
         key={index}
-        className="relative w-full h-full flex boxshadow-custom rounded-lg justify-center items-center"
+        className="relative w-full h-full flex shadow-md rounded-lg justify-center items-center"
       >
-        <div className="cursor-pointer">
+        <div>
           <Image
             key={index}
             src={imageUrl}
+            width={"100%"}
             radius={"md"}
-            fit="fill"
-            w={"100%"}
-            height={"100%"}
+            height={80}
+            fit="contain"
           />
+
           <div className="absolute z-10 flex gap-3 top-1 right-1">
             <Tooltip label="Delete" withArrow radius="md">
               <ActionIcon
@@ -104,23 +106,14 @@ export function UploadImage({ isResetImg, setIsResetImg, images }: Props) {
     );
   });
 
-  function handleFile(f: File[]) {
-    f.map((fs) => {
-      if (fs.size > 5000000) {
-        return NormalToast({
-          title: "Over size",
-          message: "Please select less than 6MB",
-          color: "red",
-        });
-      }
-    });
+  function handleFile(f: FileWithPath[]) {
     if (files.length + f.length <= 6) {
       const fileMerge = [...files, ...f];
       setFiles(fileMerge);
-      form.setFieldValue("images", [...fileMerge, ...f]);
+      form.setFieldValue("images", fileMerge);
     } else {
       NormalToast({
-        title: "Over size",
+        title: "Over quantity files",
         message: "Please select less than 6 files",
         color: "red",
       });
@@ -149,16 +142,19 @@ export function UploadImage({ isResetImg, setIsResetImg, images }: Props) {
           return file;
         })
       );
-      console.log("image files", imgFiles);
+      setLoading(false);
       setFiles(imgFiles);
     } catch (error) {
+      setLoading(false);
       console.error("Error fetching and converting images:", error);
     }
   };
 
   useEffect(() => {
     if (images) {
-      fetchAndConvertImages(images);
+      fetchAndConvertImages(
+        images as { imageName: string; imageUrl: string }[]
+      );
     }
   }, [images]);
 
@@ -173,7 +169,7 @@ export function UploadImage({ isResetImg, setIsResetImg, images }: Props) {
   return (
     <div>
       {files.length > 0 && (
-        <div className="mb-8 p-2  rounded-xl">
+        <div className="mb-8 p-2 rounded-xl">
           <SimpleGrid
             cols={4}
             breakpoints={[{ maxWidth: "sm", cols: 1 }]}
@@ -184,9 +180,24 @@ export function UploadImage({ isResetImg, setIsResetImg, images }: Props) {
         </div>
       )}
 
+      {files.length === 0 && images && images?.length > 0 && loading && (
+        <div className="mb-8 p-2 rounded-xl">
+          <SimpleGrid
+            cols={4}
+            breakpoints={[{ maxWidth: "sm", cols: 1 }]}
+            mt={previews.length > 0 ? "xl" : 0}
+          >
+            {images.map((image, index: number) => (
+              <Fragment key={index}>
+                <Skeleton height={70} radius="md" />
+              </Fragment>
+            ))}
+          </SimpleGrid>
+        </div>
+      )}
+
       <Dropzone
-        // maxSize={5 * 1000000}
-        onFileDialogOpen={() => console.log("open modal")}
+        maxSize={5 * 1000000}
         radius="lg"
         accept={IMAGE_MIME_TYPE}
         sx={{
@@ -198,6 +209,13 @@ export function UploadImage({ isResetImg, setIsResetImg, images }: Props) {
         }}
         onDrop={(f) => {
           handleFile(f);
+        }}
+        onReject={() => {
+          NormalToast({
+            title: "Over size fille",
+            message: "Please select image less than 5MB",
+            color: "red",
+          });
         }}
       >
         <div>

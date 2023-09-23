@@ -5,6 +5,7 @@ import DashboardPage from "./DashboardPage";
 import AddMoviePage from "./AddMoviePage";
 import { useEffect } from "react";
 import AllMoviesPage from "./AllMoviesPage";
+import { MovieProvider } from "../../components/Provider/MovieProvider/MovieProvider";
 
 type Props = {};
 
@@ -49,7 +50,11 @@ const allPath = [
       { title: "Movie", href: "#" },
       { title: "All-movies", href: "#" },
     ],
-    jsx: <AllMoviesPage></AllMoviesPage>,
+    jsx: (
+      <MovieProvider>
+        <AllMoviesPage></AllMoviesPage>
+      </MovieProvider>
+    ),
   },
 ];
 

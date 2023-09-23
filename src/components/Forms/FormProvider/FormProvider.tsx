@@ -12,9 +12,9 @@ interface MovieFormValues {
   language: string;
   country: string;
   subtitle: string;
-  price: string;
+  price: number;
   genre: string[];
-  images: File[] | string[];
+  images: File[] | { imageName: string; imageUrl: string }[];
   imagesDelete?: string | string[];
 }
 

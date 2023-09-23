@@ -12,10 +12,11 @@ interface MovieFormValuesProps {
   language: string;
   country: string;
   subtitle: string;
-  price: string;
+  price: number;
   genre: string[];
-  images: File[] | string[];
-  imagesDelete?: string[];
+  images: File[] | string[] | { imageName: string; imageUrl: string }[];
+  imagesDelete?: string | string[];
+  id?: string;
 }
 
 const movieServices = {
@@ -48,7 +49,10 @@ const movieServices = {
     formData.append("subtitle", subtitle[0]);
 
     for (let i = 0; i < images.length; i++) {
-      formData.append("images", images[i]);
+      const image = images[i];
+      if (image instanceof File) {
+        formData.append(`images`, image);
+      }
     }
 
     for (let i = 0; i < directors.length; i++) {
@@ -93,6 +97,69 @@ const movieServices = {
     const res = await axios.get(
       `/api/v1/movie/search-movies-by-title?title=${title}&page=${page}&limit=${limit}`
     );
+    return res.data;
+  },
+
+  async editMovie(
+    {
+      title,
+      description,
+      directors,
+      actors,
+      ageRequire,
+      releaseDate,
+      endDate,
+      duration,
+      language,
+      price,
+      country,
+      subtitle,
+      genre,
+      images,
+      imagesDelete,
+    }: MovieFormValuesProps,
+    id: string
+  ) {
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("ageRequire", ageRequire.toString());
+    formData.append("price", price.toString());
+    formData.append("releaseDate", releaseDate.toString());
+    formData.append("endDate", endDate.toString());
+    formData.append("duration", duration.toString());
+    formData.append("language", language);
+    formData.append("country", country);
+    formData.append("subtitle", subtitle);
+
+    if (imagesDelete) {
+      for (let i = 0; i < imagesDelete.length; i++) {
+        formData.append(`imagesDelete[]`, imagesDelete[i]);
+      }
+    }
+
+    for (let i = 0; i < images.length; i++) {
+      const image = images[i];
+      if (image instanceof File && !image.name.includes("AwsS3Storage")) {
+        formData.append(`images`, image);
+      }
+    }
+
+    for (let i = 0; i < directors.length; i++) {
+      formData.append("directors[]", directors[i].toString());
+    }
+
+    for (let i = 0; i < actors.length; i++) {
+      formData.append("actors[]", actors[i].toString());
+    }
+
+    for (let i = 0; i < genre.length; i++) {
+      formData.append("genre", genre[i]);
+    }
+
+    const res = await axios.patch(`api/v1/movie/edit/${id}`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
     return res.data;
   },
 };

@@ -118,7 +118,7 @@ const AddMoviePage = () => {
       language: "",
       country: "",
       subtitle: "",
-      price: "",
+      price: 0,
       genre: [],
       images: [],
     },

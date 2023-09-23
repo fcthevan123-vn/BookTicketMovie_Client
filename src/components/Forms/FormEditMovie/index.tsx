@@ -8,11 +8,10 @@ import {
 import { useEffect, useState } from "react";
 import { UploadImage } from "../../../components/UploadImage";
 import { DateInput } from "@mantine/dates";
-import { useForm } from "@mantine/form";
 import moment from "moment";
+import { MovieFormProvider, useMovieForm } from "../FormProvider/FormProvider";
 import { movieServices } from "../../../services";
 import { loadingApi } from "../../../untils/loadingApi";
-import { MovieFormProvider, useMovieForm } from "../FormProvider/FormProvider";
 
 const dataGenreMovie = [
   "Hành động",
@@ -76,31 +75,30 @@ const dataSubtitle = [
 // }
 
 interface MovieData {
-  id: string;
+  id?: string;
   title: string;
   description: string;
   directors: string[];
   actors: string[];
+  ageRequire: string;
+  releaseDate: Date | string;
+  endDate: Date | string;
+  duration: string;
   language: string;
   country: string;
   subtitle: string;
-  releaseDate: string;
-  endDate: string;
-  images: { imageName: string; imageUrl: string }[];
+  price: number;
   genre: string[];
-  duration: string;
-  ageRequire: string;
-  price: string;
-  countBooked: number;
-  createdAt: string;
-  updatedAt: string;
+  images: File[] | { imageName: string; imageUrl: string }[] | undefined;
+  imagesDelete?: string | string[];
 }
 
 interface FormEditMovieProps {
   dataMovie: MovieData;
+  onClose: () => void;
 }
 
-const FormEditMovie = ({ dataMovie }: FormEditMovieProps) => {
+const FormEditMovie = ({ dataMovie, onClose }: FormEditMovieProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [searchValue, onSearchChange] = useState("");
   const [searchValueSubtitle, onSearchChangeSubtitle] = useState("");
@@ -193,17 +191,22 @@ const FormEditMovie = ({ dataMovie }: FormEditMovieProps) => {
 
       genre: (value) => (value.length <= 0 ? "Chưa nhập thể loại" : null),
       price: (value) => (value ? null : "Chưa nhập giá tiền"),
-      images: (value) =>
-        value.length > 1 && value.length <= 6
-          ? null
-          : "Phải có nhiều hơn 1 và ít hơn 6 hình ảnh",
     },
     // validateInputOnChange: true,
   });
 
-  async function handleSubmit(dataForm: MovieData) {
+  async function handleSubmit(dataForm: typeof form.values) {
+    // console.log("datamovie", dataMovie);
+    // console.log("dataForm: ", dataForm);
     setIsLoading(true);
-    console.log("dataForm: ", dataForm);
+    const api = movieServices.editMovie(dataForm, dataMovie.id as string);
+    const res = await loadingApi(api, "Chỉnh sửa phim");
+    setIsLoading(false);
+    if (res) {
+      onClose();
+    }
+
+    return res;
   }
 
   useEffect(() => {
@@ -222,7 +225,7 @@ const FormEditMovie = ({ dataMovie }: FormEditMovieProps) => {
       setDataDirectors((prev) => [...prev, ...directorsExisted]);
       setDataActors((prev) => [...prev, ...actorsExisted]);
     }
-  }, [dataMovie]);
+  }, []);
 
   useEffect(() => {
     if (dataMovie) {
@@ -452,7 +455,6 @@ const FormEditMovie = ({ dataMovie }: FormEditMovieProps) => {
                 <div className="w-full">
                   <UploadImage
                     setIsResetImg={() => undefined}
-                    // form={form}
                     images={dataMovie.images}
                   ></UploadImage>
                   {form.errors.images ? (
@@ -472,6 +474,7 @@ const FormEditMovie = ({ dataMovie }: FormEditMovieProps) => {
               type="reset"
               color="orange"
               loading={isLoading}
+              onClick={() => onClose()}
             >
               Huỷ
             </Button>

@@ -2,6 +2,7 @@ import { Modal } from "@mantine/core";
 import FormEditMovie from "../../Forms/FormEditMovie";
 
 interface RowData {
+  stt?: number;
   id: string;
   title: string;
   description: string;
@@ -16,10 +17,9 @@ interface RowData {
   genre: string[];
   duration: string;
   ageRequire: string;
-  price: string;
-  countBooked: number;
-  createdAt: string;
-  updatedAt: string;
+  price: number;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 type Props = {
@@ -46,7 +46,7 @@ const ModalDetailMovie = ({ opened, onClose, dataMovie }: Props) => {
         }
         centered
       >
-        <FormEditMovie dataMovie={dataMovie}></FormEditMovie>
+        <FormEditMovie onClose={onClose} dataMovie={dataMovie}></FormEditMovie>
       </Modal>
     </div>
   );
