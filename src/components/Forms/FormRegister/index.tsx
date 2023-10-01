@@ -1,10 +1,7 @@
 import {
   Button,
-  Divider,
   Group,
   Input,
-  Notification,
-  NumberInput,
   PasswordInput,
   Radio,
   TextInput,
@@ -60,13 +57,13 @@ function FormRegister() {
   });
 
   async function handleSubmit(_data: object) {
+    notifications.clean();
     setIsLoading(true);
-    notifications.show({
-      id: "toast-register",
+    const id = notifications.show({
       loading: true,
-      radius: "md",
-      title: "Create your account",
-      message: "It can take some minutes",
+      radius: "lg",
+      title: "Loading",
+      message: "Quá trình này có thể mất vài phút",
       autoClose: false,
       withCloseButton: false,
       withBorder: true,
@@ -76,25 +73,29 @@ function FormRegister() {
       if (res.statusCode === 0) {
         setIsLoading(false);
         notifications.update({
-          id: "toast-register",
-          radius: "md",
+          id,
+          radius: "lg",
           color: "teal",
+          loading: false,
           title: <p className="text-teal-600">Success</p>,
           message: res.message,
           withBorder: true,
+          withCloseButton: true,
           icon: <AiOutlineCheckCircle size="1.2rem" />,
           autoClose: 2000,
         });
-        form.reset();
+        // form.reset();
       }
     } catch (error) {
       notifications.update({
-        id: "toast-register",
-        radius: "md",
+        id,
+        radius: "lg",
         color: "red",
+        loading: false,
         title: <p className="text-red-700">Error</p>,
         message: error.response?.data?.message,
         withBorder: true,
+        withCloseButton: true,
         icon: <BiErrorCircle size="1.2rem" />,
         autoClose: 2000,
       });

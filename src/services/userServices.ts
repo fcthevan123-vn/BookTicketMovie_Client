@@ -20,6 +20,19 @@ const userServices = {
     );
     return res.data;
   },
+  async updateProfileByAdmin(informationUser: object, userId: string) {
+    const res = await axios.patch(
+      `/api/v1/user/${userId}/update?isAdmin=${true}`,
+      informationUser
+    );
+    return res.data;
+  },
+  async getAllUsersByRule(limit: number, page: number) {
+    const res = await axios.get(
+      `/api/v1/user/all-user?page=${page}&limit=${limit}`
+    );
+    return res.data;
+  },
   async changePassword(passwordData: object, userId: string) {
     const res = await axios.patch(
       `/api/v1/user/${userId}/update-password`,

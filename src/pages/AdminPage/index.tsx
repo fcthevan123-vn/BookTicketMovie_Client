@@ -3,23 +3,11 @@ import { useLocation } from "react-router-dom";
 import { Fragment } from "react";
 import DashboardPage from "./DashboardPage";
 import AddMoviePage from "./AddMoviePage";
-import { useEffect } from "react";
 import AllMoviesPage from "./AllMoviesPage";
 import { MovieProvider } from "../../components/Provider/MovieProvider/MovieProvider";
+import ManageAccountPage from "./ManageAccountPage";
 
 type Props = {};
-
-// const useStyles = createStyles((theme) => ({
-//   root: {
-//     padding: "1px 0",
-//     margin: "20px",
-//     borderRadius: "20px",
-//     backgroundColor:
-//       theme.colorScheme === "dark" ? theme.colors.dark[5] : "#fff",
-//     boxShadow:
-//       "rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
-//   },
-// }));
 
 const allPath = [
   {
@@ -56,12 +44,19 @@ const allPath = [
       </MovieProvider>
     ),
   },
+  {
+    urlInclude: "manageaccount",
+    breadcrumbs: [
+      { title: "Admin", href: "/admin/dashboard" },
+      { title: "Manage Account", href: "#" },
+    ],
+    jsx: <ManageAccountPage></ManageAccountPage>,
+  },
 ];
 
 const AdminPage = (props: Props) => {
   const location = useLocation();
   const urlConverted = location.pathname.replace(/-/g, "");
-  console.log(urlConverted);
 
   const element = allPath.map((path) => {
     if (urlConverted.includes(path.urlInclude) === true) {

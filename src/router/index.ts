@@ -79,6 +79,13 @@ const router: IRouter[] = [
     layout: AdminLayout,
     element: AdminPage,
   },
+  {
+    path: "/admin/manage-account",
+    isProtected: true,
+    isAdmin: true,
+    layout: AdminLayout,
+    element: AdminPage,
+  },
 
   {
     path: "/admin/movie/add-a-movie",

@@ -162,6 +162,11 @@ const movieServices = {
     });
     return res.data;
   },
+
+  async deleteMovie({ id }: { id: string }) {
+    const res = await axios.delete(`api/v1/movie/delete/${id}`);
+    return res.data;
+  },
 };
 
 export default movieServices;

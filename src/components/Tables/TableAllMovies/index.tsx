@@ -20,6 +20,10 @@ import {
 import ModalDetailMovie from "../../Modals/ModalDetailMovie";
 import classes from "./TableAllMovies.module.css";
 import moment from "moment";
+import { modals } from "@mantine/modals";
+import { movieServices } from "../../../services";
+import { loadingApi } from "../../../untils/loadingApi";
+import { useMovie } from "../../Provider/MovieProvider/MovieProvider";
 
 interface RowData {
   stt?: number;
@@ -128,6 +132,9 @@ export function TableAllMovies({ data, isLoading }: TableAllMoviesProps) {
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [movieToView, setMovieToView] = useState<RowData>();
+  const [isLoadingDelete, setIsLoadingDelete] = useState(false);
+
+  const { activePage, getLimitMovies } = useMovie();
 
   const setSorting = (field: keyof RowData) => {
     const reversed = field === sortBy ? !reverseSortDirection : false;
@@ -135,6 +142,45 @@ export function TableAllMovies({ data, isLoading }: TableAllMoviesProps) {
     setSortBy(field);
     setSortedData(sortData(data, { sortBy: field, reversed }));
   };
+
+  const modalDeleteMovie = (id: string) =>
+    modals.openConfirmModal({
+      title: (
+        <Text c={"red"} fw={"bold"}>
+          Xoá phim
+        </Text>
+      ),
+      children: <Text size="sm">Bạn có chắc chắn xoá phim này vĩnh viễn?</Text>,
+      centered: true,
+      confirmProps: {
+        color: "red",
+        radius: "md",
+        size: "xs",
+        loading: isLoadingDelete,
+      },
+      cancelProps: {
+        radius: "md",
+        size: "xs",
+      },
+      lockScroll: false,
+      radius: "lg",
+      labels: {
+        confirm: "Đồng ý",
+        cancel: "Huỷ",
+      },
+      onConfirm: () => handleDeleteMovie(id),
+    });
+
+  async function handleDeleteMovie(id: string) {
+    setIsLoadingDelete(true);
+    const api = movieServices.deleteMovie({ id });
+    const res = await loadingApi(api, "Xoá phim");
+    if (res === true) {
+      getLimitMovies(activePage);
+    }
+    setIsLoadingDelete(false);
+    return res;
+  }
 
   const rows = sortedData.map((row) => (
     <Table.Tr key={row.title}>
@@ -194,7 +240,12 @@ export function TableAllMovies({ data, isLoading }: TableAllMoviesProps) {
           >
             Sửa <IconEdit className="mb-1 ms-1" size="1rem"></IconEdit>
           </Button>
-          <Button color="red" radius="lg" size="compact-xs">
+          <Button
+            color="red"
+            radius="lg"
+            size="compact-xs"
+            onClick={() => modalDeleteMovie(row.id)}
+          >
             Xoá <IconTrash className="mb-1 ms-1" size="1rem"></IconTrash>
           </Button>
         </Group>
@@ -203,7 +254,6 @@ export function TableAllMovies({ data, isLoading }: TableAllMoviesProps) {
   ));
 
   useEffect(() => {
-    console.log("data", data);
     setSortedData(data);
   }, [data]);
 
