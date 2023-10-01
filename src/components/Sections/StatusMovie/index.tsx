@@ -1,13 +1,11 @@
 import { Carousel } from "@mantine/carousel";
 import {
-  createStyles,
   SegmentedControl,
   rem,
   Container,
   Center,
   Box,
   Divider,
-  Card,
   useMantineTheme,
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
@@ -16,33 +14,34 @@ import { RiSlideshow2Line } from "react-icons/ri";
 import MotiveItem from "../../MovieItem";
 import { useRef } from "react";
 import Autoplay from "embla-carousel-autoplay";
+import classes from "./StatusMovie.module.css";
 
-const useStyles = createStyles((theme) => ({
-  root: {
-    backgroundColor:
-      theme.colorScheme === "dark" ? theme.colors.dark[6] : theme.white,
-    boxShadow: theme.shadows.md,
-    border: `${rem(1)} solid ${
-      theme.colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[1]
-    }`,
-  },
+// const useStyles = createStyles((theme) => ({
+//   root: {
+//     backgroundColor:
+//       theme.colorScheme === "dark" ? theme.colors.dark[6] : theme.white,
+//     boxShadow: theme.shadows.md,
+//     border: `${rem(1)} solid ${
+//       theme.colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[1]
+//     }`,
+//   },
 
-  indicator: {
-    backgroundImage: theme.fn.gradient({ from: "pink", to: "orange" }),
-  },
+//   indicator: {
+//     backgroundImage: theme.fn.gradient({ from: "pink", to: "orange" }),
+//   },
 
-  control: {
-    border: "0 !important",
-  },
+//   control: {
+//     border: "0 !important",
+//   },
 
-  label: {
-    "&, &:hover": {
-      "&[data-active]": {
-        color: theme.white,
-      },
-    },
-  },
-}));
+//   label: {
+//     "&, &:hover": {
+//       "&[data-active]": {
+//         color: theme.white,
+//       },
+//     },
+//   },
+// }));
 
 const data = [
   {
@@ -84,7 +83,6 @@ const data = [
 ];
 
 export function StatusMovie() {
-  const { classes } = useStyles();
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
   const autoplay = useRef(Autoplay({ delay: 5000 }));
@@ -133,9 +131,8 @@ export function StatusMovie() {
       {/* Movie */}
       <Carousel
         className="mt-8"
-        slideSize="25%"
-        breakpoints={[{ maxWidth: "sm", slideSize: "50%", slideGap: rem(8) }]}
-        slideGap="md"
+        slideSize={{ base: "50%", sm: "25%" }}
+        slideGap={{ base: rem(8), sm: "md" }}
         align="start"
         loop
         slidesToScroll={mobile ? 2 : 4}

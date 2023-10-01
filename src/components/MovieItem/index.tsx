@@ -1,51 +1,43 @@
-import {
-  createStyles,
-  Paper,
-  Text,
-  Title,
-  Button,
-  rem,
-  Group,
-  Rating,
-  Box,
-} from "@mantine/core";
+import { Paper, Text, Title, Button, Rating, Box } from "@mantine/core";
 
-const useStyles = createStyles((theme) => ({
-  card: {
-    height: rem(420),
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    [theme.fn.smallerThan("md")]: {
-      height: rem(350),
-    },
+import classes from "./MovieItem.module.css";
 
-    "&:hover": {
-      backdropFilter: "blur(12px)",
-    },
-  },
+// const useStyles = createStyles((theme) => ({
+//   card: {
+//     height: rem(420),
+//     display: "flex",
+//     flexDirection: "column",
+//     justifyContent: "space-between",
+//     alignItems: "flex-start",
+//     backgroundSize: "cover",
+//     backgroundPosition: "center",
+//     [theme.fn.smallerThan("md")]: {
+//       height: rem(350),
+//     },
 
-  title: {
-    fontWeight: 900,
-    color: theme.white,
-    lineHeight: 1.2,
-    fontSize: rem(18),
-    marginTop: theme.spacing.xs,
-    [theme.fn.smallerThan("md")]: {
-      fontSize: rem(16),
-    },
-  },
+//     "&:hover": {
+//       backdropFilter: "blur(12px)",
+//     },
+//   },
 
-  category: {
-    color: theme.white,
-    opacity: 0.7,
-    fontWeight: 700,
-    textTransform: "uppercase",
-  },
-}));
+//   title: {
+//     fontWeight: 900,
+//     color: theme.white,
+//     lineHeight: 1.2,
+//     fontSize: rem(18),
+//     marginTop: theme.spacing.xs,
+//     [theme.fn.smallerThan("md")]: {
+//       fontSize: rem(16),
+//     },
+//   },
+
+//   category: {
+//     color: theme.white,
+//     opacity: 0.7,
+//     fontWeight: 700,
+//     textTransform: "uppercase",
+//   },
+// }));
 
 interface Props {
   image: string;
@@ -54,12 +46,12 @@ interface Props {
 }
 
 const MotiveItem = ({ image, title, category }: Props) => {
-  const { classes } = useStyles();
-
   return (
-    <Box>
+    <Box
+      style={{ overflow: "hidden", borderRadius: "var(--mantine-radius-md)" }}
+    >
       <Paper
-        sx={{ backgroundImage: `url(${image})` }}
+        style={{ backgroundImage: `url(${image})` }}
         shadow="md"
         p="xl"
         radius="md"
@@ -77,7 +69,7 @@ const MotiveItem = ({ image, title, category }: Props) => {
         </Group> */}
         </div>
         <Button variant="white" radius="lg" color="dark">
-          Book Now
+          Đặt ngay
         </Button>
       </Paper>
     </Box>

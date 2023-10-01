@@ -1,4 +1,3 @@
-import { createStyles } from "@mantine/core";
 import UserProfileTop from "./UserProfilePage/UserProfileTop";
 import UserProfileInformation from "./UserProfilePage/UserProfileInformation";
 import { useLocation } from "react-router-dom";
@@ -7,17 +6,17 @@ import UserChangePassword from "./UserChangePassword";
 
 type Props = {};
 
-const useStyles = createStyles((theme) => ({
-  root: {
-    padding: "1px 0",
-    margin: "20px",
-    borderRadius: "20px",
-    backgroundColor:
-      theme.colorScheme === "dark" ? theme.colors.dark[5] : "#fff",
-    boxShadow:
-      "rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
-  },
-}));
+// const useStyles = createStyles((theme) => ({
+//   root: {
+//     padding: "1px 0",
+//     margin: "20px",
+//     borderRadius: "20px",
+//     backgroundColor:
+//       theme.colorScheme === "dark" ? theme.colors.dark[5] : "#fff",
+//     boxShadow:
+//       "rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
+//   },
+// }));
 
 const allPath = [
   {
@@ -46,7 +45,6 @@ const allPath = [
 ];
 
 const UserPage = (props: Props) => {
-  const { classes } = useStyles();
   const location = useLocation();
 
   const element = allPath.map((path) => {
@@ -55,7 +53,8 @@ const UserPage = (props: Props) => {
     }
   });
 
-  return <div className={classes.root}>{element}</div>;
+  // return <div className={classes.root}>{element}</div>;
+  return <div>{element}</div>;
 };
 
 export default UserPage;

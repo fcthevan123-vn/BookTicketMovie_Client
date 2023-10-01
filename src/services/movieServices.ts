@@ -44,9 +44,9 @@ const movieServices = {
     formData.append("releaseDate", releaseDate.toString());
     formData.append("endDate", endDate.toString());
     formData.append("duration", duration.toString());
-    formData.append("language", language[0].toString());
-    formData.append("country", country[0].toString());
-    formData.append("subtitle", subtitle[0]);
+    formData.append("language", language.toString());
+    formData.append("country", country.toString());
+    formData.append("subtitle", subtitle);
 
     for (let i = 0; i < images.length; i++) {
       const image = images[i];

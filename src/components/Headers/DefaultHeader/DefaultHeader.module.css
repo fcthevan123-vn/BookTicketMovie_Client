@@ -1,0 +1,86 @@
+.header {
+  padding-top: var(--mantine-spacing-sm);
+  background-color: light-dark(
+    var(--mantine-color-blue-5),
+    var(--mantine-color-dark-6)
+  );
+  height: rem(120px);
+  border-bottom: rem(1px) solid
+    light-dark(var(--mantine-color-gray-2), transparent);
+  /* margin-bottom: rem(120px); */
+}
+
+.mainSection {
+  padding-bottom: var(--mantine-spacing-md);
+
+  .badge {
+    background-color: var(--mantine-color-blue-4);
+    padding: var(--mantine-spacing-lg);
+
+    box-shadow: var(--mantine-shadow-md);
+  }
+}
+
+.user {
+  color: light-dark(var(--mantine-color-white), var(--mantine-color-dark-0));
+  padding: "5px 5px";
+  border-radius: var(--mantine-radius-lg);
+  transition: background-color 100ms ease;
+  border: 1px solid rgba(255, 255, 255, 0.335) !important;
+
+  &:hover {
+    background-color: light-dark(
+      var(--mantine-color-blue-6),
+      var(--mantine-color-dark-8)
+    );
+  }
+
+  @media (max-width: $mantine-breakpoint-xs) {
+    display: none;
+  }
+}
+
+.userActive {
+  background-color: light-dark(
+    var(--mantine-color-blue-3),
+    var(--mantine-color-dark-8)
+  );
+  /* opacity: 0.1; */
+}
+
+.tabsList {
+  color: var(--mantine-color-gray-3);
+  &::before {
+    display: none;
+  }
+}
+
+.tab {
+  font-weight: 500;
+  height: rem(38);
+  background-color: transparent;
+  position: relative;
+  /* bottom: -12px; */
+
+  &:hover {
+    background-color: light-dark(
+      var(--mantine-color-blue-3),
+      var(--mantine-color-dark-5)
+    );
+  }
+
+  &[data-active] {
+    background-color: light-dark(
+      var(--mantine-color-blue-4),
+      var(--mantine-color-dark-7)
+    );
+    border-color: light-dark(
+      var(--mantine-color-blue-4),
+      var(--mantine-color-dark-7)
+    );
+    border-bottom: 3px solid var(--mantine-color-white);
+    color: white;
+
+    /* color: var(--mantine-color-dark-1); */
+  }
+}

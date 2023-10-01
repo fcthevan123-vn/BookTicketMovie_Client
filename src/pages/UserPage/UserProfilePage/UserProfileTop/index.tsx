@@ -1,37 +1,36 @@
-import { Avatar, createStyles } from "@mantine/core";
+import { Avatar } from "@mantine/core";
 import { AiOutlineCheckCircle, AiOutlineSafety } from "react-icons/ai";
 import { useAuthenticate } from "../../../../hooks";
-
+import classes from "./UserProfileTop.module.css";
 type Props = {};
 
-const useStyles = createStyles((theme) => ({
-  backgroundImg: {
-    margin: "15px",
-    position: "relative",
-    borderRadius: "20px",
-    height: "250px",
-    backgroundSize: "cover",
-    backgroundImage:
-      "url('https://images.unsplash.com/photo-1692891259833-9832c3ca751e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1935&q=80')",
+// const useStyles = createStyles((theme) => ({
+//   backgroundImg: {
+//     margin: "15px",
+//     position: "relative",
+//     borderRadius: "20px",
+//     height: "250px",
+//     backgroundSize: "cover",
+//     backgroundImage:
+//       "url('https://images.unsplash.com/photo-1692891259833-9832c3ca751e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1935&q=80')",
 
-    [theme.fn.smallerThan("xs")]: {
-      height: "160px",
-    },
-  },
+//     [theme.fn.smallerThan("xs")]: {
+//       height: "160px",
+//     },
+//   },
 
-  avatar: {
-    height: "150px",
-    width: "150px",
+//   avatar: {
+//     height: "150px",
+//     width: "150px",
 
-    [theme.fn.smallerThan("xs")]: {
-      height: "100px",
-      width: "100px",
-    },
-  },
-}));
+//     [theme.fn.smallerThan("xs")]: {
+//       height: "100px",
+//       width: "100px",
+//     },
+//   },
+// }));
 
 const UserProfileTop = (props: Props) => {
-  const { classes } = useStyles();
   const [, , dataUser] = useAuthenticate();
   return (
     <div>
@@ -41,6 +40,7 @@ const UserProfileTop = (props: Props) => {
             <div className="w-fit flex flex-col items-center">
               <Avatar
                 className={classes.avatar + " boxshadow-custom"}
+                // className={" boxshadow-custom"}
                 radius="lg"
                 src="https://images.unsplash.com/photo-1580273916550-e323be2ae537?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1964&q=80"
               />

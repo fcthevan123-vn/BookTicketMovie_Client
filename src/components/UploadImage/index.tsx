@@ -113,8 +113,8 @@ export function UploadImage({ isResetImg, setIsResetImg, images }: Props) {
       form.setFieldValue("images", fileMerge);
     } else {
       NormalToast({
-        title: "Over quantity files",
-        message: "Please select less than 6 files",
+        title: "Vượt quá số lượng hình ảnh",
+        message: "Hãy chọn không vượt quá 6 hình",
         color: "red",
       });
       setFiles(files);
@@ -171,8 +171,7 @@ export function UploadImage({ isResetImg, setIsResetImg, images }: Props) {
       {files.length > 0 && (
         <div className="mb-8 p-2 rounded-xl">
           <SimpleGrid
-            cols={4}
-            breakpoints={[{ maxWidth: "sm", cols: 1 }]}
+            cols={{ base: 4, sm: 2, lg: 4 }}
             mt={previews.length > 0 ? "xl" : 0}
           >
             {previews}
@@ -183,8 +182,7 @@ export function UploadImage({ isResetImg, setIsResetImg, images }: Props) {
       {files.length === 0 && images && images?.length > 0 && loading && (
         <div className="mb-8 p-2 rounded-xl">
           <SimpleGrid
-            cols={4}
-            breakpoints={[{ maxWidth: "sm", cols: 1 }]}
+            cols={{ base: 4, sm: 2, lg: 4 }}
             mt={previews.length > 0 ? "xl" : 0}
           >
             {images.map((image, index: number) => (
@@ -200,7 +198,7 @@ export function UploadImage({ isResetImg, setIsResetImg, images }: Props) {
         maxSize={5 * 1000000}
         radius="lg"
         accept={IMAGE_MIME_TYPE}
-        sx={{
+        style={{
           width: "100%",
           height: "45px",
           display: "flex",
@@ -212,14 +210,14 @@ export function UploadImage({ isResetImg, setIsResetImg, images }: Props) {
         }}
         onReject={() => {
           NormalToast({
-            title: "Over size fille",
-            message: "Please select image less than 5MB",
+            title: "Kích thước file quá lớn",
+            message: "Hãy chọn file nhỏ hơn 5MB",
             color: "red",
           });
         }}
       >
         <div>
-          <Button size="sm" compact radius="xl">
+          <Button size="compact-sm" radius="xl">
             Thêm hình ảnh
           </Button>
         </div>

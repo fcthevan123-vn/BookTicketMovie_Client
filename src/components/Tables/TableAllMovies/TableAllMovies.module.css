@@ -1,0 +1,24 @@
+.th {
+  padding: 0;
+}
+
+.control {
+  width: 100%;
+  padding: var(--mantine-spacing-xs) var(--mantine-spacing-md);
+  @mixin hover {
+    background-color: light-dark(
+      var(--mantine-color-gray-0),
+      var(--mantine-color-dark-6)
+    );
+  }
+}
+
+.scrollArea {
+  /* @media (max-width: $mantine-breakpoint-xs) {
+    max-width: 350px;
+  }
+  @media (max-width: $mantine-breakpoint-lg) {
+    max-width: 750px;
+  } */
+  /* max-width: 85vw; */
+}

@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { TableAllMovies } from "../../../components/Tables/TableAllMovies";
-import { Pagination, Text, TextInput } from "@mantine/core";
+import { Pagination, Select, Text, TextInput } from "@mantine/core";
 import { movieServices } from "../../../services";
 import { IconSearch, IconX } from "@tabler/icons-react";
-import { useDebouncedValue } from "@mantine/hooks";
+import { useDebouncedValue, useElementSize } from "@mantine/hooks";
 import { useMountEffect } from "../../../hooks";
 import { useMovie } from "../../../components/Provider/MovieProvider/MovieProvider";
 
@@ -35,14 +35,14 @@ const UseFocus = () => {
 };
 
 function AllMoviesPage() {
-  // const [activePage, setPage] = useState(1);
-  // const [totalPagination, setTotalPagination] = useState(1);
-  // const [data, setData] = useState([]);
-  // const [isLoading, setIsLoading] = useState(false);
   const [valueSearch, setValueSearch] = useState("");
   const [debouncedSearch] = useDebouncedValue(valueSearch, 500);
   const [searchInputRef, setSearchInputRef] = UseFocus();
+
+  const { ref, width, height } = useElementSize();
+
   const {
+    setLimitRow,
     isLoading,
     data,
     activePage,
@@ -55,47 +55,6 @@ function AllMoviesPage() {
   } = useMovie();
 
   useMountEffect(() => setSearchInputRef);
-
-  // const getLimitMovies = useCallback(async (atPage: number) => {
-  //   setIsLoading(true);
-  //   try {
-  //     const res = await movieServices.getLimitMovie({
-  //       page: atPage,
-  //       limit: 10,
-  //     });
-  //     if (res.statusCode === 0) {
-  //       const dataConvert = res.data.map(
-  //         (movie: DataTableProps, index: number) => {
-  //           return {
-  //             stt: index + 1,
-  //             id: movie.id,
-  //             title: movie?.title,
-  //             description: movie?.description,
-  //             price: movie?.price,
-  //             directors: movie?.directors,
-  //             actors: movie?.actors,
-  //             language: movie?.language,
-  //             genre: movie?.genre,
-  //             country: movie?.country,
-  //             releaseDate: movie?.releaseDate,
-  //             endDate: movie?.endDate,
-  //             ageRequire: movie?.ageRequire,
-  //             duration: movie?.duration,
-  //             subtitle: movie?.subtitle,
-  //             images: movie?.images,
-  //           };
-  //         }
-  //       );
-  //       setTotalPagination(
-  //         (res.rows / 10) % 1 === 0 ? res.rows / 10 : res.rows / 10 + 1
-  //       );
-  //       setData(dataConvert);
-  //       setIsLoading(false);
-  //     }
-  //   } catch (error) {
-  //     return error;
-  //   }
-  // }, []);
 
   const searchMoviesByTitle = useCallback(
     async (title: string, page: number) => {
@@ -110,7 +69,7 @@ function AllMoviesPage() {
           const dataConvert = res.data.map(
             (movie: DataTableProps, index: number) => {
               return {
-                stt: index + 1,
+                stt: index + 1 + (activePage - 1) * 10,
                 ...movie,
               };
             }
@@ -130,7 +89,7 @@ function AllMoviesPage() {
         return error;
       }
     },
-    []
+    [activePage, setData, setIsLoading, setTotalPagination]
   );
 
   useEffect(() => {
@@ -153,7 +112,10 @@ function AllMoviesPage() {
   ]);
 
   return (
-    <div className="flex flex-col py-5 gap-2 justify-center items-center">
+    <div
+      className="flex flex-col py-5 gap-2 justify-center items-center"
+      ref={ref}
+    >
       <TextInput
         ref={searchInputRef}
         rightSection={
@@ -170,10 +132,14 @@ function AllMoviesPage() {
         disabled={isLoading}
         value={valueSearch}
         onChange={(event) => setValueSearch(event.currentTarget.value)}
-        icon={<IconSearch size="0.9rem" stroke={1.5} />}
+        leftSection={<IconSearch size="0.9rem" stroke={1.5} />}
       />
-
-      <div className="p-5 ">
+      <div
+        className="p-5"
+        style={{
+          maxWidth: width,
+        }}
+      >
         {data.length > 0 ? (
           <>
             <TableAllMovies data={data} isLoading={isLoading}></TableAllMovies>
@@ -184,15 +150,32 @@ function AllMoviesPage() {
           </Text>
         )}
       </div>
-      <div>
-        <Pagination
-          disabled={isLoading}
-          radius="md"
-          value={activePage}
-          withEdges
-          onChange={setActivePage}
-          total={totalPagination}
-        />
+      <div className="flex justify-center items-center w-full px-6 gap-28">
+        <div>
+          <Text mb={"4px"} size="sm">
+            Trang hiện tại
+          </Text>
+          <Pagination
+            disabled={isLoading}
+            radius="md"
+            value={activePage}
+            withEdges
+            onChange={setActivePage}
+            total={totalPagination}
+          />
+        </div>
+        <div className="flex-none">
+          <Text mb={"4px"} size="sm">
+            Số dòng
+          </Text>
+          <Select
+            data={["5", "10", "20", "30", "50"]}
+            defaultValue="10"
+            allowDeselect={false}
+            radius={"md"}
+            onChange={(e) => setLimitRow(e as unknown as number)}
+          />
+        </div>
       </div>
     </div>
   );

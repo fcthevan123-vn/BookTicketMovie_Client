@@ -1,4 +1,4 @@
-import { Anchor, Breadcrumbs, createStyles } from "@mantine/core";
+import { Anchor, Breadcrumbs } from "@mantine/core";
 import { useLocation } from "react-router-dom";
 import { Fragment } from "react";
 import DashboardPage from "./DashboardPage";
@@ -9,17 +9,17 @@ import { MovieProvider } from "../../components/Provider/MovieProvider/MovieProv
 
 type Props = {};
 
-const useStyles = createStyles((theme) => ({
-  root: {
-    padding: "1px 0",
-    margin: "20px",
-    borderRadius: "20px",
-    backgroundColor:
-      theme.colorScheme === "dark" ? theme.colors.dark[5] : "#fff",
-    boxShadow:
-      "rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
-  },
-}));
+// const useStyles = createStyles((theme) => ({
+//   root: {
+//     padding: "1px 0",
+//     margin: "20px",
+//     borderRadius: "20px",
+//     backgroundColor:
+//       theme.colorScheme === "dark" ? theme.colors.dark[5] : "#fff",
+//     boxShadow:
+//       "rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
+//   },
+// }));
 
 const allPath = [
   {
@@ -59,7 +59,6 @@ const allPath = [
 ];
 
 const AdminPage = (props: Props) => {
-  const { classes } = useStyles();
   const location = useLocation();
   const urlConverted = location.pathname.replace(/-/g, "");
   console.log(urlConverted);
@@ -70,7 +69,7 @@ const AdminPage = (props: Props) => {
         <Fragment key={path.urlInclude}>
           <Breadcrumbs className="pt-3 px-6">
             {path.breadcrumbs.map((item, index) => (
-              <Anchor aria-disabled italic href={item.href} key={index}>
+              <Anchor aria-disabled href={item.href} key={index}>
                 {item.title}
               </Anchor>
             ))}
@@ -81,7 +80,8 @@ const AdminPage = (props: Props) => {
     }
   });
 
-  return <div className={classes.root}>{element}</div>;
+  // return <div className={classes.root}>{element}</div>;
+  return <div>{element}</div>;
 };
 
 export default AdminPage;

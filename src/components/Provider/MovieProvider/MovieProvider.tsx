@@ -26,6 +26,8 @@ type MovieContextType = {
   data: DataTableProps[];
   totalPagination: number;
   activePage: number;
+  limitRow: number;
+  setLimitRow: (limitRow: number) => void;
   setActivePage: (activePage: number) => void;
   setIsLoading: (isLoading: boolean) => void;
   setData: (data: DataTableProps[]) => void;
@@ -39,40 +41,48 @@ export function MovieProvider({ children }: { children: React.ReactNode }) {
   const [activePage, setActivePage] = useState(1);
   const [data, setData] = useState<DataTableProps[]>([]);
   const [totalPagination, setTotalPagination] = useState(1);
+  const [limitRow, setLimitRow] = useState(10);
 
-  const getLimitMovies = useCallback(async (atPage: number) => {
-    setIsLoading(true);
-    try {
-      const res = await movieServices.getLimitMovie({
-        page: atPage,
-        limit: 10,
-      });
-      if (res.statusCode === 0) {
-        const dataConvert = res.data.map(
-          (movie: DataTableProps, index: number) => {
-            return {
-              stt: index + 1,
-              ...movie,
-            };
-          }
-        );
+  const getLimitMovies = useCallback(
+    async (atPage: number) => {
+      setIsLoading(true);
+      try {
+        const res = await movieServices.getLimitMovie({
+          page: atPage,
+          limit: limitRow,
+        });
+        if (res.statusCode === 0) {
+          const dataConvert = res.data.map(
+            (movie: DataTableProps, index: number) => {
+              return {
+                stt: index + 1 + (activePage - 1) * limitRow,
+                ...movie,
+              };
+            }
+          );
 
-        setTotalPagination(
-          (res.rows / 10) % 1 === 0 ? res.rows / 10 : res.rows / 10 + 1
-        );
-        setData(dataConvert);
+          setTotalPagination(
+            (res.rows / limitRow) % 1 === 0
+              ? res.rows / limitRow
+              : res.rows / limitRow + 1
+          );
+          setData(dataConvert);
+          setIsLoading(false);
+        }
+      } catch (error) {
+        // Xử lý lỗi ở đây
+        console.error(error);
         setIsLoading(false);
       }
-    } catch (error) {
-      // Xử lý lỗi ở đây
-      console.error(error);
-      setIsLoading(false);
-    }
-  }, []);
+    },
+    [activePage, limitRow]
+  );
 
   return (
     <MovieContext.Provider
       value={{
+        limitRow,
+        setLimitRow,
         activePage,
         setActivePage,
         isLoading,

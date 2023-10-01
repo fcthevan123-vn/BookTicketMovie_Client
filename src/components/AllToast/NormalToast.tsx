@@ -11,11 +11,6 @@ const NormalToast = ({ title, message, color }: Props) => {
     title: title,
     message: message,
     withBorder: true,
-    styles: () => ({
-      root: {
-        "&::before": { width: "9px" },
-      },
-    }),
     color: color,
     radius: "md",
   });

@@ -1,5 +1,5 @@
 import { ReactNode, useCallback, useEffect } from "react";
-import "./GlobalStyles.scss";
+import "./GlobalStyles.css";
 import { userServices } from "../../services";
 import { useDispatch } from "react-redux";
 import { userSlice } from "../../redux/reducers";

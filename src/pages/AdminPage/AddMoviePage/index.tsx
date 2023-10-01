@@ -1,5 +1,12 @@
-import { Button, TextInput, Textarea, MultiSelect } from "@mantine/core";
-import { useState } from "react";
+import {
+  Button,
+  TextInput,
+  Textarea,
+  MultiSelect,
+  TagsInput,
+  Select,
+} from "@mantine/core";
+import { useEffect, useMemo, useState } from "react";
 import { UploadImage } from "../../../components/UploadImage";
 import { DateInput } from "@mantine/dates";
 import moment from "moment";
@@ -10,54 +17,13 @@ import {
   useMovieForm,
 } from "../../../components/Forms/FormProvider/FormProvider";
 
-const dataGenreMovie = [
-  "Hành động",
-  "Hài kịch",
-  "Kịch tính",
-  "Khoa học viễn tưởng",
-  "Fantasy",
-  "Kinh dị",
-  "Lãng mạn",
-  "Phiêu lưu",
-  "Kịch",
-  "Hoạt hình",
-  "Bí ẩn",
-  "Tội phạm",
-  "Tài liệu",
-  "Miền Tây",
-  "Âm nhạc",
-  "Lịch sử",
-  "Tiểu sử",
-  "Chiến tranh",
-  "Gia đình",
-  "Thể thao",
-  "Siêu anh hùng",
-  "Ngày lễ",
-  "Phim cổ điển đen trắng",
-  "Tuổi teen",
-  "Siêu thực",
-  "Giả tưởng",
-  "Thể loại giả tưởng",
-  "Thử nghiệm",
-  "Không tiếng",
-  "Parody",
-];
-
-const dataSubtitle = [
-  "Việt Nam",
-  "Anh",
-  "Trung Quốc",
-  "Pháp",
-  "Tây Ban Nha",
-  "Bồ Đào Nha",
-  "Ấn Độ",
-  "Nhật Bản",
-  "Hàn Quốc",
-  "Indonesian",
-  "Nga",
-  "Thái Lan",
-  "Mỹ",
-];
+import classes from "./AllMoviePage.module.css";
+import {
+  IconBadgeCc,
+  IconFlag,
+  IconLanguage,
+  IconList,
+} from "@tabler/icons-react";
 
 // interface dataSelectProps {
 //   value: string;
@@ -67,9 +33,63 @@ const dataSubtitle = [
 
 const AddMoviePage = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [searchValue, onSearchChange] = useState("");
-  const [searchValueSubtitle, onSearchChangeSubtitle] = useState("");
+
   const [isResetImg, setIsResetImg] = useState(false);
+
+  const dataSubtitle = useMemo(
+    () => [
+      "Việt Nam",
+      "Anh",
+      "Trung Quốc",
+      "Pháp",
+      "Tây Ban Nha",
+      "Bồ Đào Nha",
+      "Ấn Độ",
+      "Nhật Bản",
+      "Hàn Quốc",
+      "Indonesian",
+      "Nga",
+      "Thái Lan",
+      "Mỹ",
+    ],
+    []
+  );
+
+  const dataGenreMovie = useMemo(
+    () => [
+      "Hành động",
+      "Hài kịch",
+      "Kịch tính",
+      "Khoa học viễn tưởng",
+      "Fantasy",
+      "Kinh dị",
+      "Lãng mạn",
+      "Phiêu lưu",
+      "Kịch",
+      "Hoạt hình",
+      "Bí ẩn",
+      "Tội phạm",
+      "Tài liệu",
+      "Miền Tây",
+      "Âm nhạc",
+      "Lịch sử",
+      "Tiểu sử",
+      "Chiến tranh",
+      "Gia đình",
+      "Thể thao",
+      "Siêu anh hùng",
+      "Ngày lễ",
+      "Phim cổ điển đen trắng",
+      "Tuổi teen",
+      "Siêu thực",
+      "Giả tưởng",
+      "Thể loại giả tưởng",
+      "Thử nghiệm",
+      "Không tiếng",
+      "Parody",
+    ],
+    []
+  );
 
   const [dataActors, setDataActors] = useState([
     {
@@ -87,23 +107,9 @@ const AddMoviePage = () => {
     },
   ]);
 
-  const [dataLanguage, setDataLanguage] = useState(
-    dataSubtitle.map((data) => {
-      return {
-        value: data,
-        label: data,
-      };
-    })
-  );
+  // const [dataLanguage, setDataLanguage] = useState(dataSubtitle);
 
-  const [dataCountry, setDataCountry] = useState(
-    dataSubtitle.map((data) => {
-      return {
-        value: data,
-        label: data,
-      };
-    })
-  );
+  // const [dataCountry, setDataCountry] = useState(dataSubtitle);
 
   const form = useMovieForm({
     initialValues: {
@@ -197,6 +203,7 @@ const AddMoviePage = () => {
     <div className="h-full">
       <MovieFormProvider form={form}>
         {/* {console.log("value", form.values.actors)} */}
+
         <form onSubmit={form.onSubmit(() => handleSubmit(form.values))}>
           <p className="text-xl font-medium text-sky-500 ms-6 mt-6">
             Thêm phim mới
@@ -225,47 +232,31 @@ const AddMoviePage = () => {
                     {...form.getInputProps("description")}
                   />
 
-                  <MultiSelect
-                    label="Đạo diễn"
-                    data={dataDirectors}
-                    placeholder="Đạo diễn"
-                    searchable
-                    withAsterisk
+                  <TagsInput
                     radius="md"
-                    creatable
-                    clearable
+                    label="Đạo diễn"
+                    withAsterisk
+                    description="Tối đa 3 người"
+                    placeholder="Enter để thêm đạo diễn"
                     {...form.getInputProps("directors")}
-                    getCreateLabel={(query) => `+ Thêm ${query}`}
-                    onCreate={(query) => {
-                      const item = {
-                        value: query,
-                        label: query,
-                        disabled: false,
-                      };
-                      setDataDirectors((current) => [...current, item]);
-                      return item;
+                    data={dataDirectors}
+                    maxTags={3}
+                    classNames={{
+                      dropdown: classes.dropdownMenu,
                     }}
                   />
 
-                  <MultiSelect
-                    label="Diễn viên"
-                    data={dataActors}
-                    placeholder="Diễn viên"
-                    searchable
+                  <TagsInput
                     radius="md"
+                    label="Diễn viên"
                     withAsterisk
+                    description="Tối đa 10 người"
+                    placeholder="Enter để thêm diễn viên"
                     {...form.getInputProps("actors")}
-                    clearable
-                    creatable
-                    getCreateLabel={(query) => `+ Thêm ${query}`}
-                    onCreate={(query) => {
-                      const item = {
-                        value: query,
-                        label: query,
-                        disabled: false,
-                      };
-                      setDataActors((current) => [...current, item]);
-                      return item;
+                    data={dataActors}
+                    maxTags={10}
+                    classNames={{
+                      dropdown: classes.dropdownMenu,
                     }}
                   />
 
@@ -317,78 +308,58 @@ const AddMoviePage = () => {
             <div className="w-1/2 ">
               <div className="flex flex-col gap-3">
                 <div className="flex gap-2">
-                  <MultiSelect
+                  <Select
                     label="Ngôn ngữ"
                     className="w-1/2"
-                    data={dataLanguage}
-                    placeholder="Ngôn ngữ"
-                    searchable
-                    radius="md"
-                    withAsterisk
-                    maxSelectedValues={1}
                     {...form.getInputProps("language")}
-                    clearable
-                    creatable
-                    getCreateLabel={(query) => `+ Thêm ${query}`}
-                    onCreate={(query) => {
-                      const item = {
-                        value: query,
-                        label: query,
-                      };
-                      setDataLanguage((current) => [...current, item]);
-                      return item;
+                    placeholder="Chọn ngôn ngữ"
+                    leftSection={<IconLanguage size={"20px"}></IconLanguage>}
+                    data={dataSubtitle}
+                    radius={"md"}
+                    classNames={{
+                      dropdown: classes.dropdownMenu,
                     }}
                   />
 
-                  <MultiSelect
+                  <Select
                     label="Quốc gia"
                     className="w-1/2"
-                    data={dataCountry}
-                    placeholder="Quốc gia"
-                    searchable
-                    radius="md"
-                    withAsterisk
-                    maxSelectedValues={1}
+                    leftSection={<IconFlag size={"20px"}></IconFlag>}
                     {...form.getInputProps("country")}
-                    clearable
-                    creatable
-                    getCreateLabel={(query) => `+ Thêm ${query}`}
-                    onCreate={(query) => {
-                      const item = {
-                        value: query,
-                        label: query,
-                      };
-                      setDataCountry((current) => [...current, item]);
-                      return item;
+                    placeholder="Chọn quốc gia"
+                    data={dataSubtitle}
+                    radius={"md"}
+                    classNames={{
+                      dropdown: classes.dropdownMenu,
                     }}
                   />
                 </div>
 
-                <MultiSelect
-                  data={dataSubtitle}
+                <Select
                   label="Phụ đề"
-                  placeholder="Chọn phụ đề"
-                  searchable
-                  searchValue={searchValueSubtitle}
-                  onSearchChange={onSearchChangeSubtitle}
+                  leftSection={<IconBadgeCc size={"20px"}></IconBadgeCc>}
                   {...form.getInputProps("subtitle")}
-                  clearable
-                  radius="md"
-                  maxSelectedValues={1}
+                  placeholder="Chọn phụ đề"
+                  data={dataSubtitle}
+                  radius={"md"}
+                  classNames={{
+                    dropdown: classes.dropdownMenu,
+                  }}
                 />
 
                 <MultiSelect
-                  data={dataGenreMovie}
                   label="Thể loại"
-                  {...form.getInputProps("genre")}
                   placeholder="Chọn thể loại cho bộ phim"
+                  leftSection={<IconList size={"20px"}></IconList>}
+                  data={dataGenreMovie}
+                  {...form.getInputProps("genre")}
                   searchable
-                  searchValue={searchValue}
-                  onSearchChange={onSearchChange}
-                  nothingFound="Không tìm thấy"
-                  clearable
-                  radius="md"
-                  maxSelectedValues={3}
+                  radius={"md"}
+                  nothingFoundMessage="Không tìm thấy"
+                  classNames={{
+                    dropdown: classes.dropdownMenu,
+                  }}
+                  maxValues={3}
                 />
 
                 <TextInput

@@ -1,20 +1,12 @@
-import { Button, Divider, Grid, createStyles } from "@mantine/core";
+import { Button, Divider, Grid } from "@mantine/core";
 import { AiOutlineEdit } from "react-icons/ai";
 import { useAuthenticate } from "../../../../hooks";
 import { useDisclosure } from "@mantine/hooks";
 import ModalUpdateInformation from "../ModalUpdateInformation";
 
-const useStyles = createStyles((theme) => ({
-  // textInput: {
-  //   fontFamily: "Poppins",
-  //   fontSize: "24px",
-  // },
-}));
-
 type Props = {};
 
 const UserProfileInformation = (props: Props) => {
-  const { classes } = useStyles();
   const [opened, { open, close }] = useDisclosure(false);
   const [, , dataUser] = useAuthenticate();
 
