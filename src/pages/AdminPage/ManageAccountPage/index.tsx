@@ -9,36 +9,48 @@ import {
   Text,
   Button,
   Skeleton,
-  Modal,
+  Tooltip,
 } from "@mantine/core";
 import { modals } from "@mantine/modals";
-import { IconPencil, IconTrash } from "@tabler/icons-react";
+import {
+  IconAdjustments,
+  IconCaretDownFilled,
+  IconPencil,
+  IconTrash,
+} from "@tabler/icons-react";
 import FormUser from "../../../components/Forms/FormUser";
 import { userServices } from "../../../services";
 import { useEffect, useState } from "react";
-
-type Props = {};
+import { loadingApi } from "../../../untils/loadingApi";
+import FilterHeaderTable from "../../../components/FilterHeaderTable";
 
 type userProps = {
   fullName: string;
   type: string;
   email: string;
-  phone: number;
-  sex: number;
+  phone: string;
+  sex: string;
   address: string;
   id?: string;
+  age: number;
 };
 
 const jobColors: Record<string, string> = {
-  engineer: "blue",
-  manager: "cyan",
-  designer: "pink",
+  user: "blue",
+  admin: "orange",
+  manager: "pink",
+  employee: "green",
 };
 
-function ManageAccountPage({}: Props) {
+function ManageAccountPage() {
   const [data, setData] = useState<userProps[]>();
+  const [isLoading, setIsLoading] = useState(false);
 
-  const modalEditUser = (title: string, isUpdate: boolean) =>
+  const modalEditUser = (
+    title: string,
+    isUpdate: boolean,
+    rowData: userProps | undefined
+  ) =>
     modals.open({
       title: (
         <Text c="blue" fw={500}>
@@ -47,22 +59,66 @@ function ManageAccountPage({}: Props) {
       ),
       children: (
         <>
-          <FormUser isUpdate={isUpdate}></FormUser>
+          <FormUser
+            isUpdate={isUpdate}
+            data={rowData}
+            apiFetch={handleGetAllUsers}
+          ></FormUser>
         </>
       ),
       lockScroll: false,
       radius: "lg",
     });
 
+  const modalDeleteUser = (idUser: string) =>
+    modals.openConfirmModal({
+      title: (
+        <Text c="red" fw={600}>
+          Xoá tài khoản
+        </Text>
+      ),
+
+      lockScroll: false,
+      radius: "lg",
+      children: (
+        <Text size="sm">
+          Tài khoản sẽ bị xoá vĩnh viễn và không thể khôi phục lại.
+        </Text>
+      ),
+      labels: { confirm: "Xoá", cancel: "Huỷ" },
+      cancelProps: { radius: "md", size: "sm" },
+      confirmProps: {
+        color: "red",
+        radius: "md",
+        size: "sm",
+      },
+
+      onConfirm: () => handleDeleteUser(idUser),
+    });
+
   async function handleGetAllUsers() {
     try {
-      const res = await userServices.getAllUsersByRule(5, 1);
+      const res = await userServices.getAllUsersByRule(20, 1);
       if (res.statusCode === 0) {
         setData(res.data);
       }
     } catch (error) {
       console.log(error);
     }
+  }
+
+  async function handleDeleteUser(id: string) {
+    setIsLoading(true);
+    const api = userServices.deleteUserById(id);
+
+    const res = await loadingApi(api, "Xoá tài khoản");
+    setIsLoading(false);
+    if (res) {
+      modals.closeAll();
+      handleGetAllUsers();
+    }
+
+    return res;
   }
 
   const rows = data ? (
@@ -77,7 +133,7 @@ function ManageAccountPage({}: Props) {
               }
               radius={30}
             />
-            <Text fz="sm" fw={500}>
+            <Text fz="sm" fw={500} truncate="end" w={120}>
               {item.fullName}
             </Text>
           </Group>
@@ -85,7 +141,13 @@ function ManageAccountPage({}: Props) {
 
         <Table.Td>
           <Badge color={jobColors[item.type.toLowerCase()]} variant="light">
-            {item.type}
+            {item.type == "admin"
+              ? "Quản trị viên"
+              : item.type == "manager"
+              ? "Quản lý"
+              : item.type == "employee"
+              ? "Nhân viên"
+              : "Người dùng"}
           </Badge>
         </Table.Td>
         <Table.Td>
@@ -98,34 +160,46 @@ function ManageAccountPage({}: Props) {
         </Table.Td>
         <Table.Td>
           <Text fz="sm" ta={"center"}>
-            18
+            {item.age}
           </Text>
         </Table.Td>
         <Table.Td>
           <Text fz="sm" ta={"center"}>
-            Nam
+            {item.sex == "0" ? "Nam" : "Nữ"}
           </Text>
         </Table.Td>
         <Table.Td>
-          <Text fz="sm">Can Tho, Viet Nam</Text>
+          <Tooltip label={item.address}>
+            <Text fz="sm" truncate="end" w={200}>
+              {item.address}
+            </Text>
+          </Tooltip>
         </Table.Td>
         <Table.Td>
           <Group gap={5} justify="center">
             <ActionIcon
-              onClick={() => modalEditUser("Chỉnh sửa tài khoản", true)}
+              onClick={() => modalEditUser("Chỉnh sửa tài khoản", true, item)}
               variant="light"
               color="blue"
               radius={"md"}
+              loading={isLoading}
             >
               <IconPencil
                 style={{ width: rem(16), height: rem(16) }}
                 stroke={1.5}
               />
             </ActionIcon>
-            <ActionIcon variant="light" color="red" radius={"md"}>
+            <ActionIcon
+              variant="light"
+              color="red"
+              loading={isLoading}
+              radius={"md"}
+              onClick={() => modalDeleteUser(item.id as string)}
+            >
               <IconTrash
                 style={{ width: rem(16), height: rem(16) }}
                 stroke={1.5}
+                onClick={() => modalDeleteUser(item.id as string)}
               />
             </ActionIcon>
           </Group>
@@ -166,41 +240,41 @@ function ManageAccountPage({}: Props) {
   }, []);
 
   return (
-    <div className="sm:mx-5">
-      {/* <Modal opened={opened} onClose={close} title="Authentication">
-       <FormUser isUpdate={isUpdate}></FormUser>
-      </Modal> */}
-
+    <div>
       <div className="flex justify-end">
         <Button
           size="compact-sm"
           variant="filled"
-          my={"lg"}
+          mb={"lg"}
           radius={"md"}
-          onClick={() => modalEditUser("Thêm tài khoản mới", false)}
+          onClick={() => modalEditUser("Thêm tài khoản mới", false, undefined)}
         >
           Thêm tài khoản
         </Button>
       </div>
-      <Table.ScrollContainer minWidth={800}>
-        <div className="border border-gray-300 rounded-lg overflow-hidden shadow-sm">
-          <Table striped withColumnBorders verticalSpacing="sm">
-            <Table.Thead>
-              <Table.Tr>
-                <Table.Th>Người dùng</Table.Th>
-                <Table.Th>Vị trí</Table.Th>
-                <Table.Th>Email</Table.Th>
-                <Table.Th>Số điện thoại</Table.Th>
-                <Table.Th ta={"center"}>Tuổi</Table.Th>
-                <Table.Th ta={"center"}>Giới tính</Table.Th>
-                <Table.Th>Địa chỉ</Table.Th>
-                <Table.Th />
-              </Table.Tr>
-            </Table.Thead>
-            <Table.Tbody>{rows}</Table.Tbody>
-          </Table>
-        </div>
-      </Table.ScrollContainer>
+      <div className="border border-gray-300 rounded-lg overflow-hidden shadow-sm">
+        <Table.ScrollContainer minWidth={800}>
+          <div>
+            <Table striped withColumnBorders verticalSpacing="sm">
+              <Table.Thead>
+                <Table.Tr>
+                  <Table.Th>Người dùng</Table.Th>
+                  <Table.Th>
+                    <FilterHeaderTable></FilterHeaderTable>
+                  </Table.Th>
+                  <Table.Th>Email</Table.Th>
+                  <Table.Th>Số điện thoại</Table.Th>
+                  <Table.Th ta={"center"}>Tuổi</Table.Th>
+                  <Table.Th ta={"center"}>Giới tính</Table.Th>
+                  <Table.Th>Địa chỉ</Table.Th>
+                  <Table.Th />
+                </Table.Tr>
+              </Table.Thead>
+              <Table.Tbody>{rows}</Table.Tbody>
+            </Table>
+          </div>
+        </Table.ScrollContainer>
+      </div>
     </div>
   );
 }

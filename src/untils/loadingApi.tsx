@@ -35,7 +35,7 @@ export async function loadingApi(api: Promise<ResData>, actionTitle: string) {
       if (err.response) {
         const errorMsg = err.response.data.message;
         notifications.update({
-          id: "load-data",
+          id,
           title: actionTitle,
           message: errorMsg || "Đã có lỗi xảy ra",
           withBorder: true,

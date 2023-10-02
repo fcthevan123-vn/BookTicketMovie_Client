@@ -8,110 +8,13 @@ import {
   Center,
   Divider,
   ActionIcon,
+  Box,
+  Badge,
 } from "@mantine/core";
 import Autoplay from "embla-carousel-autoplay";
 import { AiFillFire } from "react-icons/ai";
 import { useRef } from "react";
 import classes from "./TrendingMovie.module.css";
-
-// const useStyles = createStyles((theme) => ({
-//   root: {
-//     // backgroundColor: "#11284b",
-//     backgroundSize: "cover",
-//     backgroundPosition: "center",
-
-//     // backgroundImage:
-//     //   "linear-gradient(250deg, rgba(130, 201, 30, 0) 0%, #062343 70%), url(https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1080&q=80)",
-//     // paddingBottom: `calc(${theme.spacing.xl} * 3)`,
-//   },
-
-//   inner: {
-//     // position: "absolute",
-//     // zIndex: 10,
-//     // top: "50%",
-//     // transform: "translate(0, -50%)",
-//     // left: 30,
-//     height: "100%",
-//     display: "flex",
-//     justifyContent: "space-between",
-
-//     [theme.fn.smallerThan("md")]: {
-//       flexDirection: "column",
-//     },
-//   },
-
-//   carousel: {
-//     borderRadius: theme.radius.lg,
-//     overflow: "hidden",
-//     height: rem(500),
-//     display: "flex",
-//     [theme.fn.smallerThan("sm")]: {
-//       height: rem(420),
-//     },
-//   },
-
-//   carouselSlide: {
-//     display: "flex",
-//     justifyContent: "center",
-//     borderRadius: theme.radius.lg,
-//     overflow: "hidden",
-//   },
-
-//   image: {
-//     [theme.fn.smallerThan("md")]: {
-//       display: "none",
-//     },
-//   },
-
-//   content: {
-//     paddingTop: `calc(${theme.spacing.xl} * 2)`,
-//     paddingBottom: `calc(${theme.spacing.xl} * 2)`,
-//     marginRight: `calc(${theme.spacing.xl} * 3)`,
-
-//     [theme.fn.smallerThan("md")]: {
-//       marginRight: 0,
-//     },
-//   },
-
-//   title: {
-//     color: theme.white,
-//     fontFamily: `Greycliff CF, ${theme.fontFamily}`,
-//     fontWeight: 900,
-//     lineHeight: 1.05,
-//     maxWidth: rem(500),
-//     fontSize: rem(48),
-
-//     [theme.fn.smallerThan("md")]: {
-//       maxWidth: "100%",
-//       fontSize: rem(34),
-//       lineHeight: 1.15,
-//     },
-//   },
-
-//   description: {
-//     color: theme.white,
-//     opacity: 1,
-//     maxWidth: rem(500),
-
-//     [theme.fn.smallerThan("md")]: {
-//       maxWidth: "100%",
-//     },
-//   },
-
-//   control: {
-//     paddingLeft: rem(50),
-//     paddingRight: rem(50),
-//     fontFamily: `Greycliff CF, ${theme.fontFamily}`,
-//     fontSize: rem(22),
-
-//     [theme.fn.smallerThan("sm")]: {
-//       width: "100%",
-//     },
-//   },
-//   devider: {
-//     color: "red",
-//   },
-// }));
 
 const images = [
   "https://images.unsplash.com/photo-1521714161819-15534968fc5f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
@@ -183,25 +86,19 @@ export function TrendingMovie() {
             size="sm"
             my="xs"
             label={
-              <Text
-                component="span"
-                variant="gradient"
-                gradient={{ from: "#f74c06", to: "#f9bc2c", deg: 45 }}
-                ta="center"
-                fz="xl"
-                fw={700}
-              >
-                <div className="flex gap-2">
-                  <ActionIcon
-                    radius="md"
-                    variant="gradient"
-                    gradient={{ from: "#f74c06", to: "#f9bc2c", deg: 45 }}
-                  >
-                    <AiFillFire size="1.125rem" />
-                  </ActionIcon>
-                  <p>Phim phổ biến</p>
-                </div>
-              </Text>
+              <Box className={classes.badgeTrendingMovie}>
+                <Badge
+                  size="xl"
+                  variant="gradient"
+                  gradient={{ from: "pink", to: "orange", deg: 90 }}
+                  style={{
+                    textTransform: "none",
+                  }}
+                  leftSection={<AiFillFire size="1.125rem" />}
+                >
+                  <Text fw={500}>Phim phổ biến</Text>
+                </Badge>
+              </Box>
             }
             orientation="horizontal"
             labelPosition="center"

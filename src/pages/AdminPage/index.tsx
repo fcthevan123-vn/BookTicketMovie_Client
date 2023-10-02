@@ -6,6 +6,7 @@ import AddMoviePage from "./AddMoviePage";
 import AllMoviesPage from "./AllMoviesPage";
 import { MovieProvider } from "../../components/Provider/MovieProvider/MovieProvider";
 import ManageAccountPage from "./ManageAccountPage";
+import TableFilterProvider from "../../components/Provider/TableFilterProvider";
 
 type Props = {};
 
@@ -50,7 +51,11 @@ const allPath = [
       { title: "Admin", href: "/admin/dashboard" },
       { title: "Manage Account", href: "#" },
     ],
-    jsx: <ManageAccountPage></ManageAccountPage>,
+    jsx: (
+      <TableFilterProvider>
+        <ManageAccountPage></ManageAccountPage>
+      </TableFilterProvider>
+    ),
   },
 ];
 
@@ -69,7 +74,7 @@ const AdminPage = (props: Props) => {
               </Anchor>
             ))}
           </Breadcrumbs>
-          {path.jsx}
+          <div className="px-6">{path.jsx}</div>
         </Fragment>
       );
     }
