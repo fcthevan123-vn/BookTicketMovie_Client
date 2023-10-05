@@ -6,9 +6,44 @@ import AddMoviePage from "./AddMoviePage";
 import AllMoviesPage from "./AllMoviesPage";
 import { MovieProvider } from "../../components/Provider/MovieProvider/MovieProvider";
 import ManageAccountPage from "./ManageAccountPage";
-import TableFilterProvider from "../../components/Provider/TableFilterProvider";
+import { TableFilterProvider } from "../../components/Provider/TableFilterProvider";
 
 type Props = {};
+
+type userRows = {
+  fullName: React.ReactNode;
+  type: React.ReactNode;
+  email: React.ReactNode;
+  phone: React.ReactNode;
+  sex: React.ReactNode;
+  address: React.ReactNode;
+  id?: React.ReactNode;
+  age: React.ReactNode;
+};
+
+type RowType = {
+  fullName: string;
+  type: string;
+  email: string;
+  phone: string;
+  age: number;
+  sex: string;
+  address: string;
+  actions: string;
+};
+
+const intinialUserData = [
+  {
+    fullName: "",
+    type: "",
+    email: "",
+    phone: "",
+    sex: "",
+    address: "",
+    id: "",
+    age: "",
+  },
+];
 
 const allPath = [
   {
@@ -52,7 +87,7 @@ const allPath = [
       { title: "Manage Account", href: "#" },
     ],
     jsx: (
-      <TableFilterProvider>
+      <TableFilterProvider<userRows> initialData={intinialUserData}>
         <ManageAccountPage></ManageAccountPage>
       </TableFilterProvider>
     ),

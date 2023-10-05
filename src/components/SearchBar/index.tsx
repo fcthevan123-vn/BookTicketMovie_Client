@@ -4,23 +4,38 @@ import {
   rem,
   ActionIcon,
   TextInputProps,
-  Select,
 } from "@mantine/core";
 import { IconArrowRight, IconSearch } from "@tabler/icons-react";
+import { useState } from "react";
+import { useTableCustom } from "../Provider/TableFilterProvider";
+import { IconX } from "@tabler/icons-react";
 
 // type Props = {};
 
 function SearchBar(props: TextInputProps) {
   const theme = useMantineTheme();
+  const [searchValue, setSearchValue] = useState("");
+
+  const { setCurrentSearchValue, isLoading } = useTableCustom();
 
   return (
     <div className="my-5 flex justify-between items-center">
       <TextInput
+        disabled={isLoading}
         radius="md"
         size="sm"
-        description="Enter hoặc nhấn để tìm kiếm"
+        value={searchValue}
+        onChange={(e) => {
+          if (e.target.value.length > 0) {
+            setSearchValue(e.target.value);
+          } else {
+            setSearchValue(e.target.value);
+            setCurrentSearchValue(e.target.value);
+          }
+        }}
+        description="Enter hoặc nhấn nút để tìm kiếm"
         placeholder="Tìm kiếm"
-        rightSectionWidth={35}
+        rightSectionWidth={65}
         leftSection={
           <IconSearch
             style={{ width: rem(18), height: rem(18) }}
@@ -28,18 +43,38 @@ function SearchBar(props: TextInputProps) {
           />
         }
         w={"30vw"}
+        onKeyDownCapture={(event) => {
+          if (event.nativeEvent.code === "Enter") {
+            setCurrentSearchValue(searchValue);
+          }
+        }}
         rightSection={
-          <ActionIcon
-            size={28}
-            radius="md"
-            color={theme.primaryColor}
-            variant="filled"
-          >
-            <IconArrowRight
-              style={{ width: rem(18), height: rem(18) }}
-              stroke={1.5}
-            />
-          </ActionIcon>
+          <div className="flex gap-1">
+            <ActionIcon
+              onClick={() => {
+                setCurrentSearchValue("");
+                setSearchValue("");
+              }}
+              size={28}
+              radius="md"
+              color="gray"
+              variant="light"
+            >
+              <IconX style={{ width: rem(18), height: rem(18) }} stroke={1.5} />
+            </ActionIcon>
+            <ActionIcon
+              onClick={() => setCurrentSearchValue(searchValue)}
+              size={28}
+              radius="md"
+              color={theme.primaryColor}
+              variant="light"
+            >
+              <IconArrowRight
+                style={{ width: rem(18), height: rem(18) }}
+                stroke={1.5}
+              />
+            </ActionIcon>
+          </div>
         }
         {...props}
       />

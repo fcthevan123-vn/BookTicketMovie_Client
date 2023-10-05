@@ -52,6 +52,12 @@ const userServices = {
     );
     return res.data;
   },
+  async searchUserByAdmin(name: string, page: number, limit: number) {
+    const res = await axios.get(
+      `api/v1/user/search-by-admin?name=${name}&page=${page}&limit=${limit}`
+    );
+    return res.data;
+  },
 };
 
 export default userServices;
