@@ -1,7 +1,7 @@
 import React, { createContext, useCallback, useContext, useState } from "react";
 import { movieServices } from "../../../services";
 
-type DataTableProps = {
+export type DataTableMoviesProps = {
   images: { imageName: string; imageUrl: string }[];
   ageRequire: string;
   duration: string;
@@ -23,14 +23,14 @@ type DataTableProps = {
 type MovieContextType = {
   isLoading: boolean;
   getLimitMovies: (atPage: number) => Promise<void>;
-  data: DataTableProps[];
+  data: DataTableMoviesProps[];
   totalPagination: number;
   activePage: number;
   limitRow: number;
   setLimitRow: (limitRow: number) => void;
   setActivePage: (activePage: number) => void;
   setIsLoading: (isLoading: boolean) => void;
-  setData: (data: DataTableProps[]) => void;
+  setData: (data: DataTableMoviesProps[]) => void;
   setTotalPagination: (totalPagination: number) => void;
 };
 
@@ -39,7 +39,7 @@ const MovieContext = createContext<MovieContextType | undefined>(undefined);
 export function MovieProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(false);
   const [activePage, setActivePage] = useState(1);
-  const [data, setData] = useState<DataTableProps[]>([]);
+  const [data, setData] = useState<DataTableMoviesProps[]>([]);
   const [totalPagination, setTotalPagination] = useState(1);
   const [limitRow, setLimitRow] = useState(10);
 
@@ -53,7 +53,7 @@ export function MovieProvider({ children }: { children: React.ReactNode }) {
         });
         if (res.statusCode === 0) {
           const dataConvert = res.data.map(
-            (movie: DataTableProps, index: number) => {
+            (movie: DataTableMoviesProps, index: number) => {
               return {
                 stt: index + 1 + (activePage - 1) * limitRow,
                 ...movie,

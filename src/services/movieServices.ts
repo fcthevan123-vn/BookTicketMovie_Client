@@ -167,6 +167,16 @@ const movieServices = {
     const res = await axios.delete(`api/v1/movie/delete/${id}`);
     return res.data;
   },
+
+  async getTrendingMovies() {
+    const res = await axios.get(`api/v1/movie/trending-movies`);
+    return res.data;
+  },
+
+  async getActiveMovies() {
+    const res = await axios.get(`api/v1/movie/active-movies`);
+    return res.data;
+  },
 };
 
 export default movieServices;

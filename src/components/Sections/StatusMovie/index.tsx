@@ -15,33 +15,7 @@ import MotiveItem from "../../MovieItem";
 import { useRef } from "react";
 import Autoplay from "embla-carousel-autoplay";
 import classes from "./StatusMovie.module.css";
-
-// const useStyles = createStyles((theme) => ({
-//   root: {
-//     backgroundColor:
-//       theme.colorScheme === "dark" ? theme.colors.dark[6] : theme.white,
-//     boxShadow: theme.shadows.md,
-//     border: `${rem(1)} solid ${
-//       theme.colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[1]
-//     }`,
-//   },
-
-//   indicator: {
-//     backgroundImage: theme.fn.gradient({ from: "pink", to: "orange" }),
-//   },
-
-//   control: {
-//     border: "0 !important",
-//   },
-
-//   label: {
-//     "&, &:hover": {
-//       "&[data-active]": {
-//         color: theme.white,
-//       },
-//     },
-//   },
-// }));
+import { DataTableMoviesProps } from "../../Provider/MovieProvider/MovieProvider";
 
 const data = [
   {
@@ -82,15 +56,25 @@ const data = [
   },
 ];
 
-export function StatusMovie() {
+interface StatusMovieProps {
+  dataTrendingMovies: DataTableMoviesProps[] | undefined;
+}
+
+export function StatusMovie({ dataTrendingMovies }: StatusMovieProps) {
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
   const autoplay = useRef(Autoplay({ delay: 5000 }));
-  const slides = data.map((item) => (
-    <Carousel.Slide key={item.title}>
-      <MotiveItem {...item} />
-    </Carousel.Slide>
-  ));
+  const slides =
+    dataTrendingMovies &&
+    dataTrendingMovies.map((movie) => (
+      <Carousel.Slide key={movie.title}>
+        <MotiveItem
+          image={movie.images[0].imageUrl}
+          title={movie.title}
+          category="Test"
+        />
+      </Carousel.Slide>
+    ));
 
   return (
     <Container size="lg" className="mt-16">

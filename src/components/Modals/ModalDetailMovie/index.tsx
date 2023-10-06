@@ -39,6 +39,7 @@ const ModalDetailMovie = ({ opened, onClose, dataMovie }: Props) => {
             boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
           },
         }}
+        lockScroll={false}
         opened={opened}
         onClose={onClose}
         title={

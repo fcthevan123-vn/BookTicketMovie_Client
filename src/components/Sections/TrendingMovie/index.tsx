@@ -7,79 +7,115 @@ import {
   BackgroundImage,
   Center,
   Divider,
-  ActionIcon,
   Box,
   Badge,
+  Skeleton,
+  Card,
+  Avatar,
+  Group,
+  Image,
 } from "@mantine/core";
 import Autoplay from "embla-carousel-autoplay";
 import { AiFillFire } from "react-icons/ai";
 import { useRef } from "react";
 import classes from "./TrendingMovie.module.css";
+import { DataTableMoviesProps } from "../../Provider/MovieProvider/MovieProvider";
+import moment from "moment";
 
-const images = [
-  "https://images.unsplash.com/photo-1521714161819-15534968fc5f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+interface TrendingMovieProps {
+  dataMovies: DataTableMoviesProps[] | undefined;
+}
 
-  "https://i.redd.it/7trta4nby7b31.png",
-
-  "https://preview.redd.it/pyt36yajj3561.png?width=960&crop=smart&auto=webp&s=13b80bd83738a49443ef9ee358cee01db7618703",
-
-  "https://i.pinimg.com/originals/03/c1/62/03c1626f27a3a92dc1c45fc0a3598d7d.jpg",
-];
-
-export function TrendingMovie() {
+export function TrendingMovie({ dataMovies }: TrendingMovieProps) {
   const autoplay = useRef(Autoplay({ delay: 3000 }));
 
-  const slides = images.map((url) => (
-    <Carousel.Slide key={url} className={classes.carouselSlide}>
-      <BackgroundImage src={url} radius="lg">
-        <Center
-          p="md"
-          className="backdrop-blur-sm backdrop-brightness-50"
-          style={{
-            height: "100%",
-          }}
-          // sx={{ height: "100%" }}
-        >
-          <div className={classes.inner}>
-            <div className={classes.content}>
-              <Title className={classes.title}>
-                Spider-Man{" "}
-                <Text
-                  component="span"
-                  inherit
-                  variant="gradient"
-                  gradient={{ from: "pink", to: "yellow" }}
-                >
-                  No Way Home
-                </Text>{" "}
-              </Title>
+  const slides = dataMovies
+    ? dataMovies.map((movie, index) => (
+        <Carousel.Slide key={index} className={classes.carouselSlide}>
+          <BackgroundImage src={movie.images[0].imageUrl} radius="lg">
+            <Center
+              p="md"
+              className="backdrop-blur-sm backdrop-brightness-50"
+              style={{
+                height: "100%",
+              }}
+            >
+              <div className={classes.inner}>
+                <div className={classes.content}>
+                  <Title className={classes.title}>
+                    {movie.title.toUpperCase()}
+                  </Title>
 
-              <Text className={classes.description} mt={30}>
-                Build fully functional accessible web applications with ease –
-                Mantine includes more than 100 customizable components and hooks
-                to cover you in any situation
+                  <Text className={classes.description} mt={30} lineClamp={4}>
+                    {movie.description}
+                  </Text>
+
+                  <div className="flex gap-4">
+                    <Text className={classes.description} mt={30}>
+                      Từ: {moment(movie.releaseDate).format("DD-MM-YYYY")}
+                    </Text>
+
+                    <Text className={classes.description} mt={30}>
+                      Đến: {moment(movie.endDate).format("DD-MM-YYYY")}
+                    </Text>
+                  </div>
+
+                  <Button
+                    variant="gradient"
+                    gradient={{ from: "pink", to: "yellow" }}
+                    size="xl"
+                    radius="lg"
+                    className={classes.control}
+                    mt={40}
+                  >
+                    Đặt vé ngay
+                  </Button>
+                </div>
+              </div>
+            </Center>
+          </BackgroundImage>
+        </Carousel.Slide>
+      ))
+    : "";
+
+  const sliderTest = (
+    <Carousel.Slide>
+      <Card withBorder radius="md" p={0} className={classes.card}>
+        <Group wrap="nowrap" gap={0}>
+          <Image
+            src="https://images.unsplash.com/photo-1602080858428-57174f9431cf?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80"
+            height={160}
+          />
+          <div className={classes.body}>
+            <Text tt="uppercase" c="dimmed" fw={700} size="xs">
+              technology
+            </Text>
+            <Text className={classes.titleB} mt="xs" mb="md">
+              The best laptop for Frontend engineers in 2022
+            </Text>
+            <Group wrap="nowrap" gap="xs">
+              <Group gap="xs" wrap="nowrap">
+                <Avatar
+                  size={20}
+                  src="https://images.unsplash.com/photo-1628890923662-2cb23c2e0cfe?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80"
+                />
+                <Text size="xs">Elsa Typechecker</Text>
+              </Group>
+              <Text size="xs" c="dimmed">
+                •
               </Text>
-
-              <Button
-                variant="gradient"
-                gradient={{ from: "pink", to: "yellow" }}
-                size="xl"
-                radius="lg"
-                className={classes.control}
-                mt={40}
-              >
-                Đặt vé ngay
-              </Button>
-            </div>
+              <Text size="xs" c="dimmed">
+                Feb 6th
+              </Text>
+            </Group>
           </div>
-        </Center>
-      </BackgroundImage>
+        </Group>
+      </Card>
     </Carousel.Slide>
-  ));
+  );
 
   return (
     <div>
-      {/* {console.log("autoplay", autoplay.current)} */}
       <Container size="lg">
         <div className={classes.root + " py-3 "}>
           <Divider
@@ -117,7 +153,10 @@ export function TrendingMovie() {
               onMouseEnter={autoplay.current.stop}
               onMouseLeave={autoplay.current.reset}
             >
-              {slides}
+              {/* {slides} */}
+
+              {/* {dataMovies ? slides : <Skeleton height={500} radius={"md"} />} */}
+              {sliderTest}
             </Carousel>
           </div>
         </div>
