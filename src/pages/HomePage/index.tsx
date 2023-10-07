@@ -3,6 +3,7 @@ import { StatusMovie } from "../../components/Sections/StatusMovie";
 import { useCallback, useEffect, useState } from "react";
 import { movieServices } from "../../services";
 import { DataTableMoviesProps } from "../../components/Provider/MovieProvider/MovieProvider";
+import AllEvents from "../../components/Sections/AllEvents";
 
 function HomePage() {
   const [movieData, setMovieData] = useState<{
@@ -43,17 +44,34 @@ function HomePage() {
     }
   }, []);
 
+  const getNextMovies = useCallback(async () => {
+    try {
+      const res = await movieServices.getNextMovies();
+      if (res.statusCode === 0) {
+        setMovieData((prevState) => ({
+          ...prevState,
+          dataNextMovies: res.data,
+        }));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+
   useEffect(() => {
     getTrendingMovie();
     getActiveMovies();
-  }, [getActiveMovies, getTrendingMovie]);
+    getNextMovies();
+  }, [getActiveMovies, getNextMovies, getTrendingMovie]);
 
   return (
     <div className="">
       <TrendingMovie dataMovies={movieData.dataTrendingMovies}></TrendingMovie>
       <StatusMovie
-        dataTrendingMovies={movieData.dataTrendingMovies}
+        dataActiveMovies={movieData.dataActiveMovies}
+        dataNextMovies={movieData.dataNextMovies}
       ></StatusMovie>
+      <AllEvents></AllEvents>
     </div>
   );
 }

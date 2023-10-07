@@ -1,83 +1,42 @@
 import {
-  createStyles,
   Title,
   Text,
   Button,
   Container,
-  Group,
-  rem,
+  SimpleGrid,
+  Image,
 } from "@mantine/core";
+
+import classes from "./ErrorPage.module.css";
 import { Link } from "react-router-dom";
-
-const useStyles = createStyles((theme) => ({
-  root: {
-    paddingTop: rem(80),
-    paddingBottom: rem(80),
-    height: "100vh",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  label: {
-    textAlign: "center",
-    fontWeight: 900,
-    fontSize: rem(220),
-    lineHeight: 1,
-    marginBottom: `calc(${theme.spacing.xl} * 1.5)`,
-    color:
-      theme.colorScheme === "dark"
-        ? theme.colors.dark[4]
-        : theme.colors.gray[2],
-
-    [theme.fn.smallerThan("sm")]: {
-      fontSize: rem(120),
-    },
-  },
-
-  title: {
-    fontFamily: `Greycliff CF, ${theme.fontFamily}`,
-    textAlign: "center",
-    fontWeight: 900,
-    fontSize: rem(38),
-
-    [theme.fn.smallerThan("sm")]: {
-      fontSize: rem(32),
-    },
-  },
-
-  description: {
-    maxWidth: rem(500),
-    margin: "auto",
-    marginTop: theme.spacing.xl,
-    marginBottom: `calc(${theme.spacing.xl} * 1.5)`,
-  },
-}));
+import errorImage from "../../assets/Image/errorImage.svg";
 
 export default function ErrorPage() {
-  const { classes } = useStyles();
-
   return (
     <Container className={classes.root}>
-      <div className={classes.label}>404</div>
-      <Title className={classes.title}>You have found a secret place.</Title>
-      <Text
-        color="dimmed"
-        size="lg"
-        align="center"
-        className={classes.description}
-      >
-        Unfortunately, this is only a 404 page. You may have mistyped the
-        address, or the page has been moved to another URL.
-      </Text>
-      <Group position="center">
-        <Link to="/">
-          <Button variant="subtle" size="md">
-            Take me back to home page
-          </Button>
-        </Link>
-      </Group>
+      <SimpleGrid spacing={{ base: 40, sm: 80 }} cols={{ base: 1, sm: 2 }}>
+        <Image src={errorImage} className={classes.mobileImage} />
+        <div>
+          <Title className={classes.title}>Có gì đó không ổn !!!</Title>
+          <Text c="dimmed" size="lg">
+            Bạn đang truy cập vào một trang bị lỗi hoặc bạn không có quyền truy
+            cập vào trang này. Chúng tôi sẽ cố gắng khắc phục nếu như bị lỗi.
+            Hãy nhất nút bên dưới để trở về trang chủ.
+          </Text>
+          <Link to="/">
+            <Button
+              variant="outline"
+              size="md"
+              mt="xl"
+              radius={"lg"}
+              className={classes.control}
+            >
+              Trở về trang chủ
+            </Button>
+          </Link>
+        </div>
+        <Image src={errorImage} className={classes.desktopImage} />
+      </SimpleGrid>
     </Container>
   );
 }

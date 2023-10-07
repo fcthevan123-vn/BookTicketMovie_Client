@@ -12,10 +12,11 @@ import { useMediaQuery } from "@mantine/hooks";
 import { BiRocket } from "react-icons/bi";
 import { RiSlideshow2Line } from "react-icons/ri";
 import MotiveItem from "../../MovieItem";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import Autoplay from "embla-carousel-autoplay";
 import classes from "./StatusMovie.module.css";
 import { DataTableMoviesProps } from "../../Provider/MovieProvider/MovieProvider";
+import MovieSmallPreview from "../../MovieSmallPreview";
 
 const data = [
   {
@@ -57,22 +58,34 @@ const data = [
 ];
 
 interface StatusMovieProps {
-  dataTrendingMovies: DataTableMoviesProps[] | undefined;
+  dataActiveMovies: DataTableMoviesProps[] | undefined;
+  dataNextMovies: DataTableMoviesProps[] | undefined;
 }
 
-export function StatusMovie({ dataTrendingMovies }: StatusMovieProps) {
+export function StatusMovie({
+  dataActiveMovies,
+  dataNextMovies,
+}: StatusMovieProps) {
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
   const autoplay = useRef(Autoplay({ delay: 5000 }));
-  const slides =
-    dataTrendingMovies &&
-    dataTrendingMovies.map((movie) => (
+  const [currentStateMovies, setCurrentStateMovies] = useState("activeMovies");
+
+  const slidesActiveMovies =
+    dataActiveMovies &&
+    dataActiveMovies?.length > 0 &&
+    dataActiveMovies.map((movie) => (
       <Carousel.Slide key={movie.title}>
-        <MotiveItem
-          image={movie.images[0].imageUrl}
-          title={movie.title}
-          category="Test"
-        />
+        <MovieSmallPreview dataMovie={movie}></MovieSmallPreview>
+      </Carousel.Slide>
+    ));
+
+  const slidesNextMovies =
+    dataNextMovies &&
+    dataNextMovies?.length > 0 &&
+    dataNextMovies.map((movie) => (
+      <Carousel.Slide key={movie.title}>
+        <MovieSmallPreview dataMovie={movie}></MovieSmallPreview>
       </Carousel.Slide>
     ));
 
@@ -87,7 +100,7 @@ export function StatusMovie({ dataTrendingMovies }: StatusMovieProps) {
             size="md"
             data={[
               {
-                value: "nowShowing",
+                value: "activeMovies",
                 label: (
                   <Center>
                     <RiSlideshow2Line size="1.125rem" />
@@ -96,7 +109,7 @@ export function StatusMovie({ dataTrendingMovies }: StatusMovieProps) {
                 ),
               },
               {
-                value: "comingSoon",
+                value: "nextMovies",
                 label: (
                   <Center>
                     <BiRocket size="1.125rem" />
@@ -105,6 +118,7 @@ export function StatusMovie({ dataTrendingMovies }: StatusMovieProps) {
                 ),
               },
             ]}
+            onChange={(e) => setCurrentStateMovies(e)}
             classNames={classes}
           />
         }
@@ -124,7 +138,9 @@ export function StatusMovie({ dataTrendingMovies }: StatusMovieProps) {
         onMouseEnter={autoplay.current.stop}
         onMouseLeave={autoplay.current.reset}
       >
-        {slides}
+        {currentStateMovies === "activeMovies" && slidesActiveMovies}
+
+        {currentStateMovies === "nextMovies" && slidesNextMovies}
       </Carousel>
     </Container>
   );

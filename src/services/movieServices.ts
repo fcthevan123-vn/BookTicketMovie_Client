@@ -177,6 +177,11 @@ const movieServices = {
     const res = await axios.get(`api/v1/movie/active-movies`);
     return res.data;
   },
+
+  async getNextMovies() {
+    const res = await axios.get(`api/v1/movie/next-movies`);
+    return res.data;
+  },
 };
 
 export default movieServices;

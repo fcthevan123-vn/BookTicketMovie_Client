@@ -1,0 +1,29 @@
+.badgeTrendingMovie {
+  padding: 3px;
+  background: light-dark(
+    var(--mantine-color-white),
+    var(--mantine-color-dark-6)
+  );
+  box-shadow: var(--mantine-shadow-md);
+  border: light-dark(
+    calc(0.0625rem * var(--mantine-scale)) solid var(--mantine-color-gray-1),
+    calc(0.0625rem * var(--mantine-scale)) solid var(--mantine-color-dark-4)
+  );
+
+  border-radius: var(--mantine-radius-xl);
+}
+
+.card {
+  transition: transform 150ms ease, box-shadow 150ms ease;
+  border: 1px solid var(--mantine-color-gray-2);
+
+  &:hover {
+    transform: scale(1.03);
+    box-shadow: var(--mantine-shadow-md);
+  }
+}
+
+.title {
+  font-family: "Greycliff CF", var(--mantine-font-family);
+  font-weight: bold;
+}

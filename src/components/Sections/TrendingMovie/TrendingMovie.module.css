@@ -15,7 +15,7 @@
 
 .carousel {
   border-radius: var(--mantine-radius-lg);
-  overflow: hidden;
+  /* overflow: hidden; */
   height: rem(500);
   display: flex;
   @media (max-width: $mantine-breakpoint-md) {
@@ -93,18 +93,4 @@
   );
 
   border-radius: var(--mantine-radius-xl);
-}
-
-.card {
-  background-color: var(--mantine-color-body);
-}
-
-.titleB {
-  font-weight: bold;
-  font-family: Greycliff CF, var(--mantine-font-family);
-  line-height: 1.2;
-}
-
-.body {
-  padding: var(--mantine-spacing-md);
 }

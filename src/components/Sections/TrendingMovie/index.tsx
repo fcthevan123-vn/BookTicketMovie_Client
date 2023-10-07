@@ -21,98 +21,22 @@ import { useRef } from "react";
 import classes from "./TrendingMovie.module.css";
 import { DataTableMoviesProps } from "../../Provider/MovieProvider/MovieProvider";
 import moment from "moment";
+import MovieLargePreview from "../../MovieLargePreview";
 
 interface TrendingMovieProps {
   dataMovies: DataTableMoviesProps[] | undefined;
 }
 
 export function TrendingMovie({ dataMovies }: TrendingMovieProps) {
-  const autoplay = useRef(Autoplay({ delay: 3000 }));
+  const autoplay = useRef(Autoplay({ delay: 30000 }));
 
-  const slides = dataMovies
+  const slider = dataMovies
     ? dataMovies.map((movie, index) => (
-        <Carousel.Slide key={index} className={classes.carouselSlide}>
-          <BackgroundImage src={movie.images[0].imageUrl} radius="lg">
-            <Center
-              p="md"
-              className="backdrop-blur-sm backdrop-brightness-50"
-              style={{
-                height: "100%",
-              }}
-            >
-              <div className={classes.inner}>
-                <div className={classes.content}>
-                  <Title className={classes.title}>
-                    {movie.title.toUpperCase()}
-                  </Title>
-
-                  <Text className={classes.description} mt={30} lineClamp={4}>
-                    {movie.description}
-                  </Text>
-
-                  <div className="flex gap-4">
-                    <Text className={classes.description} mt={30}>
-                      Từ: {moment(movie.releaseDate).format("DD-MM-YYYY")}
-                    </Text>
-
-                    <Text className={classes.description} mt={30}>
-                      Đến: {moment(movie.endDate).format("DD-MM-YYYY")}
-                    </Text>
-                  </div>
-
-                  <Button
-                    variant="gradient"
-                    gradient={{ from: "pink", to: "yellow" }}
-                    size="xl"
-                    radius="lg"
-                    className={classes.control}
-                    mt={40}
-                  >
-                    Đặt vé ngay
-                  </Button>
-                </div>
-              </div>
-            </Center>
-          </BackgroundImage>
+        <Carousel.Slide key={index}>
+          <MovieLargePreview dataMovies={movie}></MovieLargePreview>
         </Carousel.Slide>
       ))
     : "";
-
-  const sliderTest = (
-    <Carousel.Slide>
-      <Card withBorder radius="md" p={0} className={classes.card}>
-        <Group wrap="nowrap" gap={0}>
-          <Image
-            src="https://images.unsplash.com/photo-1602080858428-57174f9431cf?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80"
-            height={160}
-          />
-          <div className={classes.body}>
-            <Text tt="uppercase" c="dimmed" fw={700} size="xs">
-              technology
-            </Text>
-            <Text className={classes.titleB} mt="xs" mb="md">
-              The best laptop for Frontend engineers in 2022
-            </Text>
-            <Group wrap="nowrap" gap="xs">
-              <Group gap="xs" wrap="nowrap">
-                <Avatar
-                  size={20}
-                  src="https://images.unsplash.com/photo-1628890923662-2cb23c2e0cfe?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80"
-                />
-                <Text size="xs">Elsa Typechecker</Text>
-              </Group>
-              <Text size="xs" c="dimmed">
-                •
-              </Text>
-              <Text size="xs" c="dimmed">
-                Feb 6th
-              </Text>
-            </Group>
-          </div>
-        </Group>
-      </Card>
-    </Carousel.Slide>
-  );
 
   return (
     <div>
@@ -140,23 +64,32 @@ export function TrendingMovie({ dataMovies }: TrendingMovieProps) {
             labelPosition="center"
             className={"py-3 px-8"}
           />
-          <div className={classes.carousel + " shadow-xl drop-shadow-2xl"}>
+          <div className={classes.carousel + " shadow-md drop-shadow-md"}>
             <Carousel
               loop
-              orientation="vertical"
+              orientation="horizontal"
               height="100%"
               // sx={{ flex: 1 }}
+              withIndicators
               style={{
                 flex: 1,
               }}
+              styles={{
+                viewport: {
+                  border: "1.5px solid var(--mantine-color-gray-4 )",
+                  borderRadius: "var(--mantine-radius-md)",
+                },
+              }}
+              dragFree={false}
+              draggable={false}
               plugins={[autoplay.current]}
-              onMouseEnter={autoplay.current.stop}
+              // onMouseEnter={autoplay.current.stop}
               onMouseLeave={autoplay.current.reset}
             >
               {/* {slides} */}
 
-              {/* {dataMovies ? slides : <Skeleton height={500} radius={"md"} />} */}
-              {sliderTest}
+              {dataMovies ? slider : <Skeleton height={500} radius={"md"} />}
+              {/* {sliderTest} */}
             </Carousel>
           </div>
         </div>
