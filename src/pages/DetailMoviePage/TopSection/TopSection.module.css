@@ -1,0 +1,33 @@
+.price {
+  color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
+}
+
+.carousel {
+  border-radius: var(--mantine-radius-md);
+  overflow: hidden;
+  position: relative;
+}
+.background {
+  padding: 10px;
+  border-radius: var(--mantine-radius-md);
+  background-color: var(--mantine-color-orange-5);
+  border: 2px solid var(--mantine-color-orange-4);
+  box-shadow: var(--mantine-shadow-md);
+}
+
+.carouselIndicator {
+  width: rem(4px);
+  height: rem(4px);
+  transition: width 250ms ease;
+
+  &[data-active] {
+    width: rem(16px);
+  }
+}
+
+.title {
+  font-weight: bold;
+  font-family: Greycliff CF, var(--mantine-font-family);
+  line-height: 1.2;
+  font-size: 24px;
+}

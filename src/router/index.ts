@@ -6,6 +6,8 @@ const RegisterPage = lazy(() => import("../pages/RegisterPage"));
 const ErrorPage = lazy(() => import("../pages/ErrorPage"));
 const UserPage = lazy(() => import("../pages/UserPage"));
 const AdminPage = lazy(() => import("../pages/AdminPage"));
+const MovieDetailPage = lazy(() => import("../pages/DetailMoviePage"));
+
 import { AdminLayout, DefaultLayout, UserLayout } from "../layouts";
 
 type LayoutComponent = FC<{ children: ReactNode }>;
@@ -100,6 +102,15 @@ const router: IRouter[] = [
     isAdmin: true,
     layout: AdminLayout,
     element: AdminPage,
+  },
+
+  // Movies
+  {
+    path: "/movie/:id",
+    isProtected: false,
+    isAdmin: false,
+    layout: DefaultLayout,
+    element: MovieDetailPage,
   },
 ];
 

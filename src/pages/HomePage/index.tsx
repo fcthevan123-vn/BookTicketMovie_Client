@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { movieServices } from "../../services";
 import { DataTableMoviesProps } from "../../components/Provider/MovieProvider/MovieProvider";
 import AllEvents from "../../components/Sections/AllEvents";
+import { Container } from "@mantine/core";
 
 function HomePage() {
   const [movieData, setMovieData] = useState<{
@@ -66,12 +67,16 @@ function HomePage() {
 
   return (
     <div className="">
-      <TrendingMovie dataMovies={movieData.dataTrendingMovies}></TrendingMovie>
-      <StatusMovie
-        dataActiveMovies={movieData.dataActiveMovies}
-        dataNextMovies={movieData.dataNextMovies}
-      ></StatusMovie>
-      <AllEvents></AllEvents>
+      <Container size="xl">
+        <TrendingMovie
+          dataMovies={movieData.dataTrendingMovies}
+        ></TrendingMovie>
+        <StatusMovie
+          dataActiveMovies={movieData.dataActiveMovies}
+          dataNextMovies={movieData.dataNextMovies}
+        ></StatusMovie>
+        <AllEvents></AllEvents>
+      </Container>
     </div>
   );
 }

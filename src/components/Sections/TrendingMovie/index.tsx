@@ -40,60 +40,58 @@ export function TrendingMovie({ dataMovies }: TrendingMovieProps) {
 
   return (
     <div>
-      <Container size="lg">
-        <div className={classes.root + " py-3 "}>
-          <Divider
-            size="sm"
-            my="xs"
-            label={
-              <Box className={classes.badgeTrendingMovie}>
-                <Badge
-                  size="xl"
-                  variant="gradient"
-                  gradient={{ from: "pink", to: "orange", deg: 90 }}
-                  style={{
-                    textTransform: "none",
-                  }}
-                  leftSection={<AiFillFire size="1.125rem" />}
-                >
-                  <Text fw={500}>Phim phổ biến</Text>
-                </Badge>
-              </Box>
-            }
+      <div className={classes.root + " py-3 "}>
+        <Divider
+          size="sm"
+          my="xs"
+          label={
+            <Box className={classes.badgeTrendingMovie}>
+              <Badge
+                size="xl"
+                variant="gradient"
+                gradient={{ from: "pink", to: "orange", deg: 90 }}
+                style={{
+                  textTransform: "none",
+                }}
+                leftSection={<AiFillFire size="1.125rem" />}
+              >
+                <Text fw={500}>Phim phổ biến</Text>
+              </Badge>
+            </Box>
+          }
+          orientation="horizontal"
+          labelPosition="center"
+          className={"py-3 px-8"}
+        />
+        <div className={classes.carousel + " shadow-md drop-shadow-md"}>
+          <Carousel
+            loop
             orientation="horizontal"
-            labelPosition="center"
-            className={"py-3 px-8"}
-          />
-          <div className={classes.carousel + " shadow-md drop-shadow-md"}>
-            <Carousel
-              loop
-              orientation="horizontal"
-              height="100%"
-              // sx={{ flex: 1 }}
-              withIndicators
-              style={{
-                flex: 1,
-              }}
-              styles={{
-                viewport: {
-                  border: "1.5px solid var(--mantine-color-gray-4 )",
-                  borderRadius: "var(--mantine-radius-md)",
-                },
-              }}
-              dragFree={false}
-              draggable={false}
-              plugins={[autoplay.current]}
-              // onMouseEnter={autoplay.current.stop}
-              onMouseLeave={autoplay.current.reset}
-            >
-              {/* {slides} */}
+            height="100%"
+            // sx={{ flex: 1 }}
+            withIndicators
+            style={{
+              flex: 1,
+            }}
+            styles={{
+              viewport: {
+                border: "1.5px solid var(--mantine-color-gray-4 )",
+                borderRadius: "var(--mantine-radius-md)",
+              },
+            }}
+            dragFree={false}
+            draggable={false}
+            plugins={[autoplay.current]}
+            // onMouseEnter={autoplay.current.stop}
+            onMouseLeave={autoplay.current.reset}
+          >
+            {/* {slides} */}
 
-              {dataMovies ? slider : <Skeleton height={500} radius={"md"} />}
-              {/* {sliderTest} */}
-            </Carousel>
-          </div>
+            {dataMovies ? slider : <Skeleton height={500} radius={"md"} />}
+            {/* {sliderTest} */}
+          </Carousel>
         </div>
-      </Container>
+      </div>
     </div>
   );
 }

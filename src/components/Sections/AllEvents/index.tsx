@@ -3,7 +3,6 @@ import {
   Badge,
   Box,
   Card,
-  Container,
   Divider,
   Image,
   SimpleGrid,
@@ -65,7 +64,7 @@ function AllEvents({}: Props) {
   ));
 
   return (
-    <Container size={"lg"} mt={50}>
+    <div className="mt-14">
       <Divider
         size="sm"
         my="xs"
@@ -90,7 +89,7 @@ function AllEvents({}: Props) {
       ></Divider>
 
       <SimpleGrid cols={{ base: 1, sm: 2 }}>{cards}</SimpleGrid>
-    </Container>
+    </div>
   );
 }
 

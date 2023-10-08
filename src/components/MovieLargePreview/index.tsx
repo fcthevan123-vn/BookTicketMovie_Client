@@ -14,14 +14,14 @@ import { Carousel } from "@mantine/carousel";
 import { DataTableMoviesProps } from "../Provider/MovieProvider/MovieProvider";
 import moment from "moment";
 import { LazyLoadImage } from "react-lazy-load-image-component";
+import { Link } from "react-router-dom";
 
 type Props = {
   dataMovies: DataTableMoviesProps;
 };
 
 function MovieLargePreview({ dataMovies }: Props) {
-  const autoplay = useRef(Autoplay({ delay: 20000 }));
-  const [isLoadingImg, setIsLoadingImg] = useState(true);
+  const autoplay = useRef(Autoplay({ delay: 2000 }));
 
   return (
     <div>
@@ -45,11 +45,6 @@ function MovieLargePreview({ dataMovies }: Props) {
                   fallbackSrc="https://placehold.co/600x400"
                   src={movieImage.imageUrl}
                   height={"100%"}
-                  style={{
-                    display: `${isLoadingImg ? "none" : ""}`,
-                  }}
-                  onLoadStartCapture={() => setIsLoadingImg(true)}
-                  onLoad={() => setIsLoadingImg(false)}
                   className={classes.img}
                 />
                 {/* 
@@ -62,8 +57,6 @@ function MovieLargePreview({ dataMovies }: Props) {
                   src={movieImage.imageUrl}
                   onLoad={() => setIsLoadingImg(false)}
                 /> */}
-
-                {isLoadingImg && <Skeleton h={500} radius={"md"}></Skeleton>}
               </Carousel.Slide>
             ))}
           </Carousel>
@@ -99,14 +92,17 @@ function MovieLargePreview({ dataMovies }: Props) {
               </Group>
             </div>
 
-            <Button
-              variant="gradient"
-              gradient={{ from: "red", to: "yellow", deg: 270 }}
-              radius={"md"}
-              translate="yes"
-            >
-              Đặt ngay
-            </Button>
+            <Link to={`/movie/${dataMovies.id}`}>
+              <Button
+                w={"100%"}
+                variant="gradient"
+                gradient={{ from: "red", to: "yellow", deg: 270 }}
+                radius={"md"}
+                translate="yes"
+              >
+                Đặt ngay
+              </Button>
+            </Link>
           </div>
         </Group>
       </Card>

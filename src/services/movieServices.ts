@@ -182,6 +182,11 @@ const movieServices = {
     const res = await axios.get(`api/v1/movie/next-movies`);
     return res.data;
   },
+
+  async getMovieById(id: string) {
+    const res = await axios.get(`api/v1/movie/${id}`);
+    return res.data;
+  },
 };
 
 export default movieServices;

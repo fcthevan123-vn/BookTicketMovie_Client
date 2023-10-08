@@ -90,7 +90,7 @@ export function StatusMovie({
     ));
 
   return (
-    <Container size="lg" className="mt-16">
+    <div className="mt-16">
       <Divider
         size="sm"
         my="xs"
@@ -142,6 +142,6 @@ export function StatusMovie({
 
         {currentStateMovies === "nextMovies" && slidesNextMovies}
       </Carousel>
-    </Container>
+    </div>
   );
 }
