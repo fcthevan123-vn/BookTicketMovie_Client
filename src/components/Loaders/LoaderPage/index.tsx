@@ -1,4 +1,4 @@
-import styles from "./LoaderPage.module.scss";
+import styles from "./LoaderPage.module.css";
 import classNames from "classNames/bind";
 
 const cx = classNames.bind(styles);

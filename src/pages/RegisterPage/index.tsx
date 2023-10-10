@@ -11,7 +11,7 @@ import {
 import { AiOutlineUser } from "react-icons/ai";
 import { IoCreateOutline } from "react-icons/io5";
 import FormLogin from "../../components/Forms/FormLogin";
-import styles from "./RegisterPage.module.scss";
+import styles from "./RegisterPage.module.css";
 import classNames from "classNames/bind";
 
 const cx = classNames.bind(styles);
