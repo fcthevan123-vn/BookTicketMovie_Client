@@ -1,15 +1,8 @@
-import {
-  IconGauge,
-  IconPresentationAnalytics,
-  IconFileAnalytics,
-  IconAdjustments,
-  IconLock,
-  IconMovie,
-  IconSubtask,
-} from "@tabler/icons-react";
+import { IconGauge, IconMovie, IconSubtask } from "@tabler/icons-react";
 
 import classes from "./AdminNav.module.css";
 import { LinksGroup } from "../../LinksGroup";
+import { IconTheater } from "@tabler/icons-react";
 
 const allLinks = [
   {
@@ -27,21 +20,14 @@ const allLinks = [
     ],
   },
   {
+    label: "Rạp phim",
+    icon: IconTheater,
+    link: "/admin/cinema/overview",
+  },
+  {
     label: "Quản lý tài khoản",
     icon: IconSubtask,
     link: `/admin/manage-account`,
-  },
-  { label: "Analytics", icon: IconPresentationAnalytics },
-  { label: "Contracts", icon: IconFileAnalytics },
-  { label: "Settings", icon: IconAdjustments },
-  {
-    label: "Security",
-    icon: IconLock,
-    links: [
-      { label: "Enable 2FA", link: "/" },
-      { label: "Change password", link: "/" },
-      { label: "Recovery codes", link: "/" },
-    ],
   },
 ];
 
@@ -52,16 +38,7 @@ function AdminNav() {
 
   return (
     <nav className={classes.navbar}>
-      {/* <div className={classes.header}>
-        <Group justify="space-between">
-          Logo
-          <Code fw={700}>v3.1.2</Code>
-        </Group>
-      </div> */}
-
-      {/* <ScrollArea className={classes.links} scrollbarSize={4}> */}
       <div className={classes.linksInner}>{links}</div>
-      {/* </ScrollArea> */}
     </nav>
   );
 }

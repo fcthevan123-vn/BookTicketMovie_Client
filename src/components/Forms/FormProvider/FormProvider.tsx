@@ -14,7 +14,7 @@ interface MovieFormValues {
   subtitle: string;
   price: number;
   genre: string[];
-  images: File[] | { imageName: string; imageUrl: string }[];
+  images: File[] | string[];
   imagesDelete?: string | string[];
 }
 

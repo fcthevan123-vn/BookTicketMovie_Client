@@ -15,12 +15,13 @@ function RelatedMovie({ dataMovie }: Props) {
           Xem tất cả
         </Text>
       </div>
-      <SimpleGrid cols={4} mt="xl">
+      <SimpleGrid cols={5} mt="xl">
         <MovieSmallPreview dataMovie={dataMovie}></MovieSmallPreview>
         <MovieSmallPreview dataMovie={dataMovie}></MovieSmallPreview>
 
         <MovieSmallPreview dataMovie={dataMovie}></MovieSmallPreview>
 
+        <MovieSmallPreview dataMovie={dataMovie}></MovieSmallPreview>
         <MovieSmallPreview dataMovie={dataMovie}></MovieSmallPreview>
       </SimpleGrid>
     </div>

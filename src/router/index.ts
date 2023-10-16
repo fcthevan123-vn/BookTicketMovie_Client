@@ -9,12 +9,7 @@ const AdminPage = lazy(() => import("../pages/AdminPage"));
 
 const MovieDetailPage = lazy(() => import("../pages/DetailMoviePage"));
 
-import {
-  AdminLayout,
-  DefaultLayout,
-  UserLayout,
-  ListMovieLayout,
-} from "../layouts";
+import { AdminLayout, DefaultLayout, UserLayout } from "../layouts";
 
 type LayoutComponent = FC<{ children: ReactNode }>;
 
@@ -99,6 +94,20 @@ const router: IRouter[] = [
   },
   {
     path: "/admin/movie/all-movies",
+    isProtected: true,
+    isAdmin: true,
+    layout: AdminLayout,
+    element: AdminPage,
+  },
+  {
+    path: "/admin/cinema/overview",
+    isProtected: true,
+    isAdmin: true,
+    layout: AdminLayout,
+    element: AdminPage,
+  },
+  {
+    path: "/admin/cinema/add-a-cinema",
     isProtected: true,
     isAdmin: true,
     layout: AdminLayout,

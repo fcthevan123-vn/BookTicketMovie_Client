@@ -1,56 +1,3 @@
-// import { Card, Text, Group, Rating } from "@mantine/core";
-// import classes from "./MovieSmallPreview.module.css";
-// import { DataTableMoviesProps } from "../Provider/MovieProvider/MovieProvider";
-
-// type Props = {
-//   dataMovie: DataTableMoviesProps;
-// };
-
-// export default function MovieSmallPreview({ dataMovie }: Props) {
-//   return (
-//     <Card
-//       p="lg"
-//       shadow="lg"
-//       className={classes.card}
-//       radius="md"
-//       component="a"
-//       href="https://mantine.dev/"
-//       target="_blank"
-//     >
-//       <div
-//         className={classes.image}
-//         style={{
-//           backgroundImage: `url(${dataMovie.images[0].imageUrl})`,
-//           backgroundSize: "cover",
-//           backgroundPosition: "center",
-//         }}
-//       />
-//       <div className={classes.overlay} />
-
-//       <div className={classes.content}>
-//         <div>
-//           <Text size="lg" className={classes.title} fw={500}>
-//             {dataMovie.title.toUpperCase()}
-//           </Text>
-
-//           <Text size="sm" className={classes.author}>
-//             descirption
-//           </Text>
-
-//           <Group justify="space-between" gap="xs">
-//             <Text size="sm" className={classes.author}>
-//               date - date
-//             </Text>
-//           </Group>
-//           <div className="flex justify-between">
-//             <Rating size="xs" value={4} fractions={2} readOnly />
-//           </div>
-//         </div>
-//       </div>
-//     </Card>
-//   );
-// }
-
 import {
   Card,
   Image,
@@ -88,7 +35,7 @@ export default function MovieSmallPreview({ dataMovie }: Props) {
             <Carousel.Slide key={index}>
               <Image
                 fallbackSrc="https://raw.githubusercontent.com/koehlersimon/fallback/master/Resources/Public/Images/placeholder.jpg"
-                src={movieImage.imageUrl}
+                src={movieImage}
                 className={classes.img}
               />
             </Carousel.Slide>

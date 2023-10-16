@@ -43,7 +43,7 @@ function MovieLargePreview({ dataMovies }: Props) {
               <Carousel.Slide key={index}>
                 <Image
                   fallbackSrc="https://placehold.co/600x400"
-                  src={movieImage.imageUrl}
+                  src={movieImage}
                   height={"100%"}
                   className={classes.img}
                 />

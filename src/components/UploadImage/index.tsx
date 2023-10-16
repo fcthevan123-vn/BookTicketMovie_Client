@@ -17,7 +17,7 @@ import { useMovieFormContext } from "../Forms/FormProvider/FormProvider";
 interface Props {
   isResetImg?: boolean;
   setIsResetImg(value: boolean): void | undefined;
-  images?: File[] | { imageName: string; imageUrl: string }[];
+  images?: File[] | string[];
 }
 
 export function UploadImage({ isResetImg, setIsResetImg, images }: Props) {
@@ -106,8 +106,61 @@ export function UploadImage({ isResetImg, setIsResetImg, images }: Props) {
     );
   });
 
+  const previewsImgExisted =
+    images &&
+    images.map((url, index) => {
+      return (
+        <div
+          key={index}
+          className="relative w-full h-full flex shadow-md rounded-lg justify-center items-center"
+        >
+          <div>
+            <Image
+              key={index}
+              src={url}
+              width={"100%"}
+              radius={"md"}
+              height={80}
+              fit="contain"
+            />
+
+            <div className="absolute z-10 flex gap-3 top-1 right-1">
+              <Tooltip label="Delete" withArrow radius="md">
+                <ActionIcon
+                  className="shadow-lg"
+                  radius="md"
+                  color="blue"
+                  variant="filled"
+                  onClick={() => {
+                    handleDeleteLocalImage(url as string, index, file.name);
+                  }}
+                >
+                  <IconX size="0.9rem" />
+                </ActionIcon>
+              </Tooltip>
+
+              <Tooltip label="View full screen" withArrow radius="md">
+                <ActionIcon
+                  className="shadow-lg"
+                  radius="md"
+                  color="blue"
+                  variant="filled"
+                  onClick={() => {
+                    setImgToViewFull(url as string);
+                    setIsOpenModal(true);
+                  }}
+                >
+                  <IconArrowsMaximize size="0.9rem" />
+                </ActionIcon>
+              </Tooltip>
+            </div>
+          </div>
+        </div>
+      );
+    });
+
   function handleFile(f: FileWithPath[]) {
-    if (files.length + f.length <= 6) {
+    if (files.length + f.length + images.length <= 6) {
       const fileMerge = [...files, ...f];
       setFiles(fileMerge);
       form.setFieldValue("images", fileMerge);
@@ -122,41 +175,40 @@ export function UploadImage({ isResetImg, setIsResetImg, images }: Props) {
     }
   }
 
-  const fetchAndConvertImages = async (
-    images: { imageName: string; imageUrl: string }[]
-  ) => {
-    try {
-      const imgFiles = await Promise.all(
-        images.map(async (url) => {
-          const response = await fetch(url.imageUrl);
+  // const fetchAndConvertImages = async (images: string[]) => {
+  //   try {
+  //     const imgFiles = await Promise.all(
+  //       images.map(async (url) => {
+  //         const parts = url.split("/");
+  //         const imgName = parts[parts.length - 1];
+  //         const response = await fetch(url);
 
-          if (!response.ok) {
-            throw new Error(`Failed to fetch image: ${url.imageUrl}`);
-          }
+  //         if (!response.ok) {
+  //           console.log(response);
+  //           throw new Error(`Failed to fetch image: ${url}`);
+  //         }
 
-          const contentType = response.headers.get("content-type") as string;
-          const blob = await response.blob();
-          const file = new File([blob], url.imageName + "AwsS3Storage", {
-            type: contentType,
-          });
-          return file;
-        })
-      );
-      setLoading(false);
-      setFiles(imgFiles);
-    } catch (error) {
-      setLoading(false);
-      console.error("Error fetching and converting images:", error);
-    }
-  };
+  //         const contentType = response.headers.get("content-type") as string;
+  //         const blob = await response.blob();
+  //         const file = new File([blob], imgName + "AwsS3Storage", {
+  //           type: contentType,
+  //         });
+  //         return file;
+  //       })
+  //     );
+  //     setLoading(false);
+  //     setFiles(imgFiles);
+  //   } catch (error) {
+  //     setLoading(false);
+  //     console.error("Error fetching and converting images:", error);
+  //   }
+  // };
 
-  useEffect(() => {
-    if (images) {
-      fetchAndConvertImages(
-        images as { imageName: string; imageUrl: string }[]
-      );
-    }
-  }, [images]);
+  // useEffect(() => {
+  //   if (images) {
+
+  //   }
+  // }, [images]);
 
   useEffect(() => {
     if (isResetImg) {
@@ -168,18 +220,17 @@ export function UploadImage({ isResetImg, setIsResetImg, images }: Props) {
 
   return (
     <div>
-      {files.length > 0 && (
-        <div className="mb-8 p-2 rounded-xl">
-          <SimpleGrid
-            cols={{ base: 4, sm: 2, lg: 4 }}
-            mt={previews.length > 0 ? "xl" : 0}
-          >
-            {previews}
-          </SimpleGrid>
-        </div>
-      )}
+      <div className="mb-8 p-2 rounded-xl">
+        <SimpleGrid
+          cols={{ base: 4, sm: 2, lg: 4 }}
+          mt={previews.length > 0 ? "xl" : 0}
+        >
+          {files.length > 0 && previews}
+          {images && images?.length > 0 && previewsImgExisted}
+        </SimpleGrid>
+      </div>
 
-      {files.length === 0 && images && images?.length > 0 && loading && (
+      {/* {files.length === 0 && images && images?.length > 0 && loading && (
         <div className="mb-8 p-2 rounded-xl">
           <SimpleGrid
             cols={{ base: 4, sm: 2, lg: 4 }}
@@ -192,7 +243,7 @@ export function UploadImage({ isResetImg, setIsResetImg, images }: Props) {
             ))}
           </SimpleGrid>
         </div>
-      )}
+      )} */}
 
       <Dropzone
         maxSize={5 * 1000000}

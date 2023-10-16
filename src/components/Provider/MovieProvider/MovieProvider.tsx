@@ -2,7 +2,7 @@ import React, { createContext, useCallback, useContext, useState } from "react";
 import { movieServices } from "../../../services";
 
 export type DataTableMoviesProps = {
-  images: { imageName: string; imageUrl: string }[];
+  images: string[];
   ageRequire: string;
   duration: string;
   subtitle: string;

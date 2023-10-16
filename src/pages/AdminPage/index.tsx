@@ -1,5 +1,5 @@
 import { Anchor, Breadcrumbs } from "@mantine/core";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Fragment } from "react";
 import DashboardPage from "./DashboardPage";
 import AddMoviePage from "./AddMoviePage";
@@ -7,8 +7,8 @@ import AllMoviesPage from "./AllMoviesPage";
 import { MovieProvider } from "../../components/Provider/MovieProvider/MovieProvider";
 import ManageAccountPage from "./ManageAccountPage";
 import { TableFilterProvider } from "../../components/Provider/TableFilterProvider";
-
-type Props = {};
+import AdminCinemaPage from "./AdminCinemaPage";
+import AddNewCinemaPage from "./AdminCinemaPage/AddNewCinemaPage";
 
 type userRows = {
   fullName: React.ReactNode;
@@ -21,16 +21,16 @@ type userRows = {
   age: React.ReactNode;
 };
 
-type RowType = {
-  fullName: string;
-  type: string;
-  email: string;
-  phone: string;
-  age: number;
-  sex: string;
-  address: string;
-  actions: string;
-};
+// type RowType = {
+//   fullName: string;
+//   type: string;
+//   email: string;
+//   phone: string;
+//   age: number;
+//   sex: string;
+//   address: string;
+//   actions: string;
+// };
 
 const intinialUserData = [
   {
@@ -68,6 +68,23 @@ const allPath = [
     jsx: <AddMoviePage></AddMoviePage>,
   },
   {
+    urlInclude: "addacinema",
+    breadcrumbs: [
+      { title: "Admin", href: "/admin/dashboard" },
+      { title: "Cinema", href: "/admin/cinema/overview" },
+      { title: "Add-a-cinema", href: "#" },
+    ],
+    jsx: <AddNewCinemaPage></AddNewCinemaPage>,
+  },
+  {
+    urlInclude: "cinema/overview",
+    breadcrumbs: [
+      { title: "Admin", href: "/admin/dashboard" },
+      { title: "Cinema", href: "#" },
+    ],
+    jsx: <AdminCinemaPage></AdminCinemaPage>,
+  },
+  {
     urlInclude: "allmovies",
     breadcrumbs: [
       { title: "Admin", href: "/admin/dashboard" },
@@ -94,7 +111,7 @@ const allPath = [
   },
 ];
 
-const AdminPage = (props: Props) => {
+const AdminPage = () => {
   const location = useLocation();
   const urlConverted = location.pathname.replace(/-/g, "");
 
@@ -104,9 +121,11 @@ const AdminPage = (props: Props) => {
         <Fragment key={path.urlInclude}>
           <Breadcrumbs className="pt-3 px-6">
             {path.breadcrumbs.map((item, index) => (
-              <Anchor aria-disabled href={item.href} key={index}>
-                {item.title}
-              </Anchor>
+              <Link to={item.href} key={index}>
+                <Anchor component="p" aria-disabled key={index}>
+                  {item.title}
+                </Anchor>
+              </Link>
             ))}
           </Breadcrumbs>
           <div className="px-6">{path.jsx}</div>

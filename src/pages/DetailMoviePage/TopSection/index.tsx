@@ -44,12 +44,7 @@ function TopSecton({ dataMovie }: Props) {
         >
           {dataMovie.images.map((img, index) => (
             <Carousel.Slide key={index}>
-              <Image
-                src={img.imageUrl}
-                h={"100%"}
-                fit="fill"
-                radius={"md"}
-              ></Image>
+              <Image src={img} h={"100%"} fit="fill" radius={"md"}></Image>
             </Carousel.Slide>
           ))}
         </Carousel>
