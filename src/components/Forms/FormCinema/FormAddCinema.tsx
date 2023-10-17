@@ -6,10 +6,7 @@ import NormalToast from "../../AllToast/NormalToast";
 import { cinemaServices } from "../../../services";
 import { loadingApi } from "../../../untils/loadingApi";
 
-type Props = {};
-
-function FormAddCinema({}: Props) {
-  const [loading, setLoading] = useState(true);
+function FormAddCinema() {
   const [dataProvince, setDataProvince] = useState({
     city: [
       {

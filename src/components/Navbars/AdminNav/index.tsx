@@ -1,4 +1,9 @@
-import { IconGauge, IconMovie, IconSubtask } from "@tabler/icons-react";
+import {
+  IconChalkboard,
+  IconGauge,
+  IconMovie,
+  IconSubtask,
+} from "@tabler/icons-react";
 
 import classes from "./AdminNav.module.css";
 import { LinksGroup } from "../../LinksGroup";
@@ -23,6 +28,11 @@ const allLinks = [
     label: "Rạp phim",
     icon: IconTheater,
     link: "/admin/cinema/overview",
+  },
+  {
+    label: "Phòng chiếu phim",
+    icon: IconChalkboard,
+    link: `/admin/movie-hall/overview`,
   },
   {
     label: "Quản lý tài khoản",

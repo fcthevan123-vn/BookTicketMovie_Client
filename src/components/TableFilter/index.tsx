@@ -6,8 +6,6 @@ import {
   useTableCustom,
 } from "../Provider/TableFilterProvider";
 
-// import type {  } from "@mantine/core";
-
 type headerProps = {
   label: string;
   value: React.ReactNode | string;
@@ -38,16 +36,11 @@ function TableFilter({ headers }: Props) {
   const { rows, isLoading } = useTableCustom() as TableFilterProps<RowType>;
 
   const rowsRender = rows ? (
-    rows.map((row, index) => (
-      <Table.Tr key={index}>
-        <Table.Td>{row.fullName}</Table.Td>
-        <Table.Td>{row.type}</Table.Td>
-        <Table.Td>{row.email}</Table.Td>
-        <Table.Td>{row.phone}</Table.Td>
-        <Table.Td>{row.age}</Table.Td>
-        <Table.Td>{row.sex}</Table.Td>
-        <Table.Td>{row.address}</Table.Td>
-        <Table.Td>{row.actions}</Table.Td>
+    rows.map((row, rowIndex) => (
+      <Table.Tr key={rowIndex}>
+        {Object.keys(row).map((key) => (
+          <Table.Td key={key}>{row[key]}</Table.Td>
+        ))}
       </Table.Tr>
     ))
   ) : (

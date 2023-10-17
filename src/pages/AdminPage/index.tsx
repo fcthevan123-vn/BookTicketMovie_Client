@@ -21,16 +21,11 @@ type userRows = {
   age: React.ReactNode;
 };
 
-// type RowType = {
-//   fullName: string;
-//   type: string;
-//   email: string;
-//   phone: string;
-//   age: number;
-//   sex: string;
-//   address: string;
-//   actions: string;
-// };
+type cinemaRows = {
+  name: React.ReactNode;
+  location: React.ReactNode;
+  detailLocation: React.ReactNode;
+};
 
 const intinialUserData = [
   {
@@ -42,6 +37,14 @@ const intinialUserData = [
     address: "",
     id: "",
     age: "",
+  },
+];
+
+const intinialCinemaData = [
+  {
+    name: "",
+    location: "",
+    detailLocation: "",
   },
 ];
 
@@ -82,7 +85,23 @@ const allPath = [
       { title: "Admin", href: "/admin/dashboard" },
       { title: "Cinema", href: "#" },
     ],
-    jsx: <AdminCinemaPage></AdminCinemaPage>,
+    jsx: (
+      <TableFilterProvider<cinemaRows> initialData={intinialCinemaData}>
+        <AdminCinemaPage></AdminCinemaPage>
+      </TableFilterProvider>
+    ),
+  },
+  {
+    urlInclude: "moviehall/overview",
+    breadcrumbs: [
+      { title: "Admin", href: "/admin/dashboard" },
+      { title: "Movie hall", href: "#" },
+    ],
+    jsx: (
+      <TableFilterProvider<cinemaRows> initialData={intinialCinemaData}>
+        <AdminCinemaPage></AdminCinemaPage>
+      </TableFilterProvider>
+    ),
   },
   {
     urlInclude: "allmovies",
