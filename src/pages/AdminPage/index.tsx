@@ -9,7 +9,9 @@ import ManageAccountPage from "./ManageAccountPage";
 import { TableFilterProvider } from "../../components/Provider/TableFilterProvider";
 import AdminCinemaPage from "./AdminCinemaPage";
 import AddNewCinemaPage from "./AdminCinemaPage/AddNewCinemaPage";
+import AdminMovieHallPage from "./AdminMovieHallPage";
 
+// Type
 type userRows = {
   fullName: React.ReactNode;
   type: React.ReactNode;
@@ -98,8 +100,8 @@ const allPath = [
       { title: "Movie hall", href: "#" },
     ],
     jsx: (
-      <TableFilterProvider<cinemaRows> initialData={intinialCinemaData}>
-        <AdminCinemaPage></AdminCinemaPage>
+      <TableFilterProvider<[]> initialData={[]}>
+        <AdminMovieHallPage></AdminMovieHallPage>
       </TableFilterProvider>
     ),
   },

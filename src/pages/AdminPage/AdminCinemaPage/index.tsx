@@ -26,7 +26,6 @@ type Props = {};
 
 function AdminCinemaPage({}: Props) {
   const [data, setData] = useState<cinemaProps[]>();
-  const [combinedProvince, setCombinedProvince] = useState<string>("");
 
   const {
     setRows,
@@ -91,7 +90,7 @@ function AdminCinemaPage({}: Props) {
           })
         );
 
-        setRows(rowRender); // Remove null values
+        setRows(rowRender);
 
         setHeaders([
           {
