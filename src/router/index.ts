@@ -122,6 +122,14 @@ const router: IRouter[] = [
     element: AdminPage,
   },
 
+  {
+    path: "/admin/layout/overview",
+    isProtected: true,
+    isAdmin: true,
+    layout: AdminLayout,
+    element: AdminPage,
+  },
+
   // Movies
   {
     path: "/movie/:id",

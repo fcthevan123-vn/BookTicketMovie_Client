@@ -26,7 +26,7 @@ type movieHallProps = {
 // };
 
 function AdminMovieHallPage() {
-  const [data, setData] = useState<movieHallProps[]>([]);
+  const [data, setData] = useState<movieHallProps[]>();
 
   const {
     setRows,
@@ -49,7 +49,9 @@ function AdminMovieHallPage() {
         </Text>
       ),
       size: "lg",
-      children: <FormAddMovieHall></FormAddMovieHall>,
+      children: (
+        <FormAddMovieHall getAllMovieHall={getAllMovieHall}></FormAddMovieHall>
+      ),
       radius: "md",
       lockScroll: false,
     });
@@ -86,11 +88,20 @@ function AdminMovieHallPage() {
     });
   };
 
+  // const getAllMovieHall = useCallback(async () => {
+  //   const api = movieHallServices.getAllMovieHall();
+  //   const res = await normalApi(api, "getAllMovieHall");
+  //   if (res) {
+  //     setData(res);
+  //   }
+  //   return res;
+  // }, []);
+
   const getAllMovieHall = useCallback(async () => {
     const api = movieHallServices.getAllMovieHall();
     const res = await normalApi(api, "getAllMovieHall");
     if (res) {
-      setData(res as movieHallProps[]);
+      setData(res);
     }
     return res;
   }, []);

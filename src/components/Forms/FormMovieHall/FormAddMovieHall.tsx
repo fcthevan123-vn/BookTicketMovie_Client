@@ -11,14 +11,21 @@ import { useCallback, useEffect, useState } from "react";
 import {
   cinemaServices,
   layoutServices,
+  movieHallServices,
   roomTypeServices,
 } from "../../../services";
 import { normalApi } from "../../../untils/normalApi";
+import { loadingApi } from "../../../untils/loadingApi";
+import { modals } from "@mantine/modals";
 
-function FormAddMovieHall() {
-  const [roomType, setRoomType] = useState([]);
+type Props = {
+  getAllMovieHall: () => void;
+};
+
+function FormAddMovieHall({ getAllMovieHall }: Props) {
+  const [roomType, setRoomType] = useState<string | null>(null);
   const [cinema, setCinema] = useState<string | null>(null);
-  const [layout, setLayout] = useState([]);
+  const [layout, setLayout] = useState<string | null>(null);
 
   const [dataSelect, setDataSelect] = useState({
     cinema: [
@@ -98,6 +105,25 @@ function FormAddMovieHall() {
     return res;
   }, []);
 
+  async function handleSubmit(data: typeof form.values) {
+    const dataConverted = {
+      name: data.name,
+      number: data.number,
+      roomTypeId: roomType,
+      cinemaId: cinema,
+      layoutId: layout,
+    };
+    const api = movieHallServices.createMovieHall(dataConverted);
+    const res = await loadingApi(api, "Tạo phòng chiếu phim");
+
+    if (res) {
+      getAllMovieHall();
+      modals.closeAll();
+    }
+
+    return res;
+  }
+
   useEffect(() => {
     getAllCinema();
     getAllRoomType();
@@ -106,7 +132,7 @@ function FormAddMovieHall() {
 
   return (
     <div>
-      <form onSubmit={form.onSubmit((values) => console.log(values))}>
+      <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
         <SimpleGrid cols={2}>
           <TextInput
             radius="md"
@@ -129,7 +155,8 @@ function FormAddMovieHall() {
             label="Thuộc rạp chiếu"
             placeholder="Chọn rạp chiếu"
             withAsterisk
-            // value={cinema}
+            value={cinema}
+            onChange={(e) => setCinema(e)}
             data={dataSelect.cinema}
           />
           <Select
@@ -139,6 +166,8 @@ function FormAddMovieHall() {
             withAsterisk
             label="Có kiểu phòng"
             placeholder="Chọn kiểu phòng"
+            value={roomType}
+            onChange={(e) => setRoomType(e)}
             data={dataSelect.roomType}
           />
           <Select
@@ -148,6 +177,8 @@ function FormAddMovieHall() {
             withAsterisk
             label="Kiểu bố trí"
             placeholder="Chọn kiểu bố trí ghế"
+            value={layout}
+            onChange={(e) => setLayout(e)}
             data={dataSelect.layout}
           />
         </SimpleGrid>

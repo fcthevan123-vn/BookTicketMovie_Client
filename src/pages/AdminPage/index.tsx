@@ -10,6 +10,7 @@ import { TableFilterProvider } from "../../components/Provider/TableFilterProvid
 import AdminCinemaPage from "./AdminCinemaPage";
 import AddNewCinemaPage from "./AdminCinemaPage/AddNewCinemaPage";
 import AdminMovieHallPage from "./AdminMovieHallPage";
+import AdminLayoutPage from "./AdminLayoutPage";
 
 // Type
 type userRows = {
@@ -127,6 +128,19 @@ const allPath = [
     jsx: (
       <TableFilterProvider<userRows> initialData={intinialUserData}>
         <ManageAccountPage></ManageAccountPage>
+      </TableFilterProvider>
+    ),
+  },
+
+  {
+    urlInclude: "layout/overview",
+    breadcrumbs: [
+      { title: "Admin", href: "/admin/dashboard" },
+      { title: "Manage layout", href: "#" },
+    ],
+    jsx: (
+      <TableFilterProvider<[]> initialData={[]}>
+        <AdminLayoutPage></AdminLayoutPage>
       </TableFilterProvider>
     ),
   },

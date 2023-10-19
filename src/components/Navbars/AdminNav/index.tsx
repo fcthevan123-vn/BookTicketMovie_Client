@@ -1,4 +1,5 @@
 import {
+  IconBorderAll,
   IconChalkboard,
   IconGauge,
   IconMovie,
@@ -33,6 +34,11 @@ const allLinks = [
     label: "Phòng chiếu phim",
     icon: IconChalkboard,
     link: `/admin/movie-hall/overview`,
+  },
+  {
+    label: "Kiểu bố trí",
+    icon: IconBorderAll,
+    link: `/admin/layout/overview`,
   },
   {
     label: "Quản lý tài khoản",

@@ -13,7 +13,7 @@ export async function normalApi(
     if (res.statusCode === 0) {
       return res.data;
     }
-    return true;
+    // return true;
   } catch (err) {
     console.log("err", err);
     if (axios.isAxiosError(err)) {
@@ -55,6 +55,6 @@ export async function normalApi(
         radius: "lg",
       });
     }
-    return false;
+    // return false;
   }
 }
