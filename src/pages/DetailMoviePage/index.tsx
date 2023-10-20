@@ -36,7 +36,10 @@ function DetailMoviePage() {
         label="Đánh giá và thống kê"
         labelPosition="center"
       />
-      <MidSection></MidSection>
+
+      <div className="mx-16">
+        <MidSection></MidSection>
+      </div>
 
       <Divider
         my={40}
@@ -46,7 +49,9 @@ function DetailMoviePage() {
         labelPosition="center"
       />
 
-      {dataMovie && <RelatedMovie dataMovie={dataMovie}></RelatedMovie>}
+      <div className="mx-16">
+        {dataMovie && <RelatedMovie dataMovie={dataMovie}></RelatedMovie>}
+      </div>
     </Container>
   );
 }

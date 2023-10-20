@@ -1,0 +1,13 @@
+.screen {
+  border-bottom: 55px solid var(--mantine-color-gray-5);
+  border-left: 25px solid transparent;
+  border-right: 25px solid transparent;
+  height: 0;
+  width: 240px;
+}
+
+.box {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+}

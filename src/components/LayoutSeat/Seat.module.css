@@ -1,0 +1,19 @@
+.box {
+  background: white;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 37px;
+  width: 37px;
+  border: 1px solid var(--mantine-color-blue-3);
+  cursor: pointer;
+
+  transition: all 150ms ease, box-shadow 100ms ease;
+
+  @mixin hover {
+    background-color: var(--mantine-color-blue-5);
+    border: 1px solid var(--mantine-color-blue-6);
+    color: white;
+  }
+}

@@ -17,6 +17,8 @@ import Autoplay from "embla-carousel-autoplay";
 
 import moment from "moment";
 import { useRef } from "react";
+import { useDisclosure } from "@mantine/hooks";
+import ModalPickShow from "../../../components/Modals/ModalPickShow";
 
 type Props = {
   dataMovie: DataTableMoviesProps;
@@ -26,9 +28,13 @@ const PRIMARY_COL_HEIGHT = rem(500);
 
 function TopSecton({ dataMovie }: Props) {
   const autoplay = useRef(Autoplay({ delay: 2000 }));
+  const [opened, { open, close }] = useDisclosure(false);
 
   return (
     <div className={classes.background}>
+      {/* modal */}
+      <ModalPickShow opened={opened} close={close}></ModalPickShow>
+
       <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
         {/* Carousel */}
         <Carousel
@@ -208,7 +214,8 @@ function TopSecton({ dataMovie }: Props) {
                     radius={"md"}
                     w={150}
                     ml="xs"
-                    gradient={{ from: "teal", to: "orange", deg: 270 }}
+                    gradient={{ from: "red", to: "yellow", deg: 0 }}
+                    onClick={open}
                   >
                     Đặt vé
                   </Button>
@@ -218,7 +225,7 @@ function TopSecton({ dataMovie }: Props) {
                     radius={"md"}
                     w={150}
                     ml="xs"
-                    gradient={{ from: "teal", to: "orange", deg: 270 }}
+                    gradient={{ from: "red", to: "yellow", deg: 0 }}
                   >
                     Viết đánh giá
                   </Button>
