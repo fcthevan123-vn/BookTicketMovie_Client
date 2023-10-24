@@ -12,6 +12,7 @@ function FormLogin() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [login, setLogin] = useState(false);
+
   const form = useForm({
     initialValues: { email: "", password: "" },
 
@@ -40,7 +41,18 @@ function FormLogin() {
         })
       );
       setLogin(true);
-      navigate("/");
+
+      // handle forward link
+      const urlParams = new URLSearchParams(window.location.search);
+
+      const forwardTo = urlParams.get("forwardTo");
+      const open = urlParams.get("open");
+
+      if (forwardTo) {
+        navigate(`${forwardTo + `?open=${open}`}`);
+      } else {
+        navigate("/");
+      }
     } else {
       navigate("/register");
     }

@@ -1,19 +1,67 @@
-import { Badge, Divider, Modal, Paper, Select, Text, rem } from "@mantine/core";
+import {
+  Badge,
+  Box,
+  ComboboxData,
+  LoadingOverlay,
+  Modal,
+  Notification,
+  Paper,
+  Select,
+  Text,
+  rem,
+} from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import {
-  IconArmchair,
+  IconAlertTriangle,
   IconCalendar,
   IconChalkboard,
   IconLocation,
 } from "@tabler/icons-react";
 import ShowItem from "../../ShowItem";
+import apiProvinceVietNam from "../../../untils/apiProvinceVietNam";
+import NormalToast from "../../AllToast/NormalToast";
+import { useCallback, useEffect, useState } from "react";
+import { roomTypeServices, showServices } from "../../../services";
+import moment from "moment";
+import { DataTableMoviesProps } from "../../Provider/MovieProvider/MovieProvider";
+import { Cinema, MovieHall, Show } from "../../../types";
 
 type Props = {
   close: () => void;
   opened: boolean;
+  dataMovie: DataTableMoviesProps;
 };
 
-function ModalPickShow({ opened, close }: Props) {
+type dataShowType = {
+  cinema: Cinema;
+  allShowsMovieHall: allShowsMovieHallType[];
+};
+
+type allShowsMovieHallType = {
+  allShows: Show[];
+  movieHall: MovieHall;
+};
+
+function ModalPickShow({ opened, close, dataMovie }: Props) {
+  const [dataProvince, setDataProvince] = useState([]);
+  const [dataRoomType, setDataRoomType] = useState<ComboboxData>();
+  const [cityControl, setCityControl] = useState<string | null>("92");
+  const [dateControl, setDateControl] = useState(new Date());
+  const [roomTypeControl, setRoomTypeControl] = useState<string | null>("all");
+  const [data, setData] = useState<dataShowType[] | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const dataShowControl = {
+    dateControl: dateControl,
+    roomTypeControl: roomTypeControl,
+    cityControl: cityControl,
+  };
+
+  // const previousValue = usePrevious(cityControl);
+
+  // const urlParams = new URLSearchParams(window.location.search);
+  // const openQuery = urlParams.get("open");
+
   const titleCustom = (
     <div className="w-full flex justify-between px-20">
       <div className="flex gap-6">
@@ -24,10 +72,10 @@ function ModalPickShow({ opened, close }: Props) {
               stroke={1.5}
             />
           }
-          defaultValue={new Date()}
+          value={dateControl}
+          onChange={(e) => setDateControl(e as Date)}
           valueFormat="DD - MM - YYYY"
           minDate={new Date()}
-          defaultDate={new Date(2022, 1)}
           placeholder="Chọn ngày muốn xem"
           label="Ngày"
           radius="md"
@@ -45,13 +93,17 @@ function ModalPickShow({ opened, close }: Props) {
               stroke={1.5}
             />
           }
+          // defaultValue={"92"}
           searchable
           allowDeselect={false}
           checkIconPosition="right"
-          label="Thành phố"
+          label="Thành phố/ Tỉnh"
+          value={cityControl}
+          onChange={(e) => setCityControl(e)}
           radius="md"
           placeholder="Chọn thành phố của bạn"
-          data={["React", "Angular", "Vue", "Svelte"]}
+          data={dataProvince}
+          nothingFoundMessage="Không tìm thấy thành phố"
           styles={{
             label: {
               color: "white",
@@ -66,14 +118,15 @@ function ModalPickShow({ opened, close }: Props) {
             stroke={1.5}
           />
         }
-        searchable
+        // defaultValue={"all"}
         allowDeselect={false}
         checkIconPosition="right"
-        defaultValue={"1"}
+        value={roomTypeControl}
+        onChange={(e) => setRoomTypeControl(e as string)}
         label="Kiểu phòng"
         radius="md"
-        placeholder="Chọn số ghế"
-        data={["1", "2", "3", "4"]}
+        placeholder="Chọn kiểu phòng"
+        data={dataRoomType}
         styles={{
           label: {
             color: "white",
@@ -83,8 +136,114 @@ function ModalPickShow({ opened, close }: Props) {
     </div>
   );
 
+  const getAllRoomType = useCallback(async () => {
+    try {
+      const res = await roomTypeServices.getAllRoomType();
+      if (res.statusCode === 0) {
+        const convertData = res.data.map(
+          (item: { id: string; name: string }) => {
+            return { value: item.id, label: item.name };
+          }
+        );
+        const combineData = [
+          {
+            value: "all",
+            label: "Tất cả",
+          },
+          ...convertData,
+        ];
+
+        setDataRoomType(combineData);
+      }
+    } catch (error) {
+      const err = error as Error;
+      NormalToast({
+        title: "getAllRoomType",
+        message: err.message,
+        color: "red",
+      });
+    }
+  }, []);
+
+  const callApiCity = useCallback(async () => {
+    try {
+      const res = await apiProvinceVietNam.callApiCity("?depth=1");
+
+      const convertData = res.map((item: { code: number; name: string }) => {
+        return { value: item.code.toString(), label: item.name };
+      });
+      setDataProvince(convertData);
+    } catch (error) {
+      const err = error as Error;
+      NormalToast({
+        title: "callApiCity",
+        message: err.message,
+        color: "red",
+      });
+    }
+  }, []);
+
+  function filterData(jsonData: dataShowType[]) {
+    jsonData.forEach((item) => {
+      item.allShowsMovieHall = item.allShowsMovieHall.filter(
+        (movieHall) => movieHall.allShows.length !== 0
+      );
+    });
+
+    const isEmpty = jsonData.every(
+      (item) => item.allShowsMovieHall.length === 0
+    );
+
+    if (isEmpty) {
+      jsonData = [];
+    }
+
+    return jsonData;
+  }
+
+  const getShows = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const dateFormatted = moment(dateControl).format("YYYY-MM-DD");
+
+      const res = await showServices.getAllShowBeforePickSeat(
+        dataMovie.id,
+        roomTypeControl as unknown as string,
+        dateFormatted,
+        cityControl as unknown as string
+      );
+      setIsLoading(false);
+      if (res.statusCode === 0) {
+        const dataClone = res.data;
+        const filteredData = filterData(dataClone);
+        setData(filteredData);
+      }
+    } catch (error) {
+      const err = error as Error;
+      NormalToast({
+        title: "getShows",
+        message: err.message,
+        color: "red",
+      });
+    }
+  }, [cityControl, dataMovie.id, dateControl, roomTypeControl]);
+
+  useEffect(() => {
+    callApiCity();
+    getAllRoomType();
+    getShows();
+  }, [callApiCity, getAllRoomType, getShows, opened]);
+
+  // useEffect(() => {
+  //   console.log("previousValue", previousValue);
+  //   if (openQuery) {
+  //     console.log("openQuery", openQuery);
+  //   }
+  // }, [openQuery, previousValue]);
+
   return (
     <div>
+      {/* {console.log("dateControl", moment(dateControl).format("YYYY-MM-DD"))} */}
       <Modal
         opened={opened}
         onClose={close}
@@ -111,31 +270,61 @@ function ModalPickShow({ opened, close }: Props) {
         <Paper withBorder shadow="sm" radius="lg    " p="lg">
           <div>
             <div className="flex items-center gap-5 justify-between">
-              <Text fw={700} size="lg" c={"blue"}>
-                SPIDER MAN - 120 PHÚT
+              <Text fw={700} size="lg" c={"blue"} tt={"uppercase"}>
+                {dataMovie.title} - {dataMovie.duration} phút
               </Text>
               <div className="flex gap-2">
-                <Badge color="blue" size="md" variant="dot" radius="md">
-                  HÀNH ĐỘNG
-                </Badge>
-                <Badge color="blue" size="md" variant="dot" radius="md">
-                  HÀI KỊCH
-                </Badge>
-                <Badge color="blue" size="md" variant="dot" radius="md">
-                  KỊCH TÍNH
-                </Badge>
+                {dataMovie.genre.map((g, index) => (
+                  <Badge
+                    key={index}
+                    color="blue"
+                    size="md"
+                    variant="dot"
+                    radius="md"
+                  >
+                    {g}
+                  </Badge>
+                ))}
               </div>
             </div>
           </div>
         </Paper>
 
-        <div className="mt-4 flex flex-col gap-4">
-          <ShowItem></ShowItem>
+        <Box pos="relative" mih={100}>
+          <div className="mt-4 flex flex-col gap-4">
+            <LoadingOverlay
+              visible={isLoading}
+              zIndex={10}
+              overlayProps={{ radius: "md", blur: 2 }}
+              loaderProps={{ color: "blue", type: "bars" }}
+            />
 
-          <ShowItem></ShowItem>
-
-          <ShowItem></ShowItem>
-        </div>
+            {data && data.length > 0 ? (
+              data.map((item, index) => (
+                <ShowItem
+                  dataShow={item}
+                  key={index}
+                  dataControlShow={dataShowControl}
+                ></ShowItem>
+              ))
+            ) : (
+              <Notification
+                color="yellow"
+                title="Không tìm thấy suất chiếu"
+                withCloseButton={false}
+                radius={"lg"}
+                withBorder
+                icon={
+                  <IconAlertTriangle
+                    style={{ width: rem(20), height: rem(20) }}
+                  ></IconAlertTriangle>
+                }
+              >
+                Vui lòng chọn ngày hoặc thành phố/ tỉnh khác để xem suất chiếu
+              </Notification>
+            )}
+          </div>
+        </Box>
       </Modal>
     </div>
   );

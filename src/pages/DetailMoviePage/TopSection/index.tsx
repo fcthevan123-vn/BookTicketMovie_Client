@@ -16,7 +16,7 @@ import classes from "./TopSection.module.css";
 import Autoplay from "embla-carousel-autoplay";
 
 import moment from "moment";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
 import ModalPickShow from "../../../components/Modals/ModalPickShow";
 
@@ -29,11 +29,26 @@ const PRIMARY_COL_HEIGHT = rem(500);
 function TopSecton({ dataMovie }: Props) {
   const autoplay = useRef(Autoplay({ delay: 2000 }));
   const [opened, { open, close }] = useDisclosure(false);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const urlParams = new URLSearchParams(window.location.search);
+
+  const openModal = urlParams.get("open");
+
+  useEffect(() => {
+    if (openModal) {
+      setIsOpen(true);
+    }
+  }, [openModal]);
 
   return (
     <div className={classes.background}>
       {/* modal */}
-      <ModalPickShow opened={opened} close={close}></ModalPickShow>
+      <ModalPickShow
+        dataMovie={dataMovie}
+        opened={isOpen}
+        close={() => setIsOpen(false)}
+      ></ModalPickShow>
 
       <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
         {/* Carousel */}
@@ -215,7 +230,7 @@ function TopSecton({ dataMovie }: Props) {
                     w={150}
                     ml="xs"
                     gradient={{ from: "red", to: "yellow", deg: 0 }}
-                    onClick={open}
+                    onClick={() => setIsOpen(true)}
                   >
                     Đặt vé
                   </Button>

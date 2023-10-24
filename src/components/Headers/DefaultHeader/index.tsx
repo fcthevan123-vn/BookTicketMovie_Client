@@ -725,7 +725,7 @@ export default function DefaultHeader() {
                   radius="lg"
                   className="shadow-md drop-shadow-md"
                 >
-                  Login
+                  Đăng nhập
                 </Button>
               </Link>
             </div>

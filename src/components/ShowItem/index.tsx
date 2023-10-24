@@ -1,7 +1,6 @@
 import {
   ActionIcon,
   Badge,
-  Button,
   Divider,
   Grid,
   HoverCard,
@@ -9,78 +8,118 @@ import {
   SimpleGrid,
   Text,
 } from "@mantine/core";
-import { IconAdjustments, IconDotsVertical } from "@tabler/icons-react";
-import React from "react";
+import {
+  IconArrowBadgeRightFilled,
+  IconDotsVertical,
+} from "@tabler/icons-react";
+
 import ShowTime from "./ShowTime";
+import { Cinema, MovieHall, Show } from "../../types";
+import { useMemo } from "react";
 
-type Props = {};
+type Props = {
+  dataShow: dataShowType;
+  dataControlShow: {
+    dateControl: Date;
+    roomTypeControl: string | null;
+    cityControl: string | null;
+  };
+};
 
-function ShowItem({}: Props) {
-  const showTimeRender = (
-    <Grid px={"md"} py={10}>
-      <Grid.Col span={2}>
-        <div>
-          <Text>Phong 2D</Text>
-        </div>
-      </Grid.Col>
-      <Grid.Col span={10}>
-        <SimpleGrid cols={5}>
-          <ShowTime></ShowTime>
-          <ShowTime></ShowTime>
-          <ShowTime></ShowTime>
-          <ShowTime></ShowTime>
-          <ShowTime></ShowTime>
-          <ShowTime></ShowTime>
-          <ShowTime></ShowTime>
-        </SimpleGrid>
-      </Grid.Col>
-    </Grid>
-  );
+type dataShowType = {
+  cinema: Cinema;
+  allShowsMovieHall: allShowsMovieHallType[];
+};
+
+type allShowsMovieHallType = {
+  allShows: Show[];
+  movieHall: MovieHall;
+};
+type GridRenderProps = {
+  allShows: Show[];
+};
+
+function GridRender({ allShows }: GridRenderProps) {
+  // console.log("allShows.length", allShows.length, allShows);
+  const element = allShows.map((show, index) => (
+    <ShowTime dataShow={show} key={index}></ShowTime>
+  ));
+  return element;
+}
+
+function ShowItem({ dataShow, dataControlShow }: Props) {
+  const showTimeRender =
+    dataShow.allShowsMovieHall.length > 0 &&
+    dataShow.allShowsMovieHall.map((item, index) => (
+      <div key={index} className="py-2">
+        <Grid px={"md"} py={10}>
+          <Grid.Col span={3}>
+            <div className="flex items-center">
+              <Text c={"orange.8"}>
+                <IconArrowBadgeRightFilled></IconArrowBadgeRightFilled>
+              </Text>
+              <Badge variant="light" p={"sm"} color="orange" radius="md">
+                <Text fw={500} size="sm" tt="capitalize">
+                  {item.movieHall.name}
+                </Text>
+              </Badge>
+            </div>
+          </Grid.Col>
+          <Grid.Col span={9}>
+            <SimpleGrid cols={5}>
+              <GridRender allShows={item.allShows}></GridRender>
+            </SimpleGrid>
+          </Grid.Col>
+        </Grid>
+      </div>
+    ));
 
   return (
-    <Paper
-      withBorder
-      shadow="xs"
-      radius="md"
-      p="lg"
-      styles={{
-        root: {
-          borderLeft: "8px solid var(--mantine-color-orange-6)",
-        },
-      }}
-    >
-      <div className="flex items-center gap-2">
-        <Badge variant="light" p={"sm"} radius="xl">
-          <Text fw={500} size="sm" tt="capitalize">
-            Rap chieu 1
-          </Text>
-        </Badge>
-        <HoverCard width={280} shadow="md">
-          <HoverCard.Target>
-            <ActionIcon
-              variant="light"
-              size="sm"
-              radius="md"
-              aria-label="Settings"
-            >
-              <IconDotsVertical
-                style={{ width: "70%", height: "70%" }}
-                stroke={1.5}
-              />
-            </ActionIcon>
-          </HoverCard.Target>
-          <HoverCard.Dropdown>
-            <Text size="sm">Chi tiet rap chieu phim</Text>
-          </HoverCard.Dropdown>
-        </HoverCard>
-      </div>
+    <>
+      {/* {console.log("dataControlShow", dataControlShow)} */}
+      {dataShow.allShowsMovieHall.length > 0 && (
+        <Paper
+          withBorder
+          shadow="xs"
+          radius="md"
+          p="lg"
+          styles={{
+            root: {
+              borderLeft: "8px solid var(--mantine-color-orange-6)",
+            },
+          }}
+        >
+          <div className="flex items-center gap-2">
+            <Badge variant="filled" p={"sm"} color="orange" radius="md">
+              <Text fw={500} size="sm" tt="capitalize">
+                {dataShow.cinema.name}
+              </Text>
+            </Badge>
+            <HoverCard radius={"md"} width={280} shadow="lg" withArrow>
+              <HoverCard.Target>
+                <ActionIcon
+                  variant="light"
+                  color="orange"
+                  size="sm"
+                  radius="md"
+                  aria-label="Settings"
+                >
+                  <IconDotsVertical
+                    style={{ width: "70%", height: "70%" }}
+                    stroke={1.5}
+                  />
+                </ActionIcon>
+              </HoverCard.Target>
+              <HoverCard.Dropdown>
+                <Text size="sm">{dataShow.cinema.detailLocation}</Text>
+              </HoverCard.Dropdown>
+            </HoverCard>
+          </div>
 
-      <div className="flex flex-col gap-2">
-        {showTimeRender}
-        <Divider my="sm" size={"sm"} mx={"lg"} />
-        {showTimeRender}
-      </div>
-    </Paper>
+          <div className="flex flex-col gap-2">{showTimeRender}</div>
+        </Paper>
+      )}
+    </>
   );
 }
 

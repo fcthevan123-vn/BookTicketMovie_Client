@@ -6,6 +6,7 @@ const RegisterPage = lazy(() => import("../pages/RegisterPage"));
 const ErrorPage = lazy(() => import("../pages/ErrorPage"));
 const UserPage = lazy(() => import("../pages/UserPage"));
 const AdminPage = lazy(() => import("../pages/AdminPage"));
+const PickSeatPage = lazy(() => import("../pages/PickSeatPage"));
 
 const MovieDetailPage = lazy(() => import("../pages/DetailMoviePage"));
 
@@ -144,6 +145,13 @@ const router: IRouter[] = [
     isProtected: false,
     layout: DefaultLayout,
     element: MoviePage,
+  },
+
+  {
+    path: "/pick-seat-by-show/:id",
+    isProtected: true,
+    layout: "None",
+    element: PickSeatPage,
   },
 ];
 

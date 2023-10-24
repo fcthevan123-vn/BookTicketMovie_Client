@@ -184,7 +184,7 @@ const movieServices = {
   },
 
   async getMovieById(id: string) {
-    console.log("id", id);
+    // console.log("id", id);
     const res = await axios.get(`api/v1/movie/${id}`);
     return res.data;
   },
