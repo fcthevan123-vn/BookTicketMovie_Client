@@ -1,7 +1,8 @@
 import { Button, Divider, Group, Paper, Radio, Text } from "@mantine/core";
-import React from "react";
+import React, { useState } from "react";
 import { usePickSeatContext } from "../Provider/PickSeatProvider";
 import { SeatTS } from "../../types";
+import ModalConfirmBook from "../Modals/ModalConfirmBook";
 
 type Props = {};
 
@@ -14,7 +15,7 @@ function SeatToPay({ dataSeat }: SeatToPayProps) {
     <div className="flex justify-between mb-3">
       <div>
         <Text size="sm">Ghế: {dataSeat.name}</Text>
-        <Text size="sm" c={"dimmed"} ml={"xs"}>
+        <Text size="xs" c={"dimmed"} ml={"xs"}>
           {dataSeat.SeatType.name}
         </Text>
       </div>
@@ -32,63 +33,115 @@ function SeatToPay({ dataSeat }: SeatToPayProps) {
 }
 
 function PaymentPreview({}: Props) {
-  const {
-    seatNumberControl,
-    isDisabledSeat,
-    setIsDisabledSeat,
-    seatSelected,
-    dataRoom,
-    setSeatSelected,
-  } = usePickSeatContext();
+  const { seatSelected, dataTotal } = usePickSeatContext();
+
+  const [openModalConfirm, setOpenModalConfirm] = useState(false);
 
   let calculatePrice;
+  let totalPrice;
 
-  if (dataRoom) {
+  if (dataTotal) {
     calculatePrice = (
-      (parseFloat(dataRoom?.priceMultiplier) - 1) *
+      (parseFloat(dataTotal.MovieHall.RoomType.priceMultiplier) - 1) *
       100
     ).toFixed(0);
   }
 
-  // function CalculateTotalPriceSeat(allSeat: SeatTS[]) {
-  //   let total;
+  function CalculateTotalPriceSeat(allSeat: SeatTS[]) {
+    let total = 0;
+    if (allSeat.length > 0) {
+      for (const seat of allSeat) {
+        total += seat.SeatType.price;
+      }
+    }
 
-  //   return total;
-  // }
+    return total;
+  }
 
-  // const priceSeat = CalculateTotalPriceSeat(seatSelected);
-  // console.log("priceSeat", priceSeat);
+  const priceSeat = CalculateTotalPriceSeat(seatSelected);
+
+  if (calculatePrice) {
+    totalPrice =
+      priceSeat +
+      (priceSeat * 10) / 100 +
+      (parseInt(calculatePrice) * priceSeat) / 100;
+  }
 
   return (
     <div className="w-full">
-      <Paper shadow="xs" radius="md" withBorder p="xs" w={"100%"}>
+      {/* Modal confirm */}
+      <ModalConfirmBook
+        opened={openModalConfirm}
+        close={() => setOpenModalConfirm(false)}
+      ></ModalConfirmBook>
+      <Paper shadow="xs" radius="md" withBorder p="xs" w={260}>
         {seatSelected.map((seat) => (
           <SeatToPay dataSeat={seat} key={seat.id}></SeatToPay>
         ))}
         <Divider my="sm" />
         <div className="flex justify-between mb-2">
           <Text size="sm" fw={500}>
-            Giá tiền:
+            Giá tiền gốc:
           </Text>
-          <Text size="sm">123</Text>
+          <Text size="sm">
+            {priceSeat.toLocaleString("it-IT", {
+              style: "currency",
+              currency: "VND",
+            })}
+          </Text>
         </div>
         <div className="flex justify-between mb-2">
-          <Text size="sm" fw={500}>
-            Phí VAT:
+          <div>
+            <Text size="sm" fw={500}>
+              Phí VAT:
+            </Text>
+
+            <Text size="xs" c={"dimmed"} ml={"xs"}>
+              10%
+            </Text>
+          </div>
+
+          <Text size="sm">
+            {((priceSeat * 10) / 100).toLocaleString("it-IT", {
+              style: "currency",
+              currency: "VND",
+            })}
           </Text>
-          <Text size="sm">10%</Text>
         </div>
         <div className="flex justify-between mb-2">
-          <Text size="sm" fw={500}>
-            Phòng {dataRoom?.name}:
+          <div>
+            <Text size="sm" fw={500}>
+              Phòng {dataTotal?.MovieHall?.name}:
+            </Text>
+
+            <Text size="xs" c={"dimmed"} ml={"xs"}>
+              {calculatePrice}%
+            </Text>
+          </div>
+
+          <Text size="sm">
+            {" "}
+            {calculatePrice &&
+              ((priceSeat * parseInt(calculatePrice)) / 100).toLocaleString(
+                "it-IT",
+                {
+                  style: "currency",
+                  currency: "VND",
+                }
+              )}
           </Text>
-          <Text size="sm">{calculatePrice}%</Text>
         </div>
         <div className="flex justify-between mb-2">
           <Text size="sm" fw={500}>
             Tổng giá tiền:
           </Text>
-          <Text size="sm">123</Text>
+          <Text size="sm">
+            {totalPrice &&
+              totalPrice.toLocaleString("it-IT", {
+                style: "currency",
+                currency: "VND",
+              })}
+          </Text>
         </div>
         <Divider my="sm" />
         <Radio.Group
@@ -100,12 +153,18 @@ function PaymentPreview({}: Props) {
         >
           <Group mt="xs">
             <Radio value="offline" label="Trực tiếp" />
-            <Radio value="online" label="Banking" />
+            <Radio value="online" disabled label="Banking" />
           </Group>
         </Radio.Group>
         <div className="mt-4 flex justify-center">
-          <Button size="compact-sm" variant="filled" radius="sm" fullWidth>
-            Xác nhận thanh toán
+          <Button
+            onClick={() => setOpenModalConfirm(true)}
+            size="compact-sm"
+            variant="filled"
+            radius="md"
+            fullWidth
+          >
+            Thanh toán
           </Button>
         </div>
       </Paper>

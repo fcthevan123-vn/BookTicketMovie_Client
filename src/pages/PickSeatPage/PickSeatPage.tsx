@@ -62,13 +62,13 @@ function PickSeatPage({}: Props) {
 
   const {
     seatSelected,
-    setSeatSelected,
-    setDataRoom,
+    dataTotal,
+    setDataTotal,
     seatNumberControl,
     setSeatNumberControl,
   } = usePickSeatContext();
 
-  const [data, setData] = useState<SeatOverView | null>(null);
+  // const [data, setData] = useState<SeatOverView | null>(null);
   // Seats were paid by user
   const [seatPicked, setSeatPicked] = useState<SeatStatus[] | null>(null);
 
@@ -76,9 +76,8 @@ function PickSeatPage({}: Props) {
     try {
       const res = await seatServices.getAllSeatsByShowId(id as string);
       if (res.statusCode === 0) {
-        setData(res.data);
+        setDataTotal(res.data);
         setSeatPicked(res.seatPicked);
-        setDataRoom(res.data.MovieHall.RoomType);
       }
     } catch (error) {
       const err = error as Error;
@@ -119,7 +118,7 @@ function PickSeatPage({}: Props) {
           <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
           <div className="flex w-full justify-between px-3">
             <div className="flex gap-4 items-center">
-              <Link to={`/movie/${data?.movieId}?open=modalPickShow`}>
+              <Link to={`/movie/${dataTotal?.movieId}?open=modalPickShow`}>
                 <ActionIcon
                   variant="subtle"
                   color="rgba(255, 255, 255, 1)"
@@ -137,7 +136,8 @@ function PickSeatPage({}: Props) {
               <div className="flex flex-col gap-1">
                 <div className="flex gap-3">
                   <Text c={"white"} size="md" fw={500}>
-                    {data?.Movie?.title} - {data?.Movie?.duration} phút
+                    {dataTotal?.Movie?.title} - {dataTotal?.Movie?.duration}{" "}
+                    phút
                   </Text>
                   <Divider
                     size={"sm"}
@@ -146,14 +146,14 @@ function PickSeatPage({}: Props) {
                     orientation="vertical"
                   ></Divider>
                   <Text c={"white"} size="md" fw={500}>
-                    {moment(data?.startTime).format("HH:mm")} -{" "}
-                    {moment(data?.endTime).format("HH:mm")}
+                    {moment(dataTotal?.startTime).format("HH:mm")} -{" "}
+                    {moment(dataTotal?.endTime).format("HH:mm")}
                   </Text>
                 </div>
 
                 <div className="flex gap-3">
                   <Text c={"white"} size="md" fw={500}>
-                    {data?.MovieHall.name}
+                    {dataTotal?.MovieHall.name}
                   </Text>
                   <Divider
                     size={"sm"}
@@ -162,7 +162,7 @@ function PickSeatPage({}: Props) {
                     orientation="vertical"
                   ></Divider>
                   <Text c={"white"} size="md" fw={500}>
-                    {data?.MovieHall.Cinema.name}
+                    {dataTotal?.MovieHall.Cinema.name}
                   </Text>
                 </div>
               </div>
@@ -329,7 +329,10 @@ function PickSeatPage({}: Props) {
         {/* </AppShell.Section> */}
       </AppShell.Navbar>
       <AppShell.Main>
-        <LayoutSeat dataSeatsPicked={seatPicked} dataSeats={data}></LayoutSeat>
+        <LayoutSeat
+          dataSeatsPicked={seatPicked}
+          dataSeats={dataTotal}
+        ></LayoutSeat>
       </AppShell.Main>
       <AppShell.Aside p="sm">
         <div className="flex justify-center flex-col items-center gap-3">
