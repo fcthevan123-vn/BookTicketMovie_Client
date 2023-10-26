@@ -1,5 +1,5 @@
 import { Button, Divider, Group, Paper, Radio, Text } from "@mantine/core";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { usePickSeatContext } from "../Provider/PickSeatProvider";
 import { SeatTS } from "../../types";
 import ModalConfirmBook from "../Modals/ModalConfirmBook";
@@ -33,18 +33,20 @@ function SeatToPay({ dataSeat }: SeatToPayProps) {
 }
 
 function PaymentPreview({}: Props) {
-  const { seatSelected, dataTotal } = usePickSeatContext();
+  const { seatSelected, dataTotal, setAllPrice } = usePickSeatContext();
 
   const [openModalConfirm, setOpenModalConfirm] = useState(false);
 
-  let calculatePrice;
-  let totalPrice;
+  let calculatePrice: number | undefined = undefined;
+  let totalPrice: number | undefined = undefined;
 
   if (dataTotal) {
-    calculatePrice = (
-      (parseFloat(dataTotal.MovieHall.RoomType.priceMultiplier) - 1) *
-      100
-    ).toFixed(0);
+    calculatePrice = parseInt(
+      (
+        (parseFloat(dataTotal.MovieHall.RoomType.priceMultiplier) - 1) *
+        100
+      ).toFixed(0)
+    );
   }
 
   function CalculateTotalPriceSeat(allSeat: SeatTS[]) {
@@ -62,10 +64,19 @@ function PaymentPreview({}: Props) {
 
   if (calculatePrice) {
     totalPrice =
-      priceSeat +
-      (priceSeat * 10) / 100 +
-      (parseInt(calculatePrice) * priceSeat) / 100;
+      priceSeat + (priceSeat * 10) / 100 + (calculatePrice * priceSeat) / 100;
   }
+
+  useEffect(() => {
+    if (calculatePrice && totalPrice && priceSeat) {
+      setAllPrice({
+        originalPrice: priceSeat,
+        vatPrice: (priceSeat * 10) / 100,
+        typeRoomPrice: calculatePrice,
+        totalPrice: totalPrice,
+      });
+    }
+  }, [calculatePrice, priceSeat, setAllPrice, totalPrice]);
 
   return (
     <div className="w-full">
@@ -122,13 +133,10 @@ function PaymentPreview({}: Props) {
           <Text size="sm">
             {" "}
             {calculatePrice &&
-              ((priceSeat * parseInt(calculatePrice)) / 100).toLocaleString(
-                "it-IT",
-                {
-                  style: "currency",
-                  currency: "VND",
-                }
-              )}
+              ((priceSeat * calculatePrice) / 100).toLocaleString("it-IT", {
+                style: "currency",
+                currency: "VND",
+              })}
           </Text>
         </div>
         <div className="flex justify-between mb-2">

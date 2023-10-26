@@ -292,6 +292,7 @@ import {
 import { BsPostcard } from "react-icons/bs";
 import { useAuthenticate } from "../../../hooks";
 import { Link } from "react-router-dom";
+import { IconTicket } from "@tabler/icons-react";
 
 export function UserNav() {
   const [active, setActive] = useState("Billing");
@@ -324,7 +325,13 @@ export function UserNav() {
         icon: AiOutlineEye,
       },
       {
-        link: "",
+        link: `/user/${dataUser?.id}/all-tickets`,
+        label: "Vé đã đặt",
+        urlInclude: "all-tickets",
+        icon: IconTicket,
+      },
+      {
+        link: ``,
         label: "Tất cả đánh giá",
         urlInclude: "feedback",
         icon: BsPostcard,
@@ -335,10 +342,9 @@ export function UserNav() {
 
   const links = dataNavbar.map((item) => (
     <Link to={item.link} key={item.label}>
-      <a
+      <p
         className={classes.link}
         data-active={item.label === active || undefined}
-        href={item.link}
         key={item.label}
         onClick={() => {
           setActive(item.label);
@@ -346,7 +352,7 @@ export function UserNav() {
       >
         <item.icon className={classes.linkIcon} stroke={1.5} />
         <span>{item.label}</span>
-      </a>
+      </p>
     </Link>
   ));
 

@@ -12,11 +12,7 @@ import { SeatTS } from "../../types";
 import moment from "moment";
 import { IconInfoCircle } from "@tabler/icons-react";
 
-type Props = {
-  priceSeat: number;
-  calculatePrice: number;
-  totalPrice: number;
-};
+type Props = {};
 
 type SeatToPayProps = {
   dataSeat: SeatTS;
@@ -58,23 +54,24 @@ function SeatToPay({ dataSeat }: SeatToPayProps) {
 }
 
 function TicketPreview({}: Props) {
-  const { dataTotal, seatSelected } = usePickSeatContext();
+  const { dataTotal, seatSelected, allPrice } = usePickSeatContext();
 
   return (
     <div>
-      {/* {console.log("dataTotal", dataTotal)} */}
+      {/* {console.log("seatSelected", seatSelected)} */}
 
       <Paper shadow="sm" radius="lg" withBorder p="xs">
         <Grid>
           <Grid.Col span={5}>
             <Paper
               shadow="xl"
-              style={{
-                background: "var(--mantine-color-blue-5)",
-              }}
+              // style={{
+              //   background: "var(--mantine-color-blue-5)",
+              // }}
               radius="md"
               withBorder
               h={"100%"}
+              className="bg-gradient-to-r from-sky-500 to-green-500"
               p="sm"
             >
               <div className="flex gap-1 flex-col h-full justify-center">
@@ -134,11 +131,10 @@ function TicketPreview({}: Props) {
                 Giá tiền gốc:
               </Text>
               <Text size="sm">
-                {/* {priceSeat.toLocaleString("it-IT", {
+                {allPrice.originalPrice.toLocaleString("it-IT", {
                   style: "currency",
                   currency: "VND",
-                })} */}
-                123
+                })}
               </Text>
             </div>
             <div className="flex justify-between mb-2">
@@ -153,11 +149,10 @@ function TicketPreview({}: Props) {
               </div>
 
               <Text size="sm">
-                {/* {((priceSeat * 10) / 100).toLocaleString("it-IT", {
+                {allPrice.vatPrice.toLocaleString("it-IT", {
                   style: "currency",
                   currency: "VND",
-                })} */}
-                123
+                })}
               </Text>
             </div>
             <div className="flex justify-between mb-2">
@@ -167,22 +162,18 @@ function TicketPreview({}: Props) {
                 </Text>
 
                 <Text size="xs" c={"dimmed"} ml={"xs"}>
-                  {/* {calculatePrice}% */}
-                  10%
+                  {allPrice.typeRoomPrice}%
                 </Text>
               </div>
 
               <Text size="sm">
-                {" "}
-                123
-                {/* {calculatePrice &&
-                  ((priceSeat * parseInt(calculatePrice)) / 100).toLocaleString(
-                    "it-IT",
-                    {
-                      style: "currency",
-                      currency: "VND",
-                    }
-                  )} */}
+                {(
+                  (allPrice.originalPrice * allPrice.typeRoomPrice) /
+                  100
+                ).toLocaleString("it-IT", {
+                  style: "currency",
+                  currency: "VND",
+                })}
               </Text>
             </div>
             <div className="flex justify-between mb-2">
@@ -190,13 +181,18 @@ function TicketPreview({}: Props) {
                 Tổng giá tiền:
               </Text>
               <Text size="sm">
-                123
-                {/* {totalPrice &&
-                  totalPrice.toLocaleString("it-IT", {
-                    style: "currency",
-                    currency: "VND",
-                  })} */}
+                {allPrice.totalPrice.toLocaleString("it-IT", {
+                  style: "currency",
+                  currency: "VND",
+                })}
               </Text>
+            </div>
+
+            <div className="flex justify-between mb-2">
+              <Text size="sm" fw={500}>
+                Phương thức thanh toán:
+              </Text>
+              <Text size="sm">Trực tiếp</Text>
             </div>
           </Grid.Col>
         </Grid>

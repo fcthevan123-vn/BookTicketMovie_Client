@@ -74,7 +74,7 @@ export function ImageCheckbox({
 const mockdata = [
   { description: "Bỏng ngô", title: "10.000 VND", image: icons.sea },
   { description: "7 Up", title: "20.000 VND", image: icons.city },
-  { description: "Pepsi", title: "20.000 VND", image: icons.mountain },
+  { description: "Pepsi", title: "30.000 VND", image: icons.mountain },
   { description: "Couple Combo", title: "50.000 VND", image: icons.mountain },
 ];
 

@@ -1,15 +1,22 @@
 import React, { createContext, useContext, useState } from "react";
-import {
-  MovieHall,
-  MovieTS,
-  RoomType,
-  SeatOverView,
-  SeatStatus,
-  SeatTS,
-} from "../../../types";
+import { SeatOverView, SeatTS } from "../../../types";
 
 type PickSeatContextType = {
+  allPrice: {
+    originalPrice: number;
+    vatPrice: number;
+    typeRoomPrice: number;
+    totalPrice: number;
+  };
+  isLoading: boolean;
+  setIsLoading: (value: boolean) => void;
   seatSelected: SeatTS[];
+  setAllPrice: (value: {
+    originalPrice: number;
+    vatPrice: number;
+    typeRoomPrice: number;
+    totalPrice: number;
+  }) => void;
   dataTotal: SeatOverView | null;
   setDataTotal: (dataTotal: SeatOverView) => void;
   isDisabledSeat: boolean;
@@ -27,10 +34,16 @@ export function PickSeatProvider({ children }: { children: React.ReactNode }) {
   // Seats were selected by user but not yet paid
   const [seatSelected, setSeatSelected] = useState<SeatTS[]>([]);
   const [isDisabledSeat, setIsDisabledSeat] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(false);
   const [dataTotal, setDataTotal] = useState<SeatOverView | null>(null);
   // const [dataShow]
   const [seatNumberControl, setSeatNumberControl] = useState("1");
+  const [allPrice, setAllPrice] = useState({
+    originalPrice: 0,
+    vatPrice: 0,
+    typeRoomPrice: 0,
+    totalPrice: 0,
+  });
 
   return (
     <PickSeatContext.Provider
@@ -38,6 +51,10 @@ export function PickSeatProvider({ children }: { children: React.ReactNode }) {
         dataTotal,
         setDataTotal,
         isDisabledSeat,
+        allPrice,
+        isLoading,
+        setIsLoading,
+        setAllPrice,
         setIsDisabledSeat,
         seatSelected,
         setSeatSelected,

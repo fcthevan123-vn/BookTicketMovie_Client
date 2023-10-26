@@ -97,6 +97,7 @@ export type Show = {
   createdAt: string;
   updatedAt: string;
   MovieHall: MovieHall;
+  Movie?: MovieTS;
   totalSeats: number;
   bookedSeats: number;
   availableSeats: number;
@@ -151,4 +152,17 @@ export type MovieTS = {
   countBooked: number;
   createdAt: string;
   updatedAt: string;
+};
+
+export type BookingTypeTS = {
+  id: string;
+  userId: string;
+  showId: string;
+  totalPrice: number;
+  paymentMethod: string;
+  isPaid: boolean;
+  createdAt: string;
+  updatedAt: string;
+  Show: Show;
+  SeatStatuses: SeatStatus[];
 };

@@ -3,20 +3,10 @@ import UserProfileInformation from "./UserProfilePage/UserProfileInformation";
 import { useLocation } from "react-router-dom";
 import { Fragment } from "react";
 import UserChangePassword from "./UserChangePassword";
+import UserAllTickets from "./UserAllTickets";
+import { TableFilterProvider } from "../../components/Provider/TableFilterProvider";
 
 type Props = {};
-
-// const useStyles = createStyles((theme) => ({
-//   root: {
-//     padding: "1px 0",
-//     margin: "20px",
-//     borderRadius: "20px",
-//     backgroundColor:
-//       theme.colorScheme === "dark" ? theme.colors.dark[5] : "#fff",
-//     boxShadow:
-//       "rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
-//   },
-// }));
 
 const allPath = [
   {
@@ -33,11 +23,23 @@ const allPath = [
     ),
   },
   {
-    urlInclude: "password",
+    urlInclude: "change-password",
     jsx: (
       <>
         <div>
           <UserChangePassword></UserChangePassword>
+        </div>
+      </>
+    ),
+  },
+  {
+    urlInclude: "all-tickets",
+    jsx: (
+      <>
+        <div>
+          <TableFilterProvider initialData={[]}>
+            <UserAllTickets></UserAllTickets>
+          </TableFilterProvider>
         </div>
       </>
     ),
