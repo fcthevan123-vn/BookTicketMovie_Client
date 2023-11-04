@@ -29,10 +29,10 @@ const UserChangePassword = () => {
           value
         )
           ? null
-          : "Password invalid",
+          : "Mật khẩu không hợp lệ",
       newPassword: (value, values) => {
         if (value.length > 0 && value == values.oldPassword) {
-          return "New password must differ from old password";
+          return "Mật khẩu không khớp";
         }
         if (
           /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/.test(
@@ -41,11 +41,11 @@ const UserChangePassword = () => {
         ) {
           return null;
         } else {
-          return "Password invalid";
+          return "Mật khẩu không hợp lệ";
         }
       },
       confirmPassword: (value, values) =>
-        value === values.newPassword ? null : "Confirm password does not match",
+        value === values.newPassword ? null : "Mật khẩu không khớp",
     },
     // validateInputOnChange: true,
   });
@@ -98,8 +98,8 @@ const UserChangePassword = () => {
       <div className="p-5 flex sm:flex-row flex-col items-center justify-center lg:gap-16 md:gap-8 gap-5">
         <div className="sm:w-1/3 w-3/4 flex flex-col gap-5 sm:order-none order-last">
           <PasswordInput
-            placeholder="Password"
-            label="Password"
+            placeholder="Nhập mật khẩu"
+            label="Mật khẩu"
             radius="md"
             withAsterisk
             error
@@ -107,16 +107,16 @@ const UserChangePassword = () => {
           />
 
           <PasswordInput
-            placeholder="New Password"
-            label="New Password"
+            placeholder="Nhập mật khẩu mới"
+            label="Mật khẩu mới"
             radius="md"
             withAsterisk
             {...form.getInputProps("newPassword")}
           />
 
           <PasswordInput
-            placeholder="Confirm Password"
-            label="Confirm Password"
+            placeholder="Nhập xác nhận mật khẩu"
+            label="Xác nhận mật khẩu"
             radius="md"
             withAsterisk
             {...form.getInputProps("confirmPassword")}
@@ -139,29 +139,26 @@ const UserChangePassword = () => {
 
         <div className="sm:w-2/3 w-100 flex flex-col items-start justify-center">
           <div className="mb-4">
-            <p className="lg:text-3xl text-2xl text-sky-500">
-              Change Your Password
-            </p>
+            <p className="lg:text-3xl text-2xl text-sky-500">Đổi mật khẩu</p>
           </div>
           <div className="flex flex-col gap-3">
             <p className="italic text-gray-500 font-light">
-              Password must contain *
+              Mật khẩu phải chứa *
             </p>
             <p className="flex items-center gap-3">
-              <FaDotCircle className=" text-sky-500"></FaDotCircle>At least 8
-              characters
+              <FaDotCircle className=" text-sky-500"></FaDotCircle>Ít nhất 8 ký
+              tự
             </p>
             <p className="flex items-center gap-3">
-              <FaDotCircle className=" text-sky-500"></FaDotCircle>At least 1
-              letter
+              <FaDotCircle className=" text-sky-500"></FaDotCircle>Ít nhất 1 chữ
+              cái
             </p>
             <p className="flex items-center gap-3">
-              <FaDotCircle className=" text-sky-500"></FaDotCircle>At least 1
-              number
+              <FaDotCircle className=" text-sky-500"></FaDotCircle>Ít nhất 1 số
             </p>
             <p className="flex items-center gap-3">
-              <FaDotCircle className=" text-sky-500"></FaDotCircle>At least 1
-              special character
+              <FaDotCircle className=" text-sky-500"></FaDotCircle>Ít nhất 1 ký
+              tự đặc biệt
             </p>
           </div>
         </div>

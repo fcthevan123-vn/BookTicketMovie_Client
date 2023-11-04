@@ -55,10 +55,6 @@ function PickSeatPage({}: Props) {
   const [opened, { toggle }] = useDisclosure();
   const { id } = useParams();
   const [, , dataUser] = useAuthenticate();
-  // Seats were selected by user but not yet paid
-  // const [seatSelected, setSeatSelected] = useState<SeatTS[] | null>(null);
-
-  // const [seatNumberControl, setSeatNumberControl] = useState("1");
 
   const {
     seatSelected,
@@ -68,29 +64,30 @@ function PickSeatPage({}: Props) {
     setSeatNumberControl,
   } = usePickSeatContext();
 
-  // const [data, setData] = useState<SeatOverView | null>(null);
-  // Seats were paid by user
   const [seatPicked, setSeatPicked] = useState<SeatStatus[] | null>(null);
 
-  const getAllSeats = useCallback(async () => {
-    try {
-      const res = await seatServices.getAllSeatsByShowId(id as string);
-      if (res.statusCode === 0) {
-        setDataTotal(res.data);
-        setSeatPicked(res.seatPicked);
+  const getAllSeats = useCallback(
+    async (id: string) => {
+      try {
+        const res = await seatServices.getAllSeatsByShowId(id);
+        if (res.statusCode === 0) {
+          setDataTotal(res.data);
+          setSeatPicked(res.seatPicked);
+        }
+      } catch (error) {
+        const err = error as Error;
+        NormalToast({
+          title: "getAllSeats",
+          color: "red",
+          message: err.message,
+        });
       }
-    } catch (error) {
-      const err = error as Error;
-      NormalToast({
-        title: "getAllSeats",
-        color: "red",
-        message: err.message,
-      });
-    }
-  }, [id]);
+    },
+    [setDataTotal]
+  );
 
   useEffect(() => {
-    getAllSeats();
+    getAllSeats(id as string);
   }, [getAllSeats]);
 
   return (

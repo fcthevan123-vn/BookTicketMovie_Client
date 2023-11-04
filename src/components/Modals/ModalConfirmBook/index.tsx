@@ -25,6 +25,7 @@ import { SelectNackAndDrink } from "../../SelectSnackAndDrink";
 import { usePickSeatContext } from "../../Provider/PickSeatProvider";
 import bookingServices from "../../../services/bookingServices";
 import { loadingApi } from "../../../untils/loadingApi";
+import NormalToast from "../../AllToast/NormalToast";
 
 type Props = {
   opened: boolean;
@@ -63,24 +64,19 @@ function ModalConfirmBook({ opened, close }: Props) {
         const res = await loadingApi(api, "Đặt vé xem phim");
 
         if (res) {
-          console.log(res);
+          close();
+          // window.location.reload();
         }
 
         return res;
       } catch (error) {
-        console.log("error", error);
+        const err = error as Error;
+        NormalToast({
+          title: "getShows",
+          message: err.message,
+          color: "red",
+        });
       }
-
-      // const api = await bookingServices.createBooking(data);
-      // const res = await loadingApi(api, "Đang đặt vé");
-      // setIsLoading(true);
-      // if (res) {
-      //   setIsLoading(false);
-
-      //   console.log(res);
-      // }
-
-      // return res;
     }
   }
 

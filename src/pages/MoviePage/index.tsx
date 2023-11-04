@@ -37,7 +37,7 @@ function MoviePage(props: TextInputProps) {
 
   return (
     <Container fluid mt={"lg"}>
-      <div className="flex items-center w-full gap-3 justify-between px-4 border border-b bg-gray-50 rounded-xl py-2">
+      <div className="flex items-center w-full gap-3 justify-between px-4 rounded-xl py-2">
         <ActionIcon variant="light" size="xl" radius="lg" aria-label="Settings">
           <IconAdjustments
             style={{ width: "70%", height: "70%" }}
@@ -49,7 +49,7 @@ function MoviePage(props: TextInputProps) {
           className="grow"
           radius="lg"
           size="md"
-          placeholder="Search questions"
+          placeholder="Tìm tên phim"
           rightSectionWidth={42}
           leftSection={
             <IconSearch

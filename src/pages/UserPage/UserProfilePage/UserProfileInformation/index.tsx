@@ -12,16 +12,16 @@ const UserProfileInformation = (props: Props) => {
 
   const data = [
     {
-      label: "Personal ID",
+      label: "ID người dùng",
       value: dataUser.id,
     },
     {
-      label: "Full Name",
+      label: "Họ và tên",
 
       value: dataUser.fullName,
     },
     {
-      label: "Age",
+      label: "Tuổi",
 
       value: dataUser.age,
     },
@@ -32,18 +32,18 @@ const UserProfileInformation = (props: Props) => {
     },
 
     {
-      label: "Address",
+      label: "Địa chỉ",
 
       value: dataUser.address,
     },
     {
-      label: "Phone",
+      label: "Số điện thoại",
 
       value: dataUser.phone,
     },
 
     {
-      label: "Gender",
+      label: "Giới tính",
 
       value: dataUser.gender,
     },
@@ -78,7 +78,7 @@ const UserProfileInformation = (props: Props) => {
           className="shadow-sm drop-shadow-md"
           radius="md"
         >
-          Edit <AiOutlineEdit size="1rem" className="ms-1"></AiOutlineEdit>
+          Chỉnh sửa <AiOutlineEdit size="1rem" className="ms-1"></AiOutlineEdit>
         </Button>
       </div>
       {items}

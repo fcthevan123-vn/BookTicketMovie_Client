@@ -12,7 +12,7 @@ import {
 } from "@mantine/core";
 
 import DefaultHeader from "../../components/Headers/DefaultHeader";
-import { FooterComponent } from "../../components/FooterComponent";
+
 import {
   IconAdjustments,
   IconSearch,
@@ -89,7 +89,7 @@ function ListMovieLayout({ children, props }: ListMovieLayoutProps) {
             className="grow"
             radius="lg"
             size="md"
-            placeholder="Search questions"
+            placeholder="Tìm tên phim"
             rightSectionWidth={42}
             leftSection={
               <IconSearch
@@ -126,16 +126,6 @@ function ListMovieLayout({ children, props }: ListMovieLayoutProps) {
       <AppShell.Main>
         <div>{children}</div>
       </AppShell.Main>
-
-      {/* <div
-        style={{
-          position: "absolute",
-          width: "100%",
-          zIndex: 1000000000,
-        }}
-      >
-        <FooterComponent></FooterComponent>
-      </div> */}
     </AppShell>
   );
 }

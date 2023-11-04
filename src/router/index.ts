@@ -52,6 +52,20 @@ const router: IRouter[] = [
   },
 
   {
+    path: "/user/:id/statistic",
+    isProtected: true,
+    layout: UserLayout,
+    element: UserPage,
+  },
+
+  {
+    path: "/user/:id/all-reviews",
+    isProtected: true,
+    layout: UserLayout,
+    element: UserPage,
+  },
+
+  {
     path: "/user/:id/change-password",
     isProtected: true,
     layout: UserLayout,

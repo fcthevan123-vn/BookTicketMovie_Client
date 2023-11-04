@@ -2,7 +2,8 @@ import { useDisclosure } from "@mantine/hooks";
 import { AppShell } from "@mantine/core";
 
 import DefaultHeader from "../../components/Headers/DefaultHeader";
-import { FooterComponent } from "../../components/FooterComponent";
+import FooterComponent from "../../components/FooterComponent";
+
 type DefaultLayoutProps = {
   children: React.ReactNode;
 };

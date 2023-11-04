@@ -13,38 +13,34 @@ const data = [
   {
     name: "10 tuổi",
 
-    pv: 2400,
-    amt: 2400,
+    order: 2400,
   },
   {
     name: "10 - 20 tuổi",
-    pv: 1398,
-    amt: 2210,
+    order: 1398,
   },
   {
     name: "20 - 30 tuổi",
 
-    pv: 9800,
-    amt: 2290,
+    order: 500,
   },
   {
     name: "30 - 40 tuổi",
 
-    pv: 3908,
-    amt: 2000,
+    order: 3908,
+    // amt: 2000,
   },
   {
     name: "Trên 40 tuổi",
-    pv: 4800,
-    amt: 2181,
+    order: 4800,
   },
 ];
 
 export default function ChartCustom() {
   return (
     <BarChart
-      width={700}
-      height={350}
+      width={1000}
+      height={400}
       data={data}
       margin={{
         top: 5,
@@ -60,8 +56,8 @@ export default function ChartCustom() {
       <Legend />
       <CartesianGrid strokeDasharray="3 3" />
       <Bar
-        dataKey="pv"
-        label="Độ tuổi"
+        dataKey="order"
+        label="Lượt đặt vé vé"
         fill="#6499E9"
         background={{ fill: "#eee" }}
       />

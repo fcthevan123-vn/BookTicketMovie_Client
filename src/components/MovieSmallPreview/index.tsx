@@ -13,6 +13,7 @@ import moment from "moment";
 import Autoplay from "embla-carousel-autoplay";
 import { useRef } from "react";
 import { Carousel } from "@mantine/carousel";
+import { Link } from "react-router-dom";
 type Props = {
   dataMovie: DataTableMoviesProps;
 };
@@ -74,17 +75,19 @@ export default function MovieSmallPreview({ dataMovie }: Props) {
       </div>
       <Rating value={4} readOnly size="xs" mt={1}></Rating>
 
-      <Button
-        w={100}
-        mt={"sm"}
-        radius={"md"}
-        size="compact-xs"
-        variant="gradient"
-        className={classes.button}
-        gradient={{ from: "orange", to: "red", deg: 90 }}
-      >
-        Xem chi tiết
-      </Button>
+      <Link to={`/movie/${dataMovie.id}`}>
+        <Button
+          w={100}
+          mt={"sm"}
+          radius={"md"}
+          size="compact-xs"
+          variant="gradient"
+          className={classes.button}
+          gradient={{ from: "orange", to: "red", deg: 90 }}
+        >
+          Xem chi tiết
+        </Button>
+      </Link>
     </Card>
   );
 }

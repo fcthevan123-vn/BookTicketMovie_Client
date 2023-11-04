@@ -27,18 +27,12 @@ function DetailMoviePage() {
   }, [getMovieById, id]);
 
   return (
-    <Container my="md" fluid>
+    <Container my="xl" size={"xl"}>
       {dataMovie && <TopSecton dataMovie={dataMovie}></TopSecton>}
-      <Divider
-        my={40}
-        mx={70}
-        size={"sm"}
-        label="Đánh giá và thống kê"
-        labelPosition="center"
-      />
+      <Divider mx={10} my={40} size={"sm"} label="Thông tin chi tiết" />
 
-      <div className="mx-16">
-        <MidSection></MidSection>
+      <div className="">
+        {dataMovie && <MidSection dataMovie={dataMovie}></MidSection>}
       </div>
 
       <Divider
@@ -49,7 +43,7 @@ function DetailMoviePage() {
         labelPosition="center"
       />
 
-      <div className="mx-16">
+      <div className="">
         {dataMovie && <RelatedMovie dataMovie={dataMovie}></RelatedMovie>}
       </div>
     </Container>

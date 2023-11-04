@@ -1,11 +1,4 @@
-import {
-  Button,
-  Group,
-  Input,
-  Modal,
-  Radio,
-  useMantineTheme,
-} from "@mantine/core";
+import { Button, Group, Input, Modal, Radio } from "@mantine/core";
 import { AiOutlinePhone, AiOutlineUser } from "react-icons/ai";
 import { useAuthenticate } from "../../../../hooks";
 import { useForm } from "@mantine/form";
@@ -22,7 +15,6 @@ interface Props {
 }
 
 function ModalUpdateInformation({ opened, close }: Props) {
-  const theme = useMantineTheme();
   const [, , dataUser] = useAuthenticate();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const dispatch = useDispatch();
@@ -69,12 +61,13 @@ function ModalUpdateInformation({ opened, close }: Props) {
         });
       }
     } catch (error) {
+      const err = error as Error;
       notifications.update({
         id: "toast-register",
         radius: "md",
         color: "red",
         title: <p className="text-red-700">Error</p>,
-        message: error.response?.data?.message,
+        message: err.message,
         withBorder: true,
         autoClose: 2000,
       });
@@ -90,12 +83,8 @@ function ModalUpdateInformation({ opened, close }: Props) {
         size="md"
         opened={opened}
         onClose={close}
-        title="Update your information"
+        title="Sửa hông tin cá nhân của bạn"
         overlayProps={{
-          color:
-            theme.colorScheme === "dark"
-              ? theme.colors.dark[9]
-              : theme.colors.gray[4],
           opacity: 0.6,
           blur: 3,
         }}
@@ -103,8 +92,8 @@ function ModalUpdateInformation({ opened, close }: Props) {
         <div>
           <form onSubmit={form.onSubmit(() => handleSubmit(form.values))}>
             <Input
-              icon={<AiOutlineUser />}
-              placeholder="Full Name"
+              leftSection={<AiOutlineUser />}
+              placeholder="Họ và tên"
               radius="md"
               value={form.values.fullName}
               onChange={(e) => form.setFieldValue("fullName", e.target.value)}
@@ -115,8 +104,8 @@ function ModalUpdateInformation({ opened, close }: Props) {
 
             <Input
               className="mt-4"
-              icon={<BsMap />}
-              placeholder="Address"
+              leftSection={<BsMap />}
+              placeholder="Địa chỉ"
               radius="md"
               value={form.values.address}
               onChange={(e) => form.setFieldValue("address", e.target.value)}
@@ -127,8 +116,8 @@ function ModalUpdateInformation({ opened, close }: Props) {
 
             <Input
               className="mt-4"
-              icon={<AiOutlinePhone />}
-              placeholder="Phone"
+              leftSection={<AiOutlinePhone />}
+              placeholder="Số điện thoại"
               type="number"
               radius="md"
               value={form.values.phone}
@@ -140,8 +129,8 @@ function ModalUpdateInformation({ opened, close }: Props) {
 
             <Input
               className="mt-4"
-              icon={<BsCalendarDate />}
-              placeholder="Age"
+              leftSection={<BsCalendarDate />}
+              placeholder="Tuổi"
               radius="md"
               type="number"
               value={form.values.age}
@@ -154,14 +143,14 @@ function ModalUpdateInformation({ opened, close }: Props) {
             <Radio.Group
               mt={"sm"}
               name="sex"
-              label="Select your gender"
+              label="Giới tính"
               withAsterisk
               value={form.values.sex}
               onChange={(e) => form.setFieldValue("sex", e)}
             >
               <Group mt="xs">
-                <Radio value="0" label="Male" />
-                <Radio value="1" label="Female" />
+                <Radio value="0" label="Nam" />
+                <Radio value="1" label="Nữ" />
               </Group>
             </Radio.Group>
             {form.errors.sex ? (
@@ -172,19 +161,19 @@ function ModalUpdateInformation({ opened, close }: Props) {
               <Button
                 className="shadow-md drop-shadow-md"
                 radius="md"
-                compact
+                size="compact-sm"
                 onClick={() => form.reset()}
               >
-                Reset Default
+                Khôi phục mặc định
               </Button>
               <Button
                 className="shadow-md drop-shadow-md"
                 type="submit"
                 radius="md"
-                compact
+                size="compact-sm"
                 loading={isLoading}
               >
-                Save
+                Lưu
               </Button>
             </div>
           </form>

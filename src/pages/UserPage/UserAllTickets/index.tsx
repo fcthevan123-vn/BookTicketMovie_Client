@@ -6,6 +6,7 @@ import { BookingTypeTS } from "../../../types";
 import { Text } from "@mantine/core";
 import { useTableCustom } from "../../../components/Provider/TableFilterProvider";
 import TableFilter from "../../../components/TableFilter";
+import moment from "moment";
 
 type Props = {};
 
@@ -31,6 +32,7 @@ function UserAllTickets({}: Props) {
       const res = await bookingServices.getBookingByUserId(dataUser.id);
       if (res.statusCode === 0) {
         setData(res.data);
+        console.log("res.data", res.data);
       }
     } catch (error) {
       const err = error as Error;
@@ -64,6 +66,56 @@ function UserAllTickets({}: Props) {
               </Text>
             </div>
           ),
+          RoomType: (
+            <div>
+              <Text fz="sm" fw={500}>
+                Phòng: {row.Show.MovieHall.name}
+              </Text>
+              <Text fz="xs" c={"dimmed"}>
+                Rạp: {row.Show.MovieHall.Cinema.name}
+              </Text>
+              <Text fz="xs" c={"dimmed"}>
+                Kiểu phòng: {row.Show.MovieHall.RoomType.name}
+              </Text>
+            </div>
+          ),
+          timeShow: (
+            <div>
+              <Text fz="sm">
+                Bắt đầu: {moment(row.Show.startTime).format("HH:mm")}
+              </Text>
+              <Text fz="sm">
+                Kết thúc: {moment(row.Show.endTime).format("HH:mm")}
+              </Text>
+              <Text fz="sm">
+                Ngày: {moment(row.Show.date).format("DD/MM/YYYY")}
+              </Text>
+            </div>
+          ),
+          seat: (
+            <div>
+              {row.SeatStatuses.map((seat) => (
+                <div>
+                  <Text fz="sm">Số ghế: {seat.Seat.name}</Text>
+                </div>
+              ))}
+            </div>
+          ),
+          totalPrice: (
+            <div>
+              <Text fz="sm">
+                {row.totalPrice.toLocaleString("it-IT", {
+                  style: "currency",
+                  currency: "VND",
+                })}
+              </Text>
+            </div>
+          ),
+          orderedDate: (
+            <div>
+              <Text fz="sm">{moment(row.createdAt).format("DD/MM/YYYY")}</Text>
+            </div>
+          ),
         };
       });
 
@@ -87,7 +139,7 @@ function UserAllTickets({}: Props) {
         },
         {
           label: "Giờ chiếu",
-          value: "RoomType",
+          value: "timeShow",
           isSortable: false,
         },
         {
@@ -102,7 +154,7 @@ function UserAllTickets({}: Props) {
         },
         {
           label: "Ngày đã đặt",
-          value: "totalPrice",
+          value: "orderedDate",
           isSortable: false,
         },
       ]);
@@ -110,8 +162,7 @@ function UserAllTickets({}: Props) {
   }, [data]);
 
   return (
-    <div>
-      UserAllTickets
+    <div className="">
       <TableFilter headers={headers}></TableFilter>
     </div>
   );

@@ -10,90 +10,134 @@ import {
 import Comment from "../../../components/Comment";
 
 import ChartCustom from "../../../components/ChartCustom";
+import { DataTableMoviesProps } from "../../../components/Provider/MovieProvider/MovieProvider";
+import moment from "moment";
+import ReviewsOfMovie from "./ReviewsOfMovie";
 
-type Props = {};
+type Props = {
+  dataMovie: DataTableMoviesProps;
+};
 
-function MidSection({}: Props) {
+function MidSection({ dataMovie }: Props) {
   return (
-    <div className=" p-3">
-      <SimpleGrid cols={2} verticalSpacing="xs">
-        <Paper shadow="xs" radius="md" withBorder p="sm">
-          <div>
-            <div className="flex justify-between items-center">
-              <Badge variant="dot" color="orange">
-                Tất cả đánh giá
-              </Badge>
-
-              {/* <Badge variant="filled" color="orange">
-                Bộ lọc
-              </Badge> */}
-              <SegmentedControl
-                size="xs"
-                radius={"lg"}
-                color="orange"
-                data={[
-                  {
-                    value: "all",
-                    label: "Tất cả đánh giá",
-                  },
-                  {
-                    value: "forMe",
-                    label: "Đánh giá của bạn",
-                  },
-                ]}
-              />
+    <div className="p-3 flex flex-col gap-8">
+      <div>
+        <div>
+          <h3 className="text-lg leading-6 font-medium text-blue-500">
+            Thông tin chi tiết
+          </h3>
+          <p className="mt-1 max-w-2xl text-sm text-gray-500">
+            Những thông tin bạn nên lưu ý
+          </p>
+        </div>
+        <div className="mt-5 border-t border-gray-200">
+          <dl className="sm:divide-y sm:divide-gray-200">
+            <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+              <dt className="text-sm font-medium text-gray-500">Đạo diễn</dt>
+              <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                {dataMovie.directors.join(" - ")}
+              </dd>
+            </div>
+            <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+              <dt className="text-sm font-medium text-gray-500">Diễn viên</dt>
+              <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                {dataMovie.actors.join(" - ")}
+              </dd>
+            </div>
+            <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+              <dt className="text-sm font-medium text-gray-500">Quốc gia</dt>
+              <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                {dataMovie.country}
+              </dd>
+            </div>
+            <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+              <dt className="text-sm font-medium text-gray-500">Ngôn ngữ</dt>
+              <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                {dataMovie.language}
+              </dd>
+            </div>
+            <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+              <dt className="text-sm font-medium text-gray-500">Thời lượng</dt>
+              <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                {dataMovie.duration} phút
+              </dd>
+            </div>
+            <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+              <dt className="text-sm font-medium text-gray-500">Phụ đề</dt>
+              <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                Tiếng {dataMovie.subtitle}
+              </dd>
             </div>
 
-            <Divider my="sm" />
-            <ScrollArea h={400} type="always" scrollbarSize={4}>
-              <div className="flex justify-start gap-6 flex-col">
-                <Comment></Comment>
-                <Comment></Comment>
-
-                <Comment></Comment>
-                <Comment></Comment>
-                <Comment></Comment>
-                <Comment></Comment>
-                <Comment></Comment>
-                <Comment></Comment>
-                <Comment></Comment>
-                <Comment></Comment>
-              </div>
-            </ScrollArea>
-          </div>
-        </Paper>
-        <Paper shadow="xs" radius="md" withBorder p="sm">
-          <div>
-            <div className="flex justify-between items-center">
-              <Badge variant="dot" color="blue">
-                Thống kê nhanh
-              </Badge>
-              <SegmentedControl
-                size="xs"
-                radius={"lg"}
-                color="blue"
-                data={[
-                  {
-                    value: "all",
-                    label: "Theo độ tuổi",
-                  },
-                  {
-                    value: "forMe",
-                    label: "Theo giới tính",
-                  },
-                ]}
-              />
+            <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+              <dt className="text-sm font-medium text-gray-500">
+                Ngày chiếu phim
+              </dt>
+              <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 flex gap-2">
+                {moment(dataMovie.releaseDate).format("DD - MM - YYYY")}
+                <p>đến</p>
+                {moment(dataMovie.endDate).format("DD - MM - YYYY")}
+              </dd>
             </div>
+          </dl>
+        </div>
+      </div>
 
-            <Divider my="sm" />
-            <ScrollArea h={400} type="always" scrollbarSize={4}>
-              <div className="flex justify-start gap-6 flex-col">
-                <ChartCustom></ChartCustom>
-              </div>
-            </ScrollArea>
-          </div>
-        </Paper>
-      </SimpleGrid>
+      <Divider mx={10} my={30} size={"sm"} label="Đánh giá" />
+
+      <div className="">
+        <div className="mb-3 flex justify-between items-center">
+          <Badge variant="dot" color="blue">
+            Tất cả đánh giá
+          </Badge>
+
+          <SegmentedControl
+            size="xs"
+            radius={"lg"}
+            color="blue"
+            data={[
+              {
+                value: "all",
+                label: "Tất cả đánh giá",
+              },
+              {
+                value: "forMe",
+                label: "Đánh giá của bạn",
+              },
+            ]}
+          />
+        </div>
+
+        <ReviewsOfMovie></ReviewsOfMovie>
+      </div>
+      <Divider mx={10} my={30} size={"sm"} label="Thống kê" />
+
+      <div>
+        <div className="flex justify-between items-center mb-10">
+          <Badge variant="dot" color="blue">
+            Thống kê nhanh
+          </Badge>
+          <SegmentedControl
+            size="xs"
+            radius={"lg"}
+            color="blue"
+            data={[
+              {
+                value: "all",
+                label: "Theo độ tuổi",
+              },
+              {
+                value: "forMe",
+                label: "Theo giới tính",
+              },
+            ]}
+          />
+        </div>
+
+        <div className="flex justify-center items-center gap-6 flex-col">
+          <ChartCustom></ChartCustom>
+        </div>
+      </div>
     </div>
   );
 }

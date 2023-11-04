@@ -47,10 +47,10 @@ const UserProfileTop = (props: Props) => {
 
               <div className="flex justify-center gap-4 mt-1">
                 <p className="text-sm text-sky-500 font-medium cursor-pointer">
-                  Change
+                  Đổi ảnh
                 </p>
                 <p className="text-sm text-sky-500 font-medium cursor-pointer">
-                  Delete
+                  Xoá
                 </p>
               </div>
             </div>
@@ -64,12 +64,12 @@ const UserProfileTop = (props: Props) => {
                 <div className="flex gap-10">
                   <p className="flex items-center">
                     <AiOutlineCheckCircle className="me-2 text-lg"></AiOutlineCheckCircle>{" "}
-                    Verified
+                    Đã xác nhận
                   </p>
 
                   <p className="flex items-center">
                     <AiOutlineSafety className="me-2 text-lg"></AiOutlineSafety>{" "}
-                    Join at ...
+                    Tham gia vào ngày ..
                   </p>
                 </div>
               </div>

@@ -5,6 +5,8 @@ import { Fragment } from "react";
 import UserChangePassword from "./UserChangePassword";
 import UserAllTickets from "./UserAllTickets";
 import { TableFilterProvider } from "../../components/Provider/TableFilterProvider";
+import UserStatisticPage from "./UserStatisticPage";
+import UserAllReviews from "./UserAllReviews";
 
 type Props = {};
 
@@ -40,6 +42,26 @@ const allPath = [
           <TableFilterProvider initialData={[]}>
             <UserAllTickets></UserAllTickets>
           </TableFilterProvider>
+        </div>
+      </>
+    ),
+  },
+  {
+    urlInclude: "all-reviews",
+    jsx: (
+      <>
+        <div>
+          <UserAllReviews></UserAllReviews>
+        </div>
+      </>
+    ),
+  },
+  {
+    urlInclude: "statistic",
+    jsx: (
+      <>
+        <div>
+          <UserStatisticPage></UserStatisticPage>
         </div>
       </>
     ),
