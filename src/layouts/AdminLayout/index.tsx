@@ -30,21 +30,23 @@ function AdminLayout({ children }: AdminLayoutProps) {
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const handleLogout = async () => {
     const api = await authenticateServices.handleLogout();
     const res = await loadingApi(api, "Đăng xuất");
     if (res) {
+      navigate("/register");
       dispatch(userSlice.actions.toggleLogin({}));
-      navigate("/");
     }
+
     return res;
   };
 
   const openLogoutModal = () =>
     modals.openConfirmModal({
-      title: <p className="text-red-500 font-medium">Logout</p>,
+      title: <p className="text-red-500 font-medium">Đăng xuất</p>,
       centered: true,
-      children: <p>Are you sure to logout?</p>,
+      children: <p>Bạn có chắc chắn muốn đăng xuất không?</p>,
       zIndex: 1600,
       labels: {
         confirm: "Logout",
@@ -58,7 +60,6 @@ function AdminLayout({ children }: AdminLayoutProps) {
         blur: 3,
       },
       radius: "lg",
-      onCancel: () => console.log("Cancel"),
       onConfirm: () => handleLogout(),
     });
 

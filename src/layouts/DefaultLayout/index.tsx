@@ -3,12 +3,22 @@ import { AppShell } from "@mantine/core";
 
 import DefaultHeader from "../../components/Headers/DefaultHeader";
 import FooterComponent from "../../components/FooterComponent";
+import { useAuthenticate } from "../../hooks";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 type DefaultLayoutProps = {
   children: React.ReactNode;
 };
 function DefaultLayout({ children }: DefaultLayoutProps) {
   const [opened, { toggle }] = useDisclosure();
+  const navigate = useNavigate();
+  const [, , dataUser] = useAuthenticate();
+  useEffect(() => {
+    if (dataUser.type == "admin") {
+      navigate("/admin/dashboard");
+    }
+  }, [dataUser, navigate]);
 
   return (
     <AppShell
@@ -21,22 +31,6 @@ function DefaultLayout({ children }: DefaultLayoutProps) {
       padding="md"
       transitionDuration={0}
     >
-      {/* <Group h="100%" px="md">
-          <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-          <Group justify="space-between" style={{ flex: 1 }}>
-            Logo
-            <Group ml="xl" gap={0} visibleFrom="sm">
-              <UnstyledButton className={classes.control}>Home</UnstyledButton>
-              <UnstyledButton className={classes.control}>Blog</UnstyledButton>
-              <UnstyledButton className={classes.control}>
-                Contacts
-              </UnstyledButton>
-              <UnstyledButton className={classes.control}>
-                Support
-              </UnstyledButton>
-            </Group>
-          </Group>
-        </Group> */}
       <AppShell.Header>
         <DefaultHeader></DefaultHeader>
       </AppShell.Header>

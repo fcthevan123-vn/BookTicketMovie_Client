@@ -6,7 +6,7 @@ import {
   TagsInput,
   Select,
 } from "@mantine/core";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { UploadImage } from "../../../components/UploadImage";
 import { DateInput } from "@mantine/dates";
 import moment from "moment";
@@ -177,7 +177,7 @@ const AddMoviePage = () => {
       subtitle: (value) => (value.length <= 0 ? "Chưa nhập phụ đề" : null),
 
       genre: (value) => (value.length <= 0 ? "Chưa nhập thể loại" : null),
-      price: (value) => (value ? null : "Chưa nhập giá tiền"),
+
       images: (value) =>
         value.length > 1 && value.length <= 6
           ? null

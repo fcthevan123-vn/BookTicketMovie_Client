@@ -1,26 +1,10 @@
 import { Carousel } from "@mantine/carousel";
-import {
-  Container,
-  Title,
-  Text,
-  Button,
-  BackgroundImage,
-  Center,
-  Divider,
-  Box,
-  Badge,
-  Skeleton,
-  Card,
-  Avatar,
-  Group,
-  Image,
-} from "@mantine/core";
+import { Text, Divider, Box, Badge, Skeleton } from "@mantine/core";
 import Autoplay from "embla-carousel-autoplay";
 import { AiFillFire } from "react-icons/ai";
 import { useRef } from "react";
 import classes from "./TrendingMovie.module.css";
 import { DataTableMoviesProps } from "../../Provider/MovieProvider/MovieProvider";
-import moment from "moment";
 import MovieLargePreview from "../../MovieLargePreview";
 
 interface TrendingMovieProps {
@@ -43,13 +27,13 @@ export function TrendingMovie({ dataMovies }: TrendingMovieProps) {
       <div className={classes.root + " py-3 "}>
         <Divider
           size="sm"
-          my="xs"
+          my="xl"
           label={
             <Box className={classes.badgeTrendingMovie}>
               <Badge
                 size="xl"
                 variant="gradient"
-                gradient={{ from: "pink", to: "orange", deg: 90 }}
+                gradient={{ from: "blue", to: "teal", deg: 90 }}
                 style={{
                   textTransform: "none",
                 }}

@@ -77,13 +77,11 @@ export default function MovieSmallPreview({ dataMovie }: Props) {
 
       <Link to={`/movie/${dataMovie.id}`}>
         <Button
-          w={100}
+          w={"100%"}
           mt={"sm"}
           radius={"md"}
-          size="compact-xs"
-          variant="gradient"
+          size="sm"
           className={classes.button}
-          gradient={{ from: "orange", to: "red", deg: 90 }}
         >
           Xem chi tiết
         </Button>

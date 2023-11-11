@@ -11,7 +11,6 @@ import {
 
 import classes from "./AllEvents.module.css";
 import { IconCalendarEvent } from "@tabler/icons-react";
-type Props = {};
 
 const mockdata = [
   {
@@ -41,7 +40,7 @@ const mockdata = [
   },
 ];
 
-function AllEvents({}: Props) {
+function AllEvents() {
   const cards = mockdata.map((article) => (
     <Card
       key={article.title}
@@ -73,7 +72,7 @@ function AllEvents({}: Props) {
             <Badge
               size="xl"
               variant="gradient"
-              gradient={{ from: "pink", to: "orange", deg: 90 }}
+              gradient={{ from: "blue", to: "teal", deg: 90 }}
               style={{
                 textTransform: "none",
               }}

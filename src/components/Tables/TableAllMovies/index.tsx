@@ -41,7 +41,6 @@ interface RowData {
   genre: string[];
   duration: string;
   ageRequire: string;
-  price: number;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -190,12 +189,7 @@ export function TableAllMovies({ data, isLoading }: TableAllMoviesProps) {
       <Table.Td>
         <Text ta="center">{row.title}</Text>
       </Table.Td>
-      <Table.Td>
-        <Text ta="center">
-          {" "}
-          {Intl.NumberFormat("vi-VN").format(row.price) + " VND"}
-        </Text>
-      </Table.Td>
+
       <Table.Td>
         <Tooltip position="top-start" label={row.directors?.join("-")}>
           <Text ta="center" w={"120px"} truncate="end">
@@ -291,16 +285,7 @@ export function TableAllMovies({ data, isLoading }: TableAllMoviesProps) {
                     Tên phim
                   </Th>
                 </Table.Th>
-                <Table.Th>
-                  {" "}
-                  <Th
-                    sorted={sortBy === "price"}
-                    reversed={reverseSortDirection}
-                    onSort={() => setSorting("price")}
-                  >
-                    Giá
-                  </Th>
-                </Table.Th>
+
                 <Table.Th>
                   <UnstyledButton className={classes.control}>
                     <Group justify="apart">

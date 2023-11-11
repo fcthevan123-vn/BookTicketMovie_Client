@@ -1,19 +1,10 @@
-import {
-  Card,
-  Group,
-  Image,
-  Text,
-  Button,
-  Rating,
-  Skeleton,
-} from "@mantine/core";
-import React, { useRef, useState } from "react";
+import { Card, Group, Image, Text, Button, Rating } from "@mantine/core";
+import { useRef } from "react";
 import classes from "./MovieLargePreview.module.css";
 import Autoplay from "embla-carousel-autoplay";
 import { Carousel } from "@mantine/carousel";
 import { DataTableMoviesProps } from "../Provider/MovieProvider/MovieProvider";
 import moment from "moment";
-import { LazyLoadImage } from "react-lazy-load-image-component";
 import { Link } from "react-router-dom";
 
 type Props = {
@@ -47,16 +38,6 @@ function MovieLargePreview({ dataMovies }: Props) {
                   height={"100%"}
                   className={classes.img}
                 />
-                {/* 
-                <LazyLoadImage
-                  alt="https://placehold.co/600x400"
-                  height={"100%"}
-                  style={{
-                    display: `${isLoadingImg ? "none" : ""}`,
-                  }}
-                  src={movieImage.imageUrl}
-                  onLoad={() => setIsLoadingImg(false)}
-                /> */}
               </Carousel.Slide>
             ))}
           </Carousel>
@@ -66,14 +47,10 @@ function MovieLargePreview({ dataMovies }: Props) {
               <Text tt="uppercase" c="dimmed" fw={700} size="xs">
                 {dataMovies.genre.join(" - ")}
               </Text>
-              <Text className={classes.title} mt="xs" mb="md">
+              <Text className={classes.title} mt="xs" mb="md" c={"blue"}>
                 {dataMovies.title.toUpperCase()}
               </Text>
               <Group gap="xs" wrap="nowrap">
-                {/* <Avatar
-                  size={20}
-                  src="https://images.unsplash.com/photo-1628890923662-2cb23c2e0cfe?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80"
-                /> */}
                 <Text size="sm" lineClamp={7}>
                   {dataMovies.description}
                 </Text>
@@ -93,13 +70,7 @@ function MovieLargePreview({ dataMovies }: Props) {
             </div>
 
             <Link to={`/movie/${dataMovies.id}`}>
-              <Button
-                w={"100%"}
-                variant="gradient"
-                gradient={{ from: "red", to: "yellow", deg: 270 }}
-                radius={"md"}
-                translate="yes"
-              >
+              <Button w={"100%"} radius={"md"} translate="yes">
                 Đặt ngay
               </Button>
             </Link>

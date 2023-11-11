@@ -96,7 +96,6 @@ interface MovieData {
   language: string;
   country: string;
   subtitle: string;
-  price: number;
   genre: string[];
   images: File[] | { imageName: string; imageUrl: string }[] | undefined;
   imagesDelete?: string | string[];
@@ -141,7 +140,6 @@ const FormEditMovie = ({ dataMovie, onClose }: FormEditMovieProps) => {
       language: "",
       country: "",
       subtitle: "",
-      price: dataMovie.price,
       genre: [""],
       images: [],
       imagesDelete: [],
@@ -195,14 +193,13 @@ const FormEditMovie = ({ dataMovie, onClose }: FormEditMovieProps) => {
       subtitle: (value) => (value.length <= 0 ? "Chưa nhập phụ đề" : null),
 
       genre: (value) => (value.length <= 0 ? "Chưa nhập thể loại" : null),
-      price: (value) => (value ? null : "Chưa nhập giá tiền"),
     },
     // validateInputOnChange: true,
   });
 
   async function handleSubmit(dataForm: typeof form.values) {
     // console.log("datamovie", dataMovie);
-    // console.log("dataForm: ", dataForm);
+    console.log("dataForm: ", dataForm);
     setIsLoading(true);
     const api = movieServices.editMovie(dataForm, dataMovie.id as string);
     const res = await loadingApi(api, "Chỉnh sửa phim");
@@ -409,20 +406,6 @@ const FormEditMovie = ({ dataMovie, onClose }: FormEditMovieProps) => {
                     dropdown: classes.dropdownMenu,
                   }}
                   maxValues={3}
-                />
-
-                <TextInput
-                  placeholder="Giá"
-                  label="Giá"
-                  radius="md"
-                  withAsterisk
-                  {...form.getInputProps("price")}
-                  type="number"
-                  rightSection={
-                    <p className="text-xs mb-0 bg-gray-200 p-1 mr-4 rounded-md">
-                      VNĐ
-                    </p>
-                  }
                 />
 
                 <div className="w-full">

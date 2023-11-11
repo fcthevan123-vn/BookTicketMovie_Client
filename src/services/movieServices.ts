@@ -12,7 +12,6 @@ interface MovieFormValuesProps {
   language: string;
   country: string;
   subtitle: string;
-  price: number;
   genre: string[];
   images: File[] | string[] | { imageName: string; imageUrl: string }[];
   imagesDelete?: string | string[];
@@ -40,7 +39,6 @@ const movieServices = {
     formData.append("title", title);
     formData.append("description", description);
     formData.append("ageRequire", ageRequire.toString());
-    formData.append("price", price.toString());
     formData.append("releaseDate", releaseDate.toString());
     formData.append("endDate", endDate.toString());
     formData.append("duration", duration.toString());
@@ -124,7 +122,6 @@ const movieServices = {
     formData.append("title", title);
     formData.append("description", description);
     formData.append("ageRequire", ageRequire.toString());
-    formData.append("price", price.toString());
     formData.append("releaseDate", releaseDate.toString());
     formData.append("endDate", endDate.toString());
     formData.append("duration", duration.toString());

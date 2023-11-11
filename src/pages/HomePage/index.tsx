@@ -5,6 +5,7 @@ import { movieServices } from "../../services";
 import { DataTableMoviesProps } from "../../components/Provider/MovieProvider/MovieProvider";
 import AllEvents from "../../components/Sections/AllEvents";
 import { Container } from "@mantine/core";
+import HeroHome from "../../components/HeroHome";
 
 function HomePage() {
   const [movieData, setMovieData] = useState<{
@@ -68,6 +69,7 @@ function HomePage() {
   return (
     <div className="">
       <Container size="xl">
+        <HeroHome></HeroHome>
         <TrendingMovie
           dataMovies={movieData.dataTrendingMovies}
         ></TrendingMovie>

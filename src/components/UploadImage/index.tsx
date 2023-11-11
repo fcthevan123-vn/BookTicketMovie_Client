@@ -25,6 +25,7 @@ export function UploadImage({ isResetImg, setIsResetImg, images }: Props) {
   const [imgToViewFull, setImgToViewFull] = useState("");
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [cloneImageExisted, setCloneImageExisted] = useState<string[]>([""]);
   const form = useMovieFormContext();
 
   function handleDeleteLocalImage(
@@ -32,14 +33,18 @@ export function UploadImage({ isResetImg, setIsResetImg, images }: Props) {
     index: number,
     fileName: string
   ) {
+    const newImgList = cloneImageExisted.filter((img) => img !== imageUrl);
+    setCloneImageExisted(newImgList);
     setFiles((prev) => [...prev.slice(0, index), ...prev.slice(index + 1)]);
+
     form.setFieldValue("images", [
       ...files.slice(0, index),
       ...files.slice(index + 1),
     ]);
-    if (fileName.includes("AwsS3Storage")) {
-      const convertFileName = fileName.replace(/AwsS3Storage/, "");
 
+    if (fileName.includes("s3.amazonaws.com")) {
+      // const convertFileName = fileName.replace(/AwsS3Storage/, "");
+      const convertFileName = fileName.split("/").pop() || "";
       let imgDelete;
       if (form.values.imagesDelete && form.values.imagesDelete?.length > 0) {
         imgDelete = [...form.values.imagesDelete, convertFileName];
@@ -107,8 +112,8 @@ export function UploadImage({ isResetImg, setIsResetImg, images }: Props) {
   });
 
   const previewsImgExisted =
-    images &&
-    images.map((url, index) => {
+    cloneImageExisted &&
+    cloneImageExisted.map((url, index) => {
       return (
         <div
           key={index}
@@ -132,7 +137,7 @@ export function UploadImage({ isResetImg, setIsResetImg, images }: Props) {
                   color="blue"
                   variant="filled"
                   onClick={() => {
-                    handleDeleteLocalImage(url as string, index, file.name);
+                    handleDeleteLocalImage(url as string, index, url as string);
                   }}
                 >
                   <IconX size="0.9rem" />
@@ -160,7 +165,8 @@ export function UploadImage({ isResetImg, setIsResetImg, images }: Props) {
     });
 
   function handleFile(f: FileWithPath[]) {
-    if (files.length + f.length + images.length <= 6) {
+    const imageLength = images?.length || 0;
+    if (files.length + f.length + imageLength <= 6) {
       const fileMerge = [...files, ...f];
       setFiles(fileMerge);
       form.setFieldValue("images", fileMerge);
@@ -209,6 +215,12 @@ export function UploadImage({ isResetImg, setIsResetImg, images }: Props) {
 
   //   }
   // }, [images]);
+
+  useEffect(() => {
+    if (images) {
+      setCloneImageExisted(images as string[]);
+    }
+  }, [images]);
 
   useEffect(() => {
     if (isResetImg) {

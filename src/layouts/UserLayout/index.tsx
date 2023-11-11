@@ -20,6 +20,7 @@ function UserLayout({ children }: UserLayoutProps) {
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const handleLogout = async () => {
     const api = await authenticateServices.handleLogout();
     const res = await loadingApi(api, "Đăng xuất");
