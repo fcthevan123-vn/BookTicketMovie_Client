@@ -5,27 +5,27 @@ function HeroHome() {
         <div className="flex items-center justify-center w-full px-6 py-8 lg:h-[32rem] lg:w-1/2">
           <div className="max-w-xl">
             <h2 className="text-3xl font-semibold text-gray-800  lg:text-4xl">
-              Build Your New <span className="text-sky-500">Idea</span>
+              Cùng khám phá <span className="text-sky-500">Show Booking</span>
             </h2>
 
             <p className="mt-4 text-sm text-gray-500 dark:text-gray-400 lg:text-base">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-              Blanditiis commodi cum cupiditate ducimus, fugit harum id
-              necessitatibus odio quam quasi, quibusdam rem tempora voluptates.
+              Kho phim đa dạng thể loại, phù hợp với mọi lứa tuổi và mọi sở
+              thích. Hãy tham gia cùng chúng tôi và trải nghiệm thế giới của
+              điện ảnh tại Show Booking.
             </p>
 
             <div className="flex flex-col mt-6 space-y-3 lg:space-y-0 lg:flex-row">
               <a
                 href="#"
-                className="block px-5 py-2 text-sm font-medium tracking-wider text-center text-white transition-colors duration-300 transform bg-gray-900 rounded-md hover:bg-gray-700"
+                className="block px-5 py-2 text-sm font-medium tracking-wider text-center text-white transition-colors duration-300 transform bg-blue-500 rounded-md hover:bg-blue-700"
               >
-                Get Started
+                Khám phá ngay
               </a>
               <a
                 href="#"
                 className="block px-5 py-2 text-sm font-medium tracking-wider text-center text-gray-700 transition-colors duration-300 transform bg-gray-200 rounded-md lg:mx-4 hover:bg-gray-300"
               >
-                Learn More
+                Tìm hiểu thêm
               </a>
             </div>
           </div>

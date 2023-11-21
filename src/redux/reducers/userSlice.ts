@@ -49,9 +49,10 @@ const userSlice = createSlice({
           type: action.payload.type,
           phone: action.payload.phone,
           address: action.payload.address,
-          gender: action.payload.sex == 0 ? "male" : "female",
+          gender: action.payload.sex == 0 ? "Nam" : "Nữ",
           fullName: action.payload.fullName,
           age: action.payload.age,
+          count: action.payload.count,
           isVerifyEmail: action.payload.isVerifyEmail,
         };
       })

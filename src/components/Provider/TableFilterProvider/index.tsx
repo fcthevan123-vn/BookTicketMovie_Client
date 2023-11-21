@@ -86,23 +86,25 @@ export function TableFilterProvider<T>({
         <div>{children}</div>
         <div className="flex justify-between items-center w-full mt-3 gap-28">
           <div>
-            <Text mb={"4px"} size="sm">
+            <Text mb={"4px"} size="xs">
               Trang hiện tại
             </Text>
             <Pagination
+              size={"xs"}
               disabled={isLoading}
               onChange={(e) => setActivePage(e)}
-              radius="md"
+              radius="sm"
               value={activePage}
               withEdges
               total={totalPagination}
             />
           </div>
           <div className="flex-none">
-            <Text mb={"4px"} size="sm">
+            <Text mb={"4px"} size="xs">
               Số dòng
             </Text>
             <Select
+              size="xs"
               disabled={isLoading}
               checkIconPosition="right"
               data={["5", "10", "20", "30", "50"]}

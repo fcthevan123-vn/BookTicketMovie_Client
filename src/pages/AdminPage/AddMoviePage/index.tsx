@@ -24,6 +24,7 @@ import {
   IconLanguage,
   IconList,
 } from "@tabler/icons-react";
+import { useNavigate } from "react-router-dom";
 
 // interface dataSelectProps {
 //   value: string;
@@ -33,8 +34,8 @@ import {
 
 const AddMoviePage = () => {
   const [isLoading, setIsLoading] = useState(false);
-
   const [isResetImg, setIsResetImg] = useState(false);
+  const navigate = useNavigate();
 
   const dataSubtitle = useMemo(
     () => [
@@ -107,10 +108,6 @@ const AddMoviePage = () => {
     },
   ]);
 
-  // const [dataLanguage, setDataLanguage] = useState(dataSubtitle);
-
-  // const [dataCountry, setDataCountry] = useState(dataSubtitle);
-
   const form = useMovieForm({
     initialValues: {
       title: "",
@@ -124,12 +121,10 @@ const AddMoviePage = () => {
       language: "",
       country: "",
       subtitle: "",
-      price: 0,
       genre: [],
       images: [],
     },
 
-    // functions will be used to validate values at corresponding key
     validate: {
       title: (value) =>
         value.length > 3 && value.length < 100
@@ -194,6 +189,7 @@ const AddMoviePage = () => {
     if (res) {
       setIsResetImg(true);
       form.reset();
+      navigate("/admin/movie/all-movies");
     }
 
     return res;
@@ -360,20 +356,6 @@ const AddMoviePage = () => {
                     dropdown: classes.dropdownMenu,
                   }}
                   maxValues={3}
-                />
-
-                <TextInput
-                  placeholder="Giá"
-                  label="Giá"
-                  radius="md"
-                  withAsterisk
-                  {...form.getInputProps("price")}
-                  type="number"
-                  rightSection={
-                    <p className="text-xs mb-0 bg-gray-200 p-1 mr-4 rounded-md">
-                      VNĐ
-                    </p>
-                  }
                 />
 
                 <div className="w-full">

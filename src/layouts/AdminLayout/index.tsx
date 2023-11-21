@@ -129,18 +129,6 @@ function AdminLayout({ children }: AdminLayoutProps) {
         >
           <Divider my="sm" size={"sm"} color="blue.7" />
           <div className={classes.footer}>
-            <Link to="/">
-              <UnstyledButton className={classes.control}>
-                <Group justify="space-between" gap={0}>
-                  <Box style={{ display: "flex", alignItems: "center" }}>
-                    <ThemeIcon variant="white" size={30}>
-                      <IconHome style={{ width: rem(18), height: rem(18) }} />
-                    </ThemeIcon>
-                    <Box ml="md">Trang chủ</Box>
-                  </Box>
-                </Group>
-              </UnstyledButton>
-            </Link>
             <UnstyledButton
               className={classes.control}
               onClick={openLogoutModal}
@@ -154,10 +142,6 @@ function AdminLayout({ children }: AdminLayoutProps) {
                 </Box>
               </Group>
             </UnstyledButton>
-            {/* <a href="#" className={classes.control} onClick={openLogoutModal}>
-              <IconLogout className={classes.linkIcon} stroke={1.5} />
-              <span>Đăng xuất</span>
-            </a> */}
           </div>
         </AppShell.Section>
       </AppShell.Navbar>

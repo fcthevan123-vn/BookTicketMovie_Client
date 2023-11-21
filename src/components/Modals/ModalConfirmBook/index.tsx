@@ -26,6 +26,7 @@ import { usePickSeatContext } from "../../Provider/PickSeatProvider";
 import bookingServices from "../../../services/bookingServices";
 import { loadingApi } from "../../../untils/loadingApi";
 import NormalToast from "../../AllToast/NormalToast";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   opened: boolean;
@@ -35,7 +36,7 @@ type Props = {
 function ModalConfirmBook({ opened, close }: Props) {
   const [active, setActive] = useState(0);
   const [, , dataUser] = useAuthenticate();
-
+  const navigate = useNavigate();
   const { allPrice, seatSelected, dataTotal, isLoading, setIsLoading } =
     usePickSeatContext();
 
@@ -64,13 +65,13 @@ function ModalConfirmBook({ opened, close }: Props) {
         const res = await loadingApi(api, "Đặt vé xem phim");
 
         if (res) {
-          close();
-          // window.location.reload();
+          navigate(`/user/${dataUser.id}/all-tickets`);
         }
 
         return res;
       } catch (error) {
         const err = error as Error;
+
         NormalToast({
           title: "getShows",
           message: err.message,

@@ -11,6 +11,7 @@ import AdminCinemaPage from "./AdminCinemaPage";
 import AddNewCinemaPage from "./AdminCinemaPage/AddNewCinemaPage";
 import AdminMovieHallPage from "./AdminMovieHallPage";
 import AdminLayoutPage from "./AdminLayoutPage";
+import ManageBookingPage from "./ManageBookingPage";
 
 // Type
 type userRows = {
@@ -128,6 +129,19 @@ const allPath = [
     jsx: (
       <TableFilterProvider<userRows> initialData={intinialUserData}>
         <ManageAccountPage></ManageAccountPage>
+      </TableFilterProvider>
+    ),
+  },
+
+  {
+    urlInclude: "managebooking",
+    breadcrumbs: [
+      { title: "Admin", href: "/admin/dashboard" },
+      { title: "Manage Booking", href: "#" },
+    ],
+    jsx: (
+      <TableFilterProvider initialData={[]}>
+        <ManageBookingPage></ManageBookingPage>
       </TableFilterProvider>
     ),
   },

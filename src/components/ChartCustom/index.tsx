@@ -11,28 +11,25 @@ import {
 
 const data = [
   {
-    name: "10 tuổi",
-
-    order: 2400,
+    name: "Dưới 10 tuổi",
+    order: 0,
   },
   {
     name: "10 - 20 tuổi",
-    order: 1398,
+    order: 1,
   },
   {
     name: "20 - 30 tuổi",
 
-    order: 500,
+    order: 5,
   },
   {
     name: "30 - 40 tuổi",
-
-    order: 3908,
-    // amt: 2000,
+    order: 2,
   },
   {
     name: "Trên 40 tuổi",
-    order: 4800,
+    order: 1,
   },
 ];
 

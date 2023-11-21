@@ -1,19 +1,21 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { useAuthenticate } from "../../../hooks";
-import NormalToast from "../../../components/AllToast/NormalToast";
+import { ActionIcon, Badge, Select, Text, Tooltip } from "@mantine/core";
+import { useCallback, useEffect, useState } from "react";
 import bookingServices from "../../../services/bookingServices";
+import NormalToast from "../../../components/AllToast/NormalToast";
 import { BookingTypeTS } from "../../../types";
-import { ActionIcon, Badge, Text, Tooltip } from "@mantine/core";
 import { useTableCustom } from "../../../components/Provider/TableFilterProvider";
-import TableFilter from "../../../components/TableFilter";
 import moment from "moment";
-import { IconTrash } from "@tabler/icons-react";
-import { modals } from "@mantine/modals";
+import { IconCheck, IconTrash, IconX } from "@tabler/icons-react";
+import TableFilter from "../../../components/TableFilter";
+import { useAuthenticate } from "../../../hooks";
 import { loadingApi } from "../../../untils/loadingApi";
+import { modals } from "@mantine/modals";
 
 type Props = {};
 
-function UserAllTickets({}: Props) {
+function ManageBookingPage({}: Props) {
+  const [statusBooking, setStatusBooking] = useState("Chờ xác nhận");
+  const [data, setData] = useState<BookingTypeTS[]>([]);
   const [, , dataUser] = useAuthenticate();
   const {
     setRows,
@@ -28,53 +30,63 @@ function UserAllTickets({}: Props) {
     setActivePage,
   } = useTableCustom();
 
-  const [data, setData] = useState<BookingTypeTS[] | null>(null);
-
-  const getAllBookings = useCallback(async () => {
+  const getBooking = useCallback(async () => {
     try {
-      const res = await bookingServices.getBookingByUserId(dataUser.id);
+      const res = await bookingServices.getBookingByStatus(statusBooking);
       if (res.statusCode === 0) {
         setData(res.data);
       }
     } catch (error) {
       const err = error as Error;
       NormalToast({
-        title: "getAllBookings",
-        color: "red",
+        title: "getBooking",
         message: err.message,
+        color: "red",
       });
     }
-  }, [dataUser.id]);
+  }, [statusBooking]);
 
-  const openConfirmDelete = (idBooking: string) =>
+  const openConfirm = (idBooking: string, status: string, message: string) =>
     modals.openConfirmModal({
-      title: <p className="text-red-500 font-semibold">Xác nhận huỷ vé</p>,
+      title: <p className="text-orange-500 font-semibold">{message}</p>,
       radius: "lg",
-      children: <Text size="sm">Bạn có chắc chắn muốn huỷ vé này không?</Text>,
+      children: (
+        <Text size="sm">Bạn có chắc chắn muốn {message} này không?</Text>
+      ),
       confirmProps: {
         radius: "md",
-        color: "red",
+        color: "orange",
       },
       cancelProps: { radius: "md" },
       labels: { confirm: "Xác nhận", cancel: "Huỷ" },
 
-      onConfirm: () => deleleteBooking(idBooking),
+      onConfirm: () => updateBooking(status, idBooking, dataUser.id),
     });
 
-  async function deleleteBooking(idBooking: string) {
+  async function updateBooking(
+    status: string,
+    idBooking: string,
+    staffId: string
+  ) {
     try {
-      const api = bookingServices.deleteBooking(idBooking);
-      const res = await loadingApi(api, "Huỷ vé");
+      const dataPass = {
+        bookingId: idBooking,
+        staffId: staffId,
+        status: status,
+      };
+      setIsLoading(true);
+      const api = bookingServices.updateBooking(dataPass);
+      const res = await loadingApi(api, "Cập nhật vé");
 
       if (res) {
-        getAllBookings();
+        getBooking();
       }
-
+      setIsLoading(false);
       return res;
     } catch (error) {
       const err = error as Error;
       NormalToast({
-        title: "Huỷ vé",
+        title: "Cập nhật vé",
         message: err.message,
         color: "red",
       });
@@ -82,8 +94,8 @@ function UserAllTickets({}: Props) {
   }
 
   useEffect(() => {
-    getAllBookings();
-  }, [getAllBookings]);
+    getBooking();
+  }, [getBooking]);
 
   useEffect(() => {
     if (data) {
@@ -153,7 +165,19 @@ function UserAllTickets({}: Props) {
               <Text fz="sm">{moment(row.createdAt).format("DD/MM/YYYY")}</Text>
             </div>
           ),
-
+          user: (
+            <div>
+              <Text fz="sm" fw={500}>
+                {row.User?.fullName}
+              </Text>
+              <Text fz="xs" c={"dimmed"}>
+                {row.User?.phone}
+              </Text>
+              <Text fz="xs" c={"dimmed"}>
+                {row.User?.email}
+              </Text>
+            </div>
+          ),
           status: (
             <div>
               <Badge
@@ -176,40 +200,90 @@ function UserAllTickets({}: Props) {
               </Badge>
             </div>
           ),
-          staff: (
-            <div>
-              {row.Staff ? (
-                <div>
-                  <Text fz="sm">{row.Staff.fullName}</Text>
-                  <Text fz="xs" c={"dimmed"}>
-                    {row.Staff.phone}
-                  </Text>
-                  <Text fz="xs" c={"dimmed"}>
-                    {row.Staff.email}
-                  </Text>
-                </div>
-              ) : (
-                "..."
-              )}
-            </div>
-          ),
           action: (
-            <div>
+            <div className="flex gap-3">
               {row.status == "Chờ xác nhận" ? (
-                <Tooltip label="Huỷ vé">
+                <Tooltip label="Xác nhận">
                   <ActionIcon
-                    onClick={() => openConfirmDelete(row.id)}
                     variant="filled"
-                    color={"red"}
+                    color={"teal"}
                     size="sm"
+                    onClick={() =>
+                      openConfirm(row.id, "Đã xác nhận", "Xác nhận đặt vé")
+                    }
+                    radius={"md"}
                     aria-label="Settings"
                   >
-                    <IconTrash
+                    <IconCheck
                       style={{ width: "80%", height: "80%" }}
                       stroke={1.5}
                     />
                   </ActionIcon>
                 </Tooltip>
+              ) : null}
+
+              {row.status == "Chờ xác nhận" ? (
+                <Tooltip label="Huỷ vé">
+                  <ActionIcon
+                    variant="filled"
+                    color={"red"}
+                    size="sm"
+                    onClick={() =>
+                      openConfirm(row.id, "Đã huỷ", "Xác nhận huỷ vé")
+                    }
+                    radius={"md"}
+                    aria-label="Settings"
+                  >
+                    <IconX
+                      style={{ width: "80%", height: "80%" }}
+                      stroke={1.5}
+                    />
+                  </ActionIcon>
+                </Tooltip>
+              ) : null}
+
+              {row.status == "Đã xác nhận" ? (
+                <>
+                  <Tooltip label="Xác nhận thanh toán">
+                    <ActionIcon
+                      variant="filled"
+                      color={"green"}
+                      size="sm"
+                      onClick={() =>
+                        openConfirm(
+                          row.id,
+                          "Đã thanh toán",
+                          "Xác nhận thanh toán"
+                        )
+                      }
+                      radius={"md"}
+                      aria-label="Settings"
+                    >
+                      <IconCheck
+                        style={{ width: "80%", height: "80%" }}
+                        stroke={1.5}
+                      />
+                    </ActionIcon>
+                  </Tooltip>
+
+                  <Tooltip label="Huỷ vé">
+                    <ActionIcon
+                      variant="filled"
+                      color={"red"}
+                      size="sm"
+                      onClick={() =>
+                        openConfirm(row.id, "Đã huỷ", "Xác nhận huỷ vé")
+                      }
+                      radius={"md"}
+                      aria-label="Settings"
+                    >
+                      <IconX
+                        style={{ width: "80%", height: "80%" }}
+                        stroke={1.5}
+                      />
+                    </ActionIcon>
+                  </Tooltip>
+                </>
               ) : null}
             </div>
           ),
@@ -255,13 +329,13 @@ function UserAllTickets({}: Props) {
           isSortable: false,
         },
         {
-          label: "Trạng thái",
-          value: "status",
+          label: "Người đặt",
+          value: "user",
           isSortable: false,
         },
         {
-          label: "Nhân viên",
-          value: "staff",
+          label: "Trạng thái",
+          value: "status",
           isSortable: false,
         },
         {
@@ -274,10 +348,25 @@ function UserAllTickets({}: Props) {
   }, [data]);
 
   return (
-    <div className="">
-      <TableFilter headers={headers}></TableFilter>
+    <div>
+      <div className="flex justify-end">
+        <Select
+          mb={"lg"}
+          radius={"md"}
+          size="xs"
+          defaultValue={statusBooking}
+          allowDeselect={false}
+          label="Trạng thái vé"
+          onChange={(e) => setStatusBooking(e as string)}
+          placeholder="Pick value"
+          data={["Chờ xác nhận", "Đã xác nhận", "Đã thanh toán", "Đã huỷ"]}
+        />
+      </div>
+      <div>
+        <TableFilter headers={headers}></TableFilter>
+      </div>
     </div>
   );
 }
 
-export default UserAllTickets;
+export default ManageBookingPage;

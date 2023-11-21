@@ -2,6 +2,7 @@ import {
   IconBorderAll,
   IconChalkboard,
   IconGauge,
+  IconListCheck,
   IconMovie,
   IconSubtask,
 } from "@tabler/icons-react";
@@ -44,6 +45,11 @@ const allLinks = [
     label: "Quản lý tài khoản",
     icon: IconSubtask,
     link: `/admin/manage-account`,
+  },
+  {
+    label: "Quản lý đặt vé",
+    icon: IconListCheck,
+    link: `/admin/manage-booking`,
   },
 ];
 

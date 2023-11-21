@@ -36,7 +36,8 @@ function FormLogin() {
           phone: res?.data?.phone,
           address: res?.data?.address,
           age: res?.data?.age,
-          gender: res?.data?.sex === 0 ? "male" : "female",
+          count: res?.data?.count,
+          gender: res?.data?.sex === 0 ? "Nam" : "Nữ",
           type: res?.data?.type,
         })
       );

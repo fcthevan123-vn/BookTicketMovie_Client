@@ -77,8 +77,8 @@ export default function DefaultHeader() {
         link: "movie",
       },
       {
-        label: "Xem online",
-        link: "stream",
+        label: "Giới thiệu",
+        link: "about",
       },
     ],
   };
@@ -187,7 +187,7 @@ export default function DefaultHeader() {
 
   return (
     <div className={classes.header + " shadow-lg drop-shadow-sm"}>
-      <Container className={classes.mainSection} size="lg">
+      <Container className={classes.mainSection} size="xl">
         <Group justify="space-between" style={{ height: "54px" }}>
           <Badge size="lg" radius="lg" className={classes.badge}>
             <Group gap="sm">
@@ -345,7 +345,7 @@ export default function DefaultHeader() {
           )}
         </Group>
       </Container>
-      <Container size="lg">
+      <Container size="xl">
         <Group justify="space-between" gap="sm">
           <Tabs
             value={defaultValueTable ? defaultValueTable : "home"}

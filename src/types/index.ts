@@ -154,15 +154,34 @@ export type MovieTS = {
   updatedAt: string;
 };
 
+export type UserTS = {
+  id: string;
+  fullName: string;
+  email: string;
+  isVerifyEmail: boolean;
+  phone: string;
+  address: string;
+  count: number;
+  sex: number;
+  age: number;
+  type: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type BookingTypeTS = {
   id: string;
   userId: string;
+  User?: UserTS;
+  Staff?: UserTS;
+  staffId: string;
   showId: string;
   totalPrice: number;
   paymentMethod: string;
   isPaid: boolean;
   createdAt: string;
   updatedAt: string;
+  status: string;
   Show: Show;
   SeatStatuses: SeatStatus[];
 };

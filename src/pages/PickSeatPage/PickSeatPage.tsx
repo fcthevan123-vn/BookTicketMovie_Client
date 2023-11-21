@@ -115,7 +115,7 @@ function PickSeatPage({}: Props) {
           <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
           <div className="flex w-full justify-between px-3">
             <div className="flex gap-4 items-center">
-              <Link to={`/movie/${dataTotal?.movieId}?open=modalPickShow`}>
+              <Link to={`/movie/${dataTotal?.movieId}`}>
                 <ActionIcon
                   variant="subtle"
                   color="rgba(255, 255, 255, 1)"

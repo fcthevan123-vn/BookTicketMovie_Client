@@ -55,9 +55,9 @@ function UserStatisticPage({}: Props) {
   }, [getAllBookings]);
   return (
     <div className="relative bg-white mt-4">
-      <div className="h-56 bg-blue-600 sm:h-72 lg:absolute lg:left-0 lg:h-full lg:w-1/2">
+      <div className="h-56  sm:h-72 lg:absolute lg:left-0 lg:h-full lg:w-1/2">
         <img
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover rounded-2xl "
           src="https://images.unsplash.com/photo-1559570278-eb8d71d06403?auto=format&fit=crop&q=80&w=1852&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
           alt="Support team"
         />
@@ -84,14 +84,10 @@ function UserStatisticPage({}: Props) {
               <div className="flex flex-col px-8 pt-8">
                 <dt className="order-2 text-base font-medium text-gray-500">
                   Lượng truy cập
-                  <Link to={``}>
-                    <p className="text-sm text-blue-500 cursor-pointer hover:text-blue-400">
-                      Xem ngay
-                    </p>
-                  </Link>
                 </dt>
                 <dd className="order-1 text-2xl font-extrabold text-blue-600 sm:text-3xl">
-                  76
+                  {console.log("dataUser.count", dataUser.count)}
+                  {dataUser.count}
                 </dd>
               </div>
               <div className="flex flex-col px-8 pt-8">

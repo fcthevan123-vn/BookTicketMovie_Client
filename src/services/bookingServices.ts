@@ -11,6 +11,21 @@ const bookingServices = {
     const res = await axios.get(`/api/v1/booking/by-user/${userId}`);
     return res.data;
   },
+
+  async deleteBooking(userId: string) {
+    const res = await axios.delete(`/api/v1/booking/${userId}`);
+    return res.data;
+  },
+
+  async getBookingByStatus(status: string) {
+    const res = await axios.post(`/api/v1/booking/by-status?status=${status}`);
+    return res.data;
+  },
+
+  async updateBooking(data: object) {
+    const res = await axios.post(`/api/v1/booking/update`, data);
+    return res.data;
+  },
 };
 
 export default bookingServices;

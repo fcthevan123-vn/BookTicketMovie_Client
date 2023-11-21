@@ -5,6 +5,7 @@ const MoviePage = lazy(() => import("../pages/MoviePage"));
 const RegisterPage = lazy(() => import("../pages/RegisterPage"));
 const ErrorPage = lazy(() => import("../pages/ErrorPage"));
 const UserPage = lazy(() => import("../pages/UserPage"));
+const AboutPage = lazy(() => import("../pages/AboutPage"));
 const AdminPage = lazy(() => import("../pages/AdminPage"));
 const PickSeatPage = lazy(() => import("../pages/PickSeatPage"));
 const MovieDetailPage = lazy(() => import("../pages/DetailMoviePage"));
@@ -150,6 +151,14 @@ const router: IRouter[] = [
     element: AdminPage,
   },
 
+  {
+    path: "/admin/manage-booking",
+    isProtected: true,
+    isAdmin: true,
+    layout: AdminLayout,
+    element: AdminPage,
+  },
+
   // Movies
   {
     path: "/movie/:id",
@@ -164,6 +173,13 @@ const router: IRouter[] = [
     isProtected: false,
     layout: DefaultLayout,
     element: MoviePage,
+  },
+
+  {
+    path: "/about",
+    isProtected: false,
+    layout: DefaultLayout,
+    element: AboutPage,
   },
 
   {

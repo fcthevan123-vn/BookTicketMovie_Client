@@ -107,13 +107,13 @@ function TopSecton({ dataMovie }: Props) {
                     </div>
                   </div>
 
-                  <div className="flex">
+                  <div className="flex justify-center">
                     <Button
                       variant="gradient"
                       radius={"md"}
-                      w={150}
+                      w={200}
                       ml="xs"
-                      gradient={{ from: "red", to: "yellow", deg: 0 }}
+                      gradient={{ from: "blue", to: "pink", deg: 90 }}
                       onClick={() => setIsOpen(true)}
                     >
                       Đặt vé
@@ -122,9 +122,9 @@ function TopSecton({ dataMovie }: Props) {
                     <Button
                       variant="gradient"
                       radius={"md"}
-                      w={150}
+                      w={200}
                       ml="xs"
-                      gradient={{ from: "red", to: "yellow", deg: 0 }}
+                      gradient={{ from: "pink", to: "blue", deg: 0 }}
                     >
                       Viết đánh giá
                     </Button>
