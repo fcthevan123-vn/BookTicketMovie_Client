@@ -1,4 +1,6 @@
+import { rem } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
+import { IconBell } from "@tabler/icons-react";
 
 type Props = {
   title: string;
@@ -12,7 +14,8 @@ const NormalToast = ({ title, message, color }: Props) => {
     message: message,
     withBorder: true,
     color: color,
-    radius: "md",
+    radius: "lg",
+    icon: <IconBell style={{ width: rem(20), height: rem(20) }} />,
   });
 };
 

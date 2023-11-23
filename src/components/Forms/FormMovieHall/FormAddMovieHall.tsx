@@ -136,9 +136,9 @@ function FormAddMovieHall({ getAllMovieHall }: Props) {
         <SimpleGrid cols={2}>
           <TextInput
             radius="md"
-            label="Tên rạp phim"
+            label="Tên phòng chiếu"
             withAsterisk
-            placeholder="Nhập tên rạp phim"
+            placeholder="Nhập tên phòng chiếu"
             {...form.getInputProps("name")}
           />
           <NumberInput

@@ -29,7 +29,6 @@ const movieServices = {
     endDate,
     duration,
     language,
-    price,
     country,
     subtitle,
     genre,
@@ -109,7 +108,6 @@ const movieServices = {
       endDate,
       duration,
       language,
-      price,
       country,
       subtitle,
       genre,
@@ -183,6 +181,11 @@ const movieServices = {
   async getMovieById(id: string) {
     // console.log("id", id);
     const res = await axios.get(`api/v1/movie/${id}`);
+    return res.data;
+  },
+
+  async getAllShowByMovie() {
+    const res = await axios.get(`api/v1/movie/get-shows`);
     return res.data;
   },
 };

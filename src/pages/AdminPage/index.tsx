@@ -12,6 +12,7 @@ import AddNewCinemaPage from "./AdminCinemaPage/AddNewCinemaPage";
 import AdminMovieHallPage from "./AdminMovieHallPage";
 import AdminLayoutPage from "./AdminLayoutPage";
 import ManageBookingPage from "./ManageBookingPage";
+import ShowTimePage from "./ShowTimePage";
 
 // Type
 type userRows = {
@@ -44,13 +45,13 @@ const intinialUserData = [
   },
 ];
 
-const intinialCinemaData = [
-  {
-    name: "",
-    location: "",
-    detailLocation: "",
-  },
-];
+// const intinialCinemaData = [
+//   {
+//     name: "",
+//     location: "",
+//     detailLocation: "",
+//   },
+// ];
 
 const allPath = [
   {
@@ -90,7 +91,7 @@ const allPath = [
       { title: "Cinema", href: "#" },
     ],
     jsx: (
-      <TableFilterProvider<cinemaRows> initialData={intinialCinemaData}>
+      <TableFilterProvider<cinemaRows> initialData={[]}>
         <AdminCinemaPage></AdminCinemaPage>
       </TableFilterProvider>
     ),
@@ -155,6 +156,18 @@ const allPath = [
     jsx: (
       <TableFilterProvider<[]> initialData={[]}>
         <AdminLayoutPage></AdminLayoutPage>
+      </TableFilterProvider>
+    ),
+  },
+  {
+    urlInclude: "showtime",
+    breadcrumbs: [
+      { title: "Admin", href: "/admin/dashboard" },
+      { title: "Show Time", href: "#" },
+    ],
+    jsx: (
+      <TableFilterProvider<[]> initialData={[]}>
+        <ShowTimePage></ShowTimePage>
       </TableFilterProvider>
     ),
   },

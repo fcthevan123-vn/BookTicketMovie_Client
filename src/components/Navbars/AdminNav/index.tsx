@@ -1,6 +1,7 @@
 import {
   IconBorderAll,
   IconChalkboard,
+  IconClockHour1,
   IconGauge,
   IconListCheck,
   IconMovie,
@@ -25,6 +26,11 @@ const allLinks = [
       { label: "Thêm phim mới", link: "/admin/movie/add-a-movie" },
       { label: "Tất cả phim", link: "/admin/movie/all-movies" },
     ],
+  },
+  {
+    label: "Quản lý giờ chiếu",
+    icon: IconClockHour1,
+    link: `/admin/show-time`,
   },
   {
     label: "Rạp phim",

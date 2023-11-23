@@ -4,9 +4,7 @@ import {
   Image,
   Paper,
   Rating,
-  SimpleGrid,
   Stack,
-  Table,
   Text,
   rem,
 } from "@mantine/core";
@@ -15,10 +13,9 @@ import { Carousel } from "@mantine/carousel";
 import classes from "./TopSection.module.css";
 import Autoplay from "embla-carousel-autoplay";
 
-import moment from "moment";
 import { useEffect, useRef, useState } from "react";
-import { useDisclosure } from "@mantine/hooks";
 import ModalPickShow from "../../../components/Modals/ModalPickShow";
+import { useAuthenticate } from "../../../hooks";
 
 type Props = {
   dataMovie: DataTableMoviesProps;
@@ -28,8 +25,8 @@ const PRIMARY_COL_HEIGHT = rem(500);
 
 function TopSecton({ dataMovie }: Props) {
   const autoplay = useRef(Autoplay({ delay: 2000 }));
-  const [opened, { open, close }] = useDisclosure(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [isLogged, ,] = useAuthenticate();
 
   const urlParams = new URLSearchParams(window.location.search);
 
@@ -113,6 +110,7 @@ function TopSecton({ dataMovie }: Props) {
                       radius={"md"}
                       w={200}
                       ml="xs"
+                      disabled={!isLogged ? true : false}
                       gradient={{ from: "blue", to: "pink", deg: 90 }}
                       onClick={() => setIsOpen(true)}
                     >
@@ -124,6 +122,7 @@ function TopSecton({ dataMovie }: Props) {
                       radius={"md"}
                       w={200}
                       ml="xs"
+                      disabled={!isLogged ? true : false}
                       gradient={{ from: "pink", to: "blue", deg: 0 }}
                     >
                       Viết đánh giá

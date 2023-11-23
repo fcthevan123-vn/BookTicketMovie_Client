@@ -5,8 +5,9 @@ import apiProvinceVietNam from "../../../untils/apiProvinceVietNam";
 import NormalToast from "../../AllToast/NormalToast";
 import { cinemaServices } from "../../../services";
 import { loadingApi } from "../../../untils/loadingApi";
+import { modals } from "@mantine/modals";
 
-function FormAddCinema() {
+function FormAddCinema({ getAllCinema }: { getAllCinema: () => void }) {
   const [dataProvince, setDataProvince] = useState({
     city: [
       {
@@ -124,7 +125,8 @@ function FormAddCinema() {
     const res = await loadingApi(api, "Chỉnh sửa phim");
 
     if (res) {
-      console.log(res);
+      getAllCinema();
+      modals.closeAll();
     }
 
     return res;

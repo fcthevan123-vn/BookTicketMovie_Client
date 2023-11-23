@@ -1,11 +1,8 @@
 import { Button, Text } from "@mantine/core";
 import { modals } from "@mantine/modals";
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import FormAddCinema from "../../../components/Forms/FormCinema/FormAddCinema";
-import {
-  TableFilterProvider,
-  useTableCustom,
-} from "../../../components/Provider/TableFilterProvider";
+import { useTableCustom } from "../../../components/Provider/TableFilterProvider";
 import { cinemaServices } from "../../../services";
 import TableFilter from "../../../components/TableFilter";
 import apiProvinceVietNam from "../../../untils/apiProvinceVietNam";
@@ -16,15 +13,15 @@ type cinemaProps = {
   detailLocation: string;
 };
 
-type cinemaRows = {
-  name: React.ReactNode;
-  location: React.ReactNode;
-  detailLocation: React.ReactNode;
-};
+// type cinemaRows = {
+//   name: React.ReactNode;
+//   location: React.ReactNode;
+//   detailLocation: React.ReactNode;
+// };
 
-type Props = {};
+// type Props = {};
 
-function AdminCinemaPage({}: Props) {
+function AdminCinemaPage() {
   const [data, setData] = useState<cinemaProps[]>();
 
   const {
@@ -34,10 +31,10 @@ function AdminCinemaPage({}: Props) {
     limitRow,
     setIsLoading,
     activePage,
-    setTotalPagination,
+    dataGloBal,
     currentSearchValue,
-    totalPagination,
-    setActivePage,
+    setDataGlobal,
+    setTotalPagination,
   } = useTableCustom();
 
   const openModalAdd = () => {
@@ -48,7 +45,7 @@ function AdminCinemaPage({}: Props) {
         </Text>
       ),
       size: "lg",
-      children: <FormAddCinema></FormAddCinema>,
+      children: <FormAddCinema getAllCinema={getLimitCinemas}></FormAddCinema>,
       radius: "md",
       lockScroll: false,
     });
@@ -72,10 +69,10 @@ function AdminCinemaPage({}: Props) {
   }
 
   useEffect(() => {
-    if (data) {
+    if (dataGloBal) {
       const fetchData = async () => {
         const rowRender = await Promise.all(
-          data.map(async (row) => {
+          dataGloBal.map(async (row) => {
             try {
               const provinceName = await getProvince(row.location);
               return {
@@ -113,7 +110,7 @@ function AdminCinemaPage({}: Props) {
 
       fetchData();
     }
-  }, [data]);
+  }, [dataGloBal]);
 
   const getLimitCinemas = useCallback(async () => {
     setIsLoading(true);
@@ -122,7 +119,9 @@ function AdminCinemaPage({}: Props) {
 
       setIsLoading(false);
       if (res.statusCode === 0) {
-        setData(res.data);
+        // setData(res.data);
+
+        setDataGlobal(res.data);
         const totalRows = Math.ceil(res.rows / limitRow);
 
         setTotalPagination(totalRows);
@@ -135,6 +134,12 @@ function AdminCinemaPage({}: Props) {
   useEffect(() => {
     getLimitCinemas();
   }, [getLimitCinemas]);
+
+  useEffect(() => {
+    if (!currentSearchValue) {
+      getLimitCinemas();
+    }
+  }, [currentSearchValue]);
 
   return (
     <div>

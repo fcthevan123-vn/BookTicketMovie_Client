@@ -1,10 +1,10 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import SearchBar from "../../SearchBar";
 import { Pagination, Select, Text } from "@mantine/core";
 
 export type TableFilterProps<T> = {
-  data: T[];
-  setData: (data: T[]) => void;
+  dataGloBal: T[];
+  setDataGlobal: (data: T[]) => void;
   limitRow: number;
   rows: T[];
   headers: T[];
@@ -50,15 +50,42 @@ export function TableFilterProvider<T>({
   const [limitRow, setLimitRow] = useState(5);
   const [rows, setRows] = useState<T[]>(initialData);
   const [headers, setHeaders] = useState(initialData);
-  const [data, setData] = useState<unknown[]>(initialData);
+  const [dataGloBal, setDataGlobal] = useState<unknown[]>(initialData);
   const [currentStateFilter, setCurrentStateFilter] =
     useState<currentStateFilterI[]>();
   const [currentSearchValue, setCurrentSearchValue] = useState("");
 
+  function searchObjects(array, keyword: string) {
+    const results: unknown[] = [];
+
+    array.forEach((obj) => {
+      // Lặp qua tất cả các thuộc tính của đối tượng
+      for (const key in obj) {
+        // eslint-disable-next-line no-prototype-builtins
+        if (obj.hasOwnProperty(key)) {
+          // Kiểm tra xem giá trị của thuộc tính có chứa từ khóa hay không
+          const value = obj[key].toString().toLowerCase();
+          if (value.includes(keyword.toLowerCase())) {
+            // Nếu chứa từ khóa, thêm đối tượng vào kết quả và dừng vòng lặp
+            results.push(obj);
+            break;
+          }
+        }
+      }
+    });
+
+    return results;
+  }
+
+  useEffect(() => {
+    const searchResults = searchObjects(dataGloBal, currentSearchValue);
+    setDataGlobal(searchResults);
+  }, [currentSearchValue]);
+
   return (
     <TableFilterConText.Provider
       value={{
-        data,
+        dataGloBal,
         rows,
         setRows: setRows as React.Dispatch<React.SetStateAction<unknown[]>>,
         headers,
@@ -67,7 +94,7 @@ export function TableFilterProvider<T>({
         >,
         currentStateFilter,
         setCurrentStateFilter,
-        setData,
+        setDataGlobal,
         isLoading,
         setIsLoading,
         activePage,
@@ -80,6 +107,9 @@ export function TableFilterProvider<T>({
         setCurrentSearchValue,
       }}
     >
+      {/* {console.log("currentSearchValue", currentSearchValue)}
+      {console.log("data", dataGloBal)} */}
+
       <div>
         <SearchBar></SearchBar>
 

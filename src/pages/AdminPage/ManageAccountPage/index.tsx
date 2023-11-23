@@ -55,6 +55,8 @@ function ManageAccountPage() {
     headers,
     setHeaders,
     limitRow,
+    dataGloBal,
+    setDataGlobal,
     setIsLoading,
     activePage,
     setTotalPagination,

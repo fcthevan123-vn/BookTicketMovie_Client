@@ -11,24 +11,24 @@ import {
 
 const data = [
   {
-    name: "Dưới 10 tuổi",
+    name: "Tháng 1",
     order: 0,
   },
   {
-    name: "10 - 20 tuổi",
+    name: "Tháng 2",
     order: 1,
   },
   {
-    name: "20 - 30 tuổi",
+    name: "Tháng 3",
 
     order: 5,
   },
   {
-    name: "30 - 40 tuổi",
+    name: "Tháng 4",
     order: 2,
   },
   {
-    name: "Trên 40 tuổi",
+    name: "Tháng 5",
     order: 1,
   },
 ];

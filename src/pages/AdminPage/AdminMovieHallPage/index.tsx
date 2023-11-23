@@ -1,8 +1,10 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 import { ActionIcon, Button, List, Text, ThemeIcon } from "@mantine/core";
 import { modals } from "@mantine/modals";
 
 import FormAddMovieHall from "../../../components/Forms/FormMovieHall/FormAddMovieHall";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { movieHallServices } from "../../../services";
 import { normalApi } from "../../../untils/normalApi";
 import { useTableCustom } from "../../../components/Provider/TableFilterProvider";
@@ -11,12 +13,12 @@ import { IconChevronRight, IconEye } from "@tabler/icons-react";
 
 import moment from "moment";
 
-type movieHallProps = {
-  name: string;
-  number: number;
-  RoomType: Record<string, unknown>;
-  Layout: Record<string, unknown>;
-};
+// type movieHallProps = {
+//   name: string;
+//   number: number;
+//   RoomType: Record<string, unknown>;
+//   Layout: Record<string, unknown>;
+// };
 
 // type movieHallRows = {
 //   name: React.ReactNode;
@@ -26,19 +28,13 @@ type movieHallProps = {
 // };
 
 function AdminMovieHallPage() {
-  const [data, setData] = useState<movieHallProps[]>();
-
   const {
     setRows,
     headers,
     setHeaders,
-    limitRow,
-    setIsLoading,
-    activePage,
-    setTotalPagination,
+    dataGloBal,
+    setDataGlobal,
     currentSearchValue,
-    totalPagination,
-    setActivePage,
   } = useTableCustom();
 
   const openModalAdd = () => {
@@ -88,27 +84,18 @@ function AdminMovieHallPage() {
     });
   };
 
-  // const getAllMovieHall = useCallback(async () => {
-  //   const api = movieHallServices.getAllMovieHall();
-  //   const res = await normalApi(api, "getAllMovieHall");
-  //   if (res) {
-  //     setData(res);
-  //   }
-  //   return res;
-  // }, []);
-
   const getAllMovieHall = useCallback(async () => {
     const api = movieHallServices.getAllMovieHall();
     const res = await normalApi(api, "getAllMovieHall");
     if (res) {
-      setData(res);
+      setDataGlobal(res);
     }
     return res;
   }, []);
 
   useEffect(() => {
-    if (data) {
-      const rowRender = data.map((row) => {
+    if (dataGloBal) {
+      const rowRender = dataGloBal.map((row) => {
         return {
           name: <Text fz="sm">{row.name}</Text>,
           number: <Text fz="sm">{row.number}</Text>,
@@ -154,11 +141,17 @@ function AdminMovieHallPage() {
         },
       ]);
     }
-  }, [data]);
+  }, [dataGloBal]);
 
   useEffect(() => {
     getAllMovieHall();
   }, [getAllMovieHall]);
+
+  useEffect(() => {
+    if (!currentSearchValue) {
+      getAllMovieHall();
+    }
+  }, [currentSearchValue]);
 
   return (
     <div>

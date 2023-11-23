@@ -12,6 +12,16 @@ const showServices = {
     );
     return res.data;
   },
+
+  async deleteShow(showId: string) {
+    const res = await axios.delete(`/api/v1/show/${showId}`);
+    return res.data;
+  },
+
+  async createShow(data: object) {
+    const res = await axios.post(`/api/v1/show/create`, data);
+    return res.data;
+  },
 };
 
 export default showServices;

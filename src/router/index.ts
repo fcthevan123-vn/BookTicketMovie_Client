@@ -158,6 +158,13 @@ const router: IRouter[] = [
     layout: AdminLayout,
     element: AdminPage,
   },
+  {
+    path: "/admin/show-time",
+    isProtected: true,
+    isAdmin: true,
+    layout: AdminLayout,
+    element: AdminPage,
+  },
 
   // Movies
   {
