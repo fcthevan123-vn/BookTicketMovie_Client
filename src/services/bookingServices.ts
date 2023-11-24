@@ -26,6 +26,11 @@ const bookingServices = {
     const res = await axios.post(`/api/v1/booking/update`, data);
     return res.data;
   },
+
+  async getStatistic() {
+    const res = await axios.get(`/api/v1/booking/statistic`);
+    return res.data;
+  },
 };
 
 export default bookingServices;

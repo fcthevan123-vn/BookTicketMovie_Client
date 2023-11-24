@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 function HeroHome() {
   return (
     <div>
@@ -15,18 +17,18 @@ function HeroHome() {
             </p>
 
             <div className="flex flex-col mt-6 space-y-3 lg:space-y-0 lg:flex-row">
-              <a
-                href="#"
+              <Link
+                to="/movie"
                 className="block px-5 py-2 text-sm font-medium tracking-wider text-center text-white transition-colors duration-300 transform bg-blue-500 rounded-md hover:bg-blue-700"
               >
                 Khám phá ngay
-              </a>
-              <a
-                href="#"
+              </Link>
+              <Link
+                to="/about"
                 className="block px-5 py-2 text-sm font-medium tracking-wider text-center text-gray-700 transition-colors duration-300 transform bg-gray-200 rounded-md lg:mx-4 hover:bg-gray-300"
               >
                 Tìm hiểu thêm
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -36,7 +38,7 @@ function HeroHome() {
             className="w-full h-full bg-cover rounded-2xl overflow-hidden"
             style={{
               backgroundImage:
-                "url(https://images.unsplash.com/photo-1508394522741-82ac9c15ba69?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=748&q=80)",
+                "url(https://images.unsplash.com/photo-1535540674795-d2e704953bf1?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)",
             }}
           >
             <div className="w-full h-full bg-black opacity-25"></div>

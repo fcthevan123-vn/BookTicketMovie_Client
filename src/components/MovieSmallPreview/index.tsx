@@ -44,13 +44,13 @@ export default function MovieSmallPreview({ dataMovie }: Props) {
         </Carousel>
       </Card.Section>
 
-      <Badge
+      {/* <Badge
         className={classes.rating}
         variant="gradient"
         gradient={{ from: "yellow", to: "red" }}
       >
         Phim nổi bật
-      </Badge>
+      </Badge> */}
 
       <Tooltip label={dataMovie.title} position="top-start">
         <Text className={classes.title} fw={500} component="a" lineClamp={1}>

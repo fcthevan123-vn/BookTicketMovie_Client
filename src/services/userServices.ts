@@ -22,6 +22,11 @@ const userServices = {
     return res.data;
   },
 
+  async getStatisticRegister() {
+    const res = await axios.get(`/api/v1/user/statistic/register`);
+    return res.data;
+  },
+
   async deleteUserById(id: string) {
     const res = await axios.delete(`/api/v1/user/delete/${id}`);
     return res.data;

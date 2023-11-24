@@ -14,7 +14,7 @@ import { modals } from "@mantine/modals";
 type Props = {};
 
 function ManageBookingPage({}: Props) {
-  const [statusBooking, setStatusBooking] = useState("Chờ xác nhận");
+  const [statusBooking, setStatusBooking] = useState("Tất cả");
   const [data, setData] = useState<BookingTypeTS[]>([]);
   const [, , dataUser] = useAuthenticate();
   const {
@@ -130,12 +130,8 @@ function ManageBookingPage({}: Props) {
           ),
           timeShow: (
             <div>
-              <Text fz="sm">
-                Bắt đầu: {moment(row.Show.startTime).format("HH:mm")}
-              </Text>
-              <Text fz="sm">
-                Kết thúc: {moment(row.Show.endTime).format("HH:mm")}
-              </Text>
+              <Text fz="sm">Bắt đầu: {row.Show.startTime}</Text>
+              <Text fz="sm">Kết thúc: {row.Show.endTime}</Text>
               <Text fz="sm">
                 Ngày: {moment(row.Show.date).format("DD/MM/YYYY")}
               </Text>
@@ -359,7 +355,13 @@ function ManageBookingPage({}: Props) {
           label="Trạng thái vé"
           onChange={(e) => setStatusBooking(e as string)}
           placeholder="Pick value"
-          data={["Chờ xác nhận", "Đã xác nhận", "Đã thanh toán", "Đã huỷ"]}
+          data={[
+            "Tất cả",
+            "Chờ xác nhận",
+            "Đã xác nhận",
+            "Đã thanh toán",
+            "Đã huỷ",
+          ]}
         />
       </div>
       <div>

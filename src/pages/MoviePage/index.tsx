@@ -1,24 +1,24 @@
-import {
-  ActionIcon,
-  Container,
-  Select,
-  TextInput,
-  TextInputProps,
-  rem,
-} from "@mantine/core";
+import { ActionIcon, Container, Select, TextInput, rem } from "@mantine/core";
 
-import {
-  IconAdjustments,
-  IconArrowRight,
-  IconSearch,
-} from "@tabler/icons-react";
+import { IconSearch } from "@tabler/icons-react";
 import ListMovie from "./ListMovie";
 import { useCallback, useEffect, useState } from "react";
 import { movieServices } from "../../services";
+import { MovieTS } from "../../types";
 
-function MoviePage(props: TextInputProps) {
-  const [allMovies, setAllMovies] = useState();
-  const [isOpenFilter, setIsOpenFilter] = useState(false);
+function MoviePage() {
+  const [allMovies, setAllMovies] = useState<MovieTS[]>();
+  const [valueSearch, setValueSearch] = useState<string>();
+  const icon = (
+    <div
+      className="bg-blue-500 text-white cursor-pointer w-full h-full flex items-center justify-center rounded-r-md"
+      style={{
+        marginBottom: "1.2px",
+      }}
+    >
+      <IconSearch style={{ width: rem(16), height: rem(16) }} />
+    </div>
+  );
 
   const getAllMovies = useCallback(async () => {
     try {
@@ -32,50 +32,92 @@ function MoviePage(props: TextInputProps) {
   }, []);
 
   useEffect(() => {
+    if (
+      valueSearch &&
+      valueSearch?.length > 0 &&
+      allMovies &&
+      allMovies.length > 0
+    ) {
+      const dataFilter = allMovies.filter((movie) =>
+        movie.title.toLowerCase().includes(valueSearch.toLowerCase())
+      );
+
+      setAllMovies(dataFilter);
+    } else {
+      getAllMovies();
+    }
+  }, [valueSearch]);
+
+  useEffect(() => {
     getAllMovies();
   }, [getAllMovies]);
 
   return (
-    <Container fluid mt={"lg"}>
-      <div className="flex items-center w-full gap-3 justify-between px-4 rounded-xl py-2">
-        <ActionIcon variant="light" size="xl" radius="lg" aria-label="Settings">
-          <IconAdjustments
-            style={{ width: "70%", height: "70%" }}
-            stroke={1.5}
-          />
-        </ActionIcon>
+    <Container size={"xl"}>
+      <section>
+        <div className="mx-auto px-4 py-2 mt-5">
+          <header>
+            <h2 className="text-xl font-bold text-gray-900 sm:text-3xl">
+              Tất cả phim
+            </h2>
 
-        <TextInput
-          className="grow"
-          radius="lg"
-          size="md"
-          placeholder="Tìm tên phim"
-          rightSectionWidth={42}
-          leftSection={
-            <IconSearch
-              style={{ width: rem(18), height: rem(18) }}
-              stroke={1.5}
+            <p className="mt-4 max-w-md text-gray-500">
+              Hãy cùng Show Booking trải nghiệm dịch vụ một cách thoải mái và
+              vui vẻ nhất nhé.
+            </p>
+          </header>
+
+          <div className="mt-8 flex items-center justify-between">
+            <div className="flex rounded border border-gray-100">
+              <button className="inline-flex h-10 w-10 items-center justify-center border-e text-gray-600 transition hover:bg-gray-50 hover:text-gray-700">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="h-5 w-5"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"
+                  />
+                </svg>
+              </button>
+
+              <button className="inline-flex h-10 w-10 items-center justify-center text-gray-600 transition hover:bg-gray-50 hover:text-gray-700">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="h-5 w-5"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <TextInput
+              rightSectionPointerEvents="auto"
+              rightSection={icon}
+              radius={"md"}
+              onChange={(e) => setValueSearch(e.target.value)}
+              placeholder="Tìm tên phim"
             />
-          }
-          rightSection={
-            <ActionIcon size={32} radius="xl" color={"blue"} variant="filled">
-              <IconArrowRight
-                style={{ width: rem(18), height: rem(18) }}
-                stroke={1.5}
-              />
-            </ActionIcon>
-          }
-          {...props}
-        />
+          </div>
 
-        <Select
-          radius={"lg"}
-          size="md"
-          placeholder="Bộ lọc"
-          data={["Phim 1", "Phim 2", "Phim 3", "Phim 4"]}
-        />
-      </div>
-      <div>{allMovies && <ListMovie dataMovies={allMovies}></ListMovie>}</div>
+          <div className="mt-4">
+            {allMovies && <ListMovie dataMovies={allMovies}></ListMovie>}
+          </div>
+        </div>
+      </section>
     </Container>
   );
 }

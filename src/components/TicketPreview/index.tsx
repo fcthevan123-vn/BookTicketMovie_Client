@@ -105,9 +105,7 @@ function TicketPreview({}: Props) {
                   size="xs"
                 ></Divider>
                 <Text c={"white"} size="sm" fw={200}>
-                  Thời gian chiếu:{" "}
-                  {moment(dataTotal?.startTime).format("HH:mm")} -{" "}
-                  {moment(dataTotal?.endTime).format("HH:mm")}
+                  Thời gian chiếu: {dataTotal?.startTime} - {dataTotal?.endTime}
                 </Text>
                 <Text c={"white"} size="sm" fw={200}>
                   {dataTotal?.MovieHall.name}

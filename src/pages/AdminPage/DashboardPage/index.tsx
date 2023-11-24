@@ -1,6 +1,8 @@
 import { Divider, RingProgress, ThemeIcon } from "@mantine/core";
 import { useCallback, useEffect, useState } from "react";
 import {
+  Area,
+  AreaChart,
   Bar,
   BarChart,
   CartesianGrid,
@@ -11,6 +13,7 @@ import {
 } from "recharts";
 import { userServices } from "../../../services";
 import { IconMan, IconPhoto, IconWoman } from "@tabler/icons-react";
+import bookingServices from "../../../services/bookingServices";
 
 type Props = {};
 
@@ -21,36 +24,30 @@ const DashboardPage = (props: Props) => {
     countMale: 1,
     countFemale: 1,
   });
-  const data = [
-    {
-      name: "Tháng 1",
-      "Người dùng": 4000,
-    },
-    {
-      name: "Tháng 2",
-      "Người dùng": 3000,
-    },
-    {
-      name: "Tháng 3",
-      "Người dùng": 2000,
-    },
-    {
-      name: "Tháng 4",
-      "Người dùng": 2780,
-    },
-    {
-      name: "Tháng 5",
-      "Người dùng": 1890,
-    },
-    {
-      name: "Tháng 6",
-      "Người dùng": 2390,
-    },
-    {
-      name: "Tháng 7",
-      "Người dùng": 3490,
-    },
-  ];
+  const [dataBarChart, setDataBarChart] = useState();
+  const [dataAreaChart, SetDataAreaChart] = useState();
+
+  const getStatisticUserRegister = useCallback(async () => {
+    try {
+      const res = await userServices.getStatisticRegister();
+      if (res.statusCode == 0) {
+        setDataBarChart(res.data);
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+  }, []);
+
+  const getStatisticBooking = useCallback(async () => {
+    try {
+      const res = await bookingServices.getStatistic();
+      if (res.statusCode == 0) {
+        SetDataAreaChart(res.data);
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+  }, []);
 
   const getStatisticUser = useCallback(async () => {
     try {
@@ -76,19 +73,52 @@ const DashboardPage = (props: Props) => {
 
   useEffect(() => {
     getStatisticUser();
-  }, [getStatisticUser]);
+    getStatisticBooking();
+    getStatisticUserRegister();
+  }, [getStatisticBooking, getStatisticUser, getStatisticUserRegister]);
 
   return (
     <div>
       <div>
         <p className="my-4 font-medium text-lg italic">
-          Thống kê số lượng người dùng đăng ký
+          Thống kê doanh thu của hệ thống
+        </p>
+        <div className="flex justify-center ">
+          <AreaChart
+            width={1100}
+            height={400}
+            data={dataAreaChart}
+            margin={{
+              top: 10,
+              right: 30,
+              left: 70,
+              bottom: 0,
+            }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Area
+              type="monotone"
+              dataKey="Doanh thu"
+              stroke="#39A7FF"
+              fill="#AEDEFC"
+            />
+          </AreaChart>
+        </div>
+      </div>
+      <Divider my="xl" size={"sm"} mx={"md"} />
+
+      <div>
+        <p className="my-4 font-medium text-lg italic">
+          Thống kê số lượng người dùng đăng ký trong 5 tuần gần nhất
         </p>
         <div className="flex justify-center ">
           <BarChart
             width={1150}
             height={400}
-            data={data}
+            data={dataBarChart}
             margin={{
               top: 5,
               right: 30,
@@ -115,9 +145,11 @@ const DashboardPage = (props: Props) => {
         </div>
       </div>
 
+      <Divider my="xl" size={"sm"} mx={"md"} />
+
       <div>
-        <p className="my-4 font-medium text-lg ">
-          Thống kê số lượng người dùng đăng ký
+        <p className="my-4 font-medium text-lg italic ">
+          Thống kê giới tính của người dùng
         </p>
         <div className="flex justify-center ">
           <RingProgress

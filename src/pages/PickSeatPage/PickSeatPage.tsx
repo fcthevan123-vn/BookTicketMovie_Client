@@ -143,8 +143,7 @@ function PickSeatPage({}: Props) {
                     orientation="vertical"
                   ></Divider>
                   <Text c={"white"} size="md" fw={500}>
-                    {moment(dataTotal?.startTime).format("HH:mm")} -{" "}
-                    {moment(dataTotal?.endTime).format("HH:mm")}
+                    {dataTotal?.startTime} - {dataTotal?.endTime}
                   </Text>
                 </div>
 

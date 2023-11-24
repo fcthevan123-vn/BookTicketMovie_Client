@@ -171,8 +171,7 @@ function ShowTime({ dataShow }: Props) {
         {/* {console.log("location.path", location.pathname)} */}
         <Card.Section>
           <Text ta={"center"} py={15} size="md">
-            {moment(dataShow.startTime).format("HH:mm")} ~{" "}
-            {moment(dataShow.endTime).format("HH:mm")}
+            {dataShow.startTime} ~ {dataShow.endTime}
           </Text>
         </Card.Section>
 

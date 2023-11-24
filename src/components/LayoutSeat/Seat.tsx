@@ -59,13 +59,21 @@ function Seat({ dataSeat, dataOrdered }: Props) {
             border:
               dataSeat.SeatType.name === "Ghế VIP"
                 ? "1.5px solid var(--mantine-color-green-4)"
+                : dataSeat.SeatType.name === "Ghế Sweet"
+                ? "1.5px solid var(--mantine-color-pink-4)"
                 : "1.5px solid var(--mantine-color-blue-4)",
           },
         }}
         onChange={(e) => handlePickSeat(e)}
         size="xs"
         radius="md"
-        color={dataSeat.SeatType.name === "Ghế VIP" ? "green" : "blue"}
+        color={
+          dataSeat.SeatType.name === "Ghế VIP"
+            ? "green"
+            : dataSeat.SeatType.name === "Ghế Sweet"
+            ? "pink"
+            : "blue"
+        }
         variant="filled"
         disabled={
           (dataOrdered && dataOrdered.isBooked === true) ||

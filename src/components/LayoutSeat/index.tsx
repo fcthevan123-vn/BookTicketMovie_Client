@@ -40,16 +40,6 @@ function LayoutSeat({ dataSeats, dataSeatsPicked }: Props) {
             seat.Seat.seatNumber === seatNumber &&
             seat.Seat.rowNumber === row
         );
-        // console.log("seatOrdered", seatOrdered);
-        // if (seat) {
-        //   rowElements.push(<Seat dataSeat={seat} key={seat.id}></Seat>);
-        // } else {
-        //   rowElements.push(
-        //     <div key={`empty-${row}-${seatNumber}`} className="empty-seat">
-        //       Empty
-        //     </div>
-        //   );
-        // }
 
         if (seatOrdered && seat) {
           rowElements.push(
