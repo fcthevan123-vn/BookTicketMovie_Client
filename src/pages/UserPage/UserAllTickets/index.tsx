@@ -93,35 +93,35 @@ function UserAllTickets({}: Props) {
           movieDetail: (
             <div>
               <Text fz="sm" fw={500}>
-                {row.Show.Movie?.title}
+                {row?.Show?.Movie?.title}
               </Text>
               <Text fz="xs" c={"dimmed"}>
-                {row.Show.Movie?.genre.join(" - ")}
+                {row?.Show?.Movie?.genre.join(" - ")}
               </Text>
               <Text fz="xs" c={"dimmed"}>
-                {row.Show.Movie?.duration} phút
+                {row?.Show?.Movie?.duration} phút
               </Text>
             </div>
           ),
           RoomType: (
             <div>
               <Text fz="sm" fw={500}>
-                Phòng: {row.Show.MovieHall.name}
+                Phòng: {row?.Show?.MovieHall?.name}
               </Text>
               <Text fz="xs" c={"dimmed"}>
-                Rạp: {row.Show.MovieHall.Cinema.name}
+                Rạp: {row?.Show?.MovieHall?.Cinema?.name}
               </Text>
               <Text fz="xs" c={"dimmed"}>
-                Kiểu phòng: {row.Show.MovieHall.RoomType.name}
+                Kiểu phòng: {row?.Show?.MovieHall?.RoomType?.name}
               </Text>
             </div>
           ),
           timeShow: (
             <div>
-              <Text fz="sm">Bắt đầu: {row.Show.startTime}</Text>
-              <Text fz="sm">Kết thúc: {row.Show.endTime}</Text>
+              <Text fz="sm">Bắt đầu: {row?.Show?.startTime}</Text>
+              <Text fz="sm">Kết thúc: {row?.Show?.endTime}</Text>
               <Text fz="sm">
-                Ngày: {moment(row.Show.date).format("DD/MM/YYYY")}
+                Ngày: {moment(row?.Show?.date).format("DD/MM/YYYY")}
               </Text>
             </div>
           ),
@@ -129,7 +129,7 @@ function UserAllTickets({}: Props) {
             <div>
               {row.SeatStatuses.map((seat) => (
                 <div key={seat.id}>
-                  <Text fz="sm">Số ghế: {seat.Seat.name}</Text>
+                  <Text fz="sm">Số ghế: {seat?.Seat?.name}</Text>
                 </div>
               ))}
             </div>
@@ -146,7 +146,7 @@ function UserAllTickets({}: Props) {
           ),
           orderedDate: (
             <div>
-              <Text fz="sm">{moment(row.createdAt).format("DD/MM/YYYY")}</Text>
+              <Text fz="sm">{moment(row?.createdAt).format("DD/MM/YYYY")}</Text>
             </div>
           ),
 
@@ -176,12 +176,12 @@ function UserAllTickets({}: Props) {
             <div>
               {row.Staff ? (
                 <div>
-                  <Text fz="sm">{row.Staff.fullName}</Text>
+                  <Text fz="sm">{row?.Staff?.fullName}</Text>
                   <Text fz="xs" c={"dimmed"}>
-                    {row.Staff.phone}
+                    {row?.Staff?.phone}
                   </Text>
                   <Text fz="xs" c={"dimmed"}>
-                    {row.Staff.email}
+                    {row?.Staff?.email}
                   </Text>
                 </div>
               ) : (

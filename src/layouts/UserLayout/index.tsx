@@ -33,13 +33,13 @@ function UserLayout({ children }: UserLayoutProps) {
 
   const openLogoutModal = () =>
     modals.openConfirmModal({
-      title: <p className="text-red-500 font-medium">Logout</p>,
+      title: <p className="text-red-500 font-medium">Đăng xuất</p>,
       centered: true,
-      children: <p>Are you sure to logout?</p>,
+      children: <p>Bạn có chắc chắc muốn đăng xuất không?</p>,
       zIndex: 1600,
       labels: {
-        confirm: "Logout",
-        cancel: "Cancel",
+        confirm: "Đăng xuất",
+        cancel: "Huỷ",
       },
       confirmProps: { color: "red", radius: "lg" },
       cancelProps: { color: "red", radius: "lg" },

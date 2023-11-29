@@ -123,7 +123,7 @@ const UserChangePassword = () => {
           />
           <div className="flex gap-2">
             <Button loading={isLoading} radius="md" w={"50%"} type="submit">
-              Save
+              Lưu
             </Button>
             <Button
               radius="md"
@@ -132,7 +132,7 @@ const UserChangePassword = () => {
               loading={isLoading}
               onClick={() => form.reset()}
             >
-              Reset
+              Đặt lại mặc định
             </Button>
           </div>
         </div>

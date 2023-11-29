@@ -79,10 +79,10 @@ function FormLogin() {
       >
         <Input.Wrapper id="email" withAsterisk label="Tài khoản:" mt="sm">
           <Input
-            className="border-b-2 px-4 border-sky-300"
+            className="border-b-2 px-1 border-sky-300"
             variant="unstyled"
             id="email"
-            placeholder="Email"
+            placeholder="Nhập email"
             value={form.values.email}
             onChange={(e) => form.setFieldValue("email", e.target.value)}
           />
@@ -96,7 +96,7 @@ function FormLogin() {
             className="border-b-2 px-1 border-sky-300"
             variant="unstyled"
             id="password"
-            placeholder="Password"
+            placeholder="Nhập mật khẩu"
             value={form.values.password}
             onChange={(e) => form.setFieldValue("password", e.target.value)}
           />

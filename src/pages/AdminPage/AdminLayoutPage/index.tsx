@@ -8,7 +8,11 @@ import { useTableCustom } from "../../../components/Provider/TableFilterProvider
 import TableFilter from "../../../components/TableFilter";
 import { modals } from "@mantine/modals";
 
-function FormCreateLayout() {
+function FormCreateLayout({
+  getAllLayout,
+}: {
+  getAllLayout: () => Promise<void>;
+}) {
   const [rowSeatSummary, setRowSeatSummary] = useState({
     sweetRows: 1,
     vipRows: 1,
@@ -33,11 +37,13 @@ function FormCreateLayout() {
 
       const res = await layoutServices.createLayout(dataPass);
       if (res.statusCode === 0) {
+        await getAllLayout();
         NormalToast({
           title: "Tạo kiểu bố trí",
           message: res.message,
           color: "green",
         });
+        modals.closeAll();
       }
     } catch (error) {
       console.log("error", error);
@@ -128,7 +134,14 @@ function FormCreateLayout() {
         />
       </div>
 
-      <p onClick={() => handleSubmit()}>Luwu</p>
+      <Button
+        size="compact-sm"
+        mt={"md"}
+        radius={"md"}
+        onClick={() => handleSubmit()}
+      >
+        Lưu
+      </Button>
     </div>
   );
 }
@@ -169,7 +182,9 @@ function AdminLayoutPage() {
     modals.open({
       size: "md",
       title: <p className="font-medium text-sky-500">Thêm kiểu bố trí mới</p>,
-      children: <FormCreateLayout></FormCreateLayout>,
+      children: (
+        <FormCreateLayout getAllLayout={getAllLayout}></FormCreateLayout>
+      ),
       radius: "md",
     });
 

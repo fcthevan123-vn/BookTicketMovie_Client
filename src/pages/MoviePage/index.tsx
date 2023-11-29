@@ -5,7 +5,7 @@ import ListMovie from "./ListMovie";
 import { useCallback, useEffect, useState } from "react";
 import { movieServices } from "../../services";
 import { MovieTS } from "../../types";
-
+import emptyMovie from "../../assets/Image/empty_movie.svg";
 function MoviePage() {
   const [allMovies, setAllMovies] = useState<MovieTS[]>();
   const [valueSearch, setValueSearch] = useState<string>();
@@ -114,7 +114,16 @@ function MoviePage() {
           </div>
 
           <div className="mt-4">
-            {allMovies && <ListMovie dataMovies={allMovies}></ListMovie>}
+            {allMovies && allMovies.length > 0 ? (
+              <ListMovie dataMovies={allMovies}></ListMovie>
+            ) : (
+              <div className="flex gap-6 justify-center flex-col items-center">
+                <p className="font-base italic text-gray-400 text-md">
+                  Không có phim phù hợp
+                </p>
+                <img src={emptyMovie} alt="empty movie" className="w-72" />
+              </div>
+            )}
           </div>
         </div>
       </section>

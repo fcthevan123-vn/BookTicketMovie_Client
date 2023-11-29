@@ -6,26 +6,26 @@ type Props = {};
 const reviews = [
   {
     id: 1,
-    title: "Đánh giá thử",
+    title: "Phim rất hay",
     rating: 5,
     content: `
 
-        <p>The product quality is amazing, it looks and feel even better than I had anticipated. Brilliant stuff! I would gladly recommend this store to my friends. And, now that I think of it... I actually have, many times!</p>
+        <p>Chất lượng sản phẩm thật tuyệt vời, nó trông và cảm giác thậm chí còn tốt hơn tôi mong đợi. Những thứ tuyệt vời! Tôi sẵn sàng giới thiệu cửa hàng này cho bạn bè của tôi. Và bây giờ tôi nghĩ về nó... thực sự tôi đã nhiều lần!</p>
       `,
-    author: "The Van",
-    date: "May 16, 2021",
+    author: "Lai The Van",
+    date: "26 Tháng 11 2023",
     datetime: "2021-01-06",
   },
   {
     id: 2,
-    title: "Đánh giá thử 2",
+    title: "Tuyệt vời",
     rating: 5,
     content: `
-        <p>I was really pleased with the overall shopping experience. My order even included a little personal, handwritten note, which delighted me!</p>
+        <p>Phim này rất hay, mọi người có thể xem nhé!</p>
        
       `,
-    author: "The Van",
-    date: "May 16, 2021",
+    author: "Lai The Van",
+    date: "16 Tháng 11 2023",
     datetime: "2021-01-06",
   },
   // More reviews...

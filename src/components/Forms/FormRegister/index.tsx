@@ -77,13 +77,16 @@ function FormRegister() {
           radius: "lg",
           color: "teal",
           loading: false,
-          title: <p className="text-teal-600">Success</p>,
+          title: <p className="text-teal-600">Đăng ký thành công</p>,
           message: res.message,
           withBorder: true,
           withCloseButton: true,
           icon: <AiOutlineCheckCircle size="1.2rem" />,
           autoClose: 2000,
         });
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
         // form.reset();
       }
     } catch (error) {
@@ -92,7 +95,7 @@ function FormRegister() {
         radius: "lg",
         color: "red",
         loading: false,
-        title: <p className="text-red-700">Error</p>,
+        title: <p className="text-red-700">Đăng ký</p>,
         message: error.response?.data?.message,
         withBorder: true,
         withCloseButton: true,
@@ -111,7 +114,7 @@ function FormRegister() {
             className="border-b-2 px-3 border-sky-300"
             variant="unstyled"
             id="userName"
-            placeholder="Full name"
+            placeholder="Nhập họ và tên"
             value={form.values.fullName}
             onChange={(e) => form.setFieldValue("fullName", e.target.value)}
           />
@@ -125,7 +128,7 @@ function FormRegister() {
             className="border-b-2 px-3 border-sky-300"
             variant="unstyled"
             id="address"
-            placeholder="Address"
+            placeholder="Nhập địa chỉ"
             value={form.values.address}
             onChange={(e) => form.setFieldValue("address", e.target.value)}
           />
@@ -139,7 +142,7 @@ function FormRegister() {
             className="border-b-2 px-3 border-sky-300"
             variant="unstyled"
             id="email"
-            placeholder="Email"
+            placeholder="Nhập email"
             value={form.values.email}
             onChange={(e) => form.setFieldValue("email", e.target.value)}
           />
@@ -154,7 +157,7 @@ function FormRegister() {
               <TextInput
                 type="number"
                 id="age"
-                placeholder="Age"
+                placeholder="Nhập tuổi"
                 variant="unstyled"
                 withAsterisk
                 className="border-b-2 px-3 border-sky-300"
@@ -178,7 +181,7 @@ function FormRegister() {
                 className="border-b-2 px-3 border-sky-300"
                 variant="unstyled"
                 id="phone"
-                placeholder="Phone"
+                placeholder="Nhập số điện thoại"
                 value={form.values.phone}
                 onChange={(e) => form.setFieldValue("phone", e.target.value)}
               />
@@ -197,10 +200,10 @@ function FormRegister() {
           description="Mật khẩu tối thiểu 8 ký tự, ít nhất 1 chữ cái, 1 số và 1 ký tự đặc biệt"
         >
           <PasswordInput
-            className="border-b-2  border-sky-300"
+            className="border-b-2 px-3 border-sky-300"
             variant="unstyled"
             id="password"
-            placeholder="Password"
+            placeholder="Nhập mật khẩu"
             value={form.values.password}
             onChange={(e) => form.setFieldValue("password", e.target.value)}
             // {...form.getInputProps("password")}
@@ -217,10 +220,10 @@ function FormRegister() {
           mt="sm"
         >
           <PasswordInput
-            className="border-b-2 px-1 border-sky-300"
+            className="border-b-2 px-3 border-sky-300"
             variant="unstyled"
             id="confirmPassword"
-            placeholder="Confirm Password"
+            placeholder="Nhập lại mật khẩu"
             value={form.values.confirmPassword}
             onChange={(e) =>
               form.setFieldValue("confirmPassword", e.target.value)

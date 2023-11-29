@@ -284,24 +284,6 @@ export default function DefaultHeader() {
                   </Menu.Item>
                 </Link>
 
-                {data.user.type == "admin" ? (
-                  <Menu.Item
-                    onClick={openSwitchAdmin}
-                    leftSection={
-                      <IconSwitchHorizontal size="0.9rem" stroke={1.5} />
-                    }
-                  >
-                    Chuyển qua admin
-                  </Menu.Item>
-                ) : null}
-
-                <Menu.Item
-                  leftSection={
-                    <AiOutlineCheckCircle size="0.9rem" stroke={1.5} />
-                  }
-                >
-                  Kiểm tra phiển bản
-                </Menu.Item>
                 <Menu.Item
                   // closeMenuOnClick={false}
                   onClick={() => toggleColorScheme()}
@@ -325,7 +307,7 @@ export default function DefaultHeader() {
                   leftSection={<AiOutlineLogout size="0.9rem" stroke={1.5} />}
                   onClick={() => handleLogout()}
                 >
-                  Logout
+                  Đăng xuất
                 </Menu.Item>
               </Menu.Dropdown>
             </Menu>
@@ -360,7 +342,7 @@ export default function DefaultHeader() {
             <Tabs.List>{items}</Tabs.List>
           </Tabs>
 
-          <Button
+          {/* <Button
             // color="cyan"
             variant="gradient"
             gradient={{ from: "#ed6ea0", to: "#ec8c69", deg: 35 }}
@@ -371,7 +353,7 @@ export default function DefaultHeader() {
             rightSection={<AiOutlineSearch size="1.3rem" />}
           >
             Search{" "}
-          </Button>
+          </Button> */}
           <Spotlight
             actions={actions}
             nothingFound="Nothing found..."

@@ -11,7 +11,6 @@ export type DataTableMoviesProps = {
   id: string;
   title: string;
   description: string;
-  price: number;
   actors: string[];
   country: string;
   directors: string[];

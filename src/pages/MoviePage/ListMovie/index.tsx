@@ -1,6 +1,4 @@
-import { Accordion, Grid, SimpleGrid, Text } from "@mantine/core";
-import { IconCalendarEvent, IconLanguage } from "@tabler/icons-react";
-import { IconList } from "@tabler/icons-react";
+import {  Grid, SimpleGrid } from "@mantine/core";
 import { DataTableMoviesProps } from "../../../components/Provider/MovieProvider/MovieProvider";
 import MovieSmallPreview from "../../../components/MovieSmallPreview";
 type Props = {

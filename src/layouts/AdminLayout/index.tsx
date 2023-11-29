@@ -49,8 +49,8 @@ function AdminLayout({ children }: AdminLayoutProps) {
       children: <p>Bạn có chắc chắn muốn đăng xuất không?</p>,
       zIndex: 1600,
       labels: {
-        confirm: "Logout",
-        cancel: "Cancel",
+        confirm: "Đăng xuất",
+        cancel: "Huỷ",
       },
       confirmProps: { color: "red", radius: "lg" },
       cancelProps: { color: "red", radius: "lg" },

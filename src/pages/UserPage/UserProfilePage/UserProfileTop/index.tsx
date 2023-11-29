@@ -2,33 +2,8 @@ import { Avatar } from "@mantine/core";
 import { AiOutlineCheckCircle, AiOutlineSafety } from "react-icons/ai";
 import { useAuthenticate } from "../../../../hooks";
 import classes from "./UserProfileTop.module.css";
+import moment from "moment";
 type Props = {};
-
-// const useStyles = createStyles((theme) => ({
-//   backgroundImg: {
-//     margin: "15px",
-//     position: "relative",
-//     borderRadius: "20px",
-//     height: "250px",
-//     backgroundSize: "cover",
-//     backgroundImage:
-//       "url('https://images.unsplash.com/photo-1692891259833-9832c3ca751e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1935&q=80')",
-
-//     [theme.fn.smallerThan("xs")]: {
-//       height: "160px",
-//     },
-//   },
-
-//   avatar: {
-//     height: "150px",
-//     width: "150px",
-
-//     [theme.fn.smallerThan("xs")]: {
-//       height: "100px",
-//       width: "100px",
-//     },
-//   },
-// }));
 
 const UserProfileTop = (props: Props) => {
   const [, , dataUser] = useAuthenticate();
@@ -69,7 +44,8 @@ const UserProfileTop = (props: Props) => {
 
                   <p className="flex items-center">
                     <AiOutlineSafety className="me-2 text-lg"></AiOutlineSafety>{" "}
-                    Tham gia vào ngày ..
+                    Tham gia từ:{" "}
+                    {moment(dataUser.createdAt).format("DD/MM/YYYY")}
                   </p>
                 </div>
               </div>

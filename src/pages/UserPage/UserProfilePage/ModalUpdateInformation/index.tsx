@@ -55,7 +55,7 @@ function ModalUpdateInformation({ opened, close }: Props) {
         close();
         notifications.show({
           radius: "md",
-          title: "Success",
+          title: "Cập nhật thông tin",
           message: res.message,
           withBorder: true,
         });
@@ -83,14 +83,17 @@ function ModalUpdateInformation({ opened, close }: Props) {
         size="md"
         opened={opened}
         onClose={close}
-        title="Sửa hông tin cá nhân của bạn"
+        title="Sửa thông tin cá nhân của bạn"
         overlayProps={{
           opacity: 0.6,
           blur: 3,
         }}
       >
         <div>
-          <form onSubmit={form.onSubmit(() => handleSubmit(form.values))}>
+          <form
+            className="flex flex-col gap-4"
+            onSubmit={form.onSubmit(() => handleSubmit(form.values))}
+          >
             <Input
               leftSection={<AiOutlineUser />}
               placeholder="Họ và tên"

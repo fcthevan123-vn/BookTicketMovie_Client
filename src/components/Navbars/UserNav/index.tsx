@@ -32,12 +32,6 @@ export function UserNav() {
         icon: AiOutlineLineChart,
       },
       {
-        link: "",
-        label: "Xác nhận email",
-        urlInclude: "verify-email",
-        icon: AiOutlineCheckCircle,
-      },
-      {
         link: `/user/${dataUser?.id}/change-password`,
         label: "Đổi mật khẩu",
         urlInclude: "change-password",
