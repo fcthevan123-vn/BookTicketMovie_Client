@@ -117,25 +117,15 @@ function MidSection({ dataMovie }: Props) {
           <Badge variant="dot" color="blue">
             Thống kê nhanh
           </Badge>
-          <SegmentedControl
-            size="xs"
-            radius={"lg"}
-            color="blue"
-            data={[
-              {
-                value: "all",
-                label: "Theo độ tuổi",
-              },
-              {
-                value: "forMe",
-                label: "Theo giới tính",
-              },
-            ]}
-          />
         </div>
 
-        <div className="flex justify-center items-center gap-6 flex-col">
-          <ChartCustom></ChartCustom>
+        <div className="flex justify-center items-center gap-8">
+          <div className="w-1/2">
+            <ChartCustom></ChartCustom>
+          </div>
+          <div className="w-1/2">
+            <ChartCustom></ChartCustom>
+          </div>
         </div>
       </div>
     </div>

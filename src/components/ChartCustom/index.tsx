@@ -1,63 +1,22 @@
 import React from "react";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-} from "recharts";
-
-const data = [
-  {
-    name: "Tháng 1",
-    order: 0,
-  },
-  {
-    name: "Tháng 2",
-    order: 1,
-  },
-  {
-    name: "Tháng 3",
-
-    order: 5,
-  },
-  {
-    name: "Tháng 4",
-    order: 2,
-  },
-  {
-    name: "Tháng 5",
-    order: 1,
-  },
-];
+import { BarChart } from "@mantine/charts";
 
 export default function ChartCustom() {
+  const data = [
+    { month: "January", Smartphones: 1200, Laptops: 900, Tablets: 200 },
+    { month: "February", Smartphones: 1900, Laptops: 1200, Tablets: 400 },
+    { month: "March", Smartphones: 400, Laptops: 1000, Tablets: 200 },
+    { month: "April", Smartphones: 1000, Laptops: 200, Tablets: 800 },
+    { month: "May", Smartphones: 800, Laptops: 1400, Tablets: 1200 },
+    { month: "June", Smartphones: 750, Laptops: 600, Tablets: 1000 },
+  ];
   return (
     <BarChart
-      width={1000}
-      height={400}
+      h={300}
       data={data}
-      margin={{
-        top: 5,
-        right: 30,
-        left: 20,
-        bottom: 5,
-      }}
-      barSize={20}
-    >
-      <XAxis dataKey="name" scale="point" padding={{ left: 10, right: 10 }} />
-      <YAxis />
-      <Tooltip />
-      <Legend />
-      <CartesianGrid strokeDasharray="3 3" />
-      <Bar
-        dataKey="order"
-        label="Lượt đặt vé vé"
-        fill="#6499E9"
-        background={{ fill: "#eee" }}
-      />
-    </BarChart>
+      xAxisProps={{ width: 10 }}
+      dataKey="month"
+      series={[{ name: "Smartphones", color: "blue" }]}
+    />
   );
 }

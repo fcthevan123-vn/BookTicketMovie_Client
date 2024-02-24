@@ -1,12 +1,12 @@
-import { Avatar } from "@mantine/core";
+import { Alert, Avatar } from "@mantine/core";
 import { AiOutlineCheckCircle, AiOutlineSafety } from "react-icons/ai";
 import { useAuthenticate } from "../../../../hooks";
 import classes from "./UserProfileTop.module.css";
 import moment from "moment";
-type Props = {};
 
-const UserProfileTop = (props: Props) => {
+const UserProfileTop = () => {
   const [, , dataUser] = useAuthenticate();
+
   return (
     <div>
       <div className={classes.backgroundImg}>
@@ -39,7 +39,7 @@ const UserProfileTop = (props: Props) => {
                 <div className="flex gap-10">
                   <p className="flex items-center">
                     <AiOutlineCheckCircle className="me-2 text-lg"></AiOutlineCheckCircle>{" "}
-                    Đã xác nhận
+                    {dataUser?.isVerifyEmail ? "Đã xác nhận" : "Chưa xác nhận"}
                   </p>
 
                   <p className="flex items-center">

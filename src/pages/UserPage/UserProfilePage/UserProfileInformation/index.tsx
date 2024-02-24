@@ -1,8 +1,9 @@
-import { Button, Divider, Grid } from "@mantine/core";
+import { Alert, Button, Divider, Grid } from "@mantine/core";
 import { AiOutlineEdit } from "react-icons/ai";
 import { useAuthenticate } from "../../../../hooks";
 import { useDisclosure } from "@mantine/hooks";
 import ModalUpdateInformation from "../ModalUpdateInformation";
+import { IconInfoCircle } from "@tabler/icons-react";
 
 type Props = {};
 
@@ -67,6 +68,20 @@ const UserProfileInformation = (props: Props) => {
 
   return (
     <div className="lg:mx-20">
+      {!dataUser?.isVerifyEmail && (
+        <Alert
+          variant="light"
+          color="red"
+          className="ms-4"
+          title="Xác nhận tài khoản"
+          radius={"md"}
+          icon={<IconInfoCircle />}
+        >
+          Chúng tôi nhận thấy bạn chưa xác nhận tài khoản. Hãy xác nhận tài
+          khoản để tiếp tục đặt vé xem phim.
+        </Alert>
+      )}
+
       <ModalUpdateInformation
         opened={opened}
         close={close}
