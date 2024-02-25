@@ -1,9 +1,18 @@
-import { Alert, Button, Divider, Grid } from "@mantine/core";
+import {
+  Alert,
+  Anchor,
+  Button,
+  Divider,
+  Grid,
+  UnstyledButton,
+} from "@mantine/core";
 import { AiOutlineEdit } from "react-icons/ai";
 import { useAuthenticate } from "../../../../hooks";
 import { useDisclosure } from "@mantine/hooks";
 import ModalUpdateInformation from "../ModalUpdateInformation";
 import { IconInfoCircle } from "@tabler/icons-react";
+import { authenticateServices } from "../../../../services";
+import { notifications } from "@mantine/notifications";
 
 type Props = {};
 
@@ -66,6 +75,30 @@ const UserProfileInformation = (props: Props) => {
     </div>
   ));
 
+  async function handleVerifyEmail() {
+    try {
+      const res = await authenticateServices.handleVerifyEmail(dataUser.id);
+      console.log("res", res);
+      notifications.show({
+        radius: "lg",
+        color: "green",
+        title: "Gửi email thành công",
+        message: "Vui lòng kiểm tra hộp thư email của bạn",
+      });
+    } catch (error) {
+      const err = error as Error;
+      notifications.update({
+        id: "toast-register",
+        radius: "md",
+        color: "red",
+        title: <p className="text-red-700">Lỗi xảy ra</p>,
+        message: err.message,
+        withBorder: true,
+        autoClose: 2000,
+      });
+    }
+  }
+
   return (
     <div className="lg:mx-20">
       {!dataUser?.isVerifyEmail && (
@@ -77,8 +110,18 @@ const UserProfileInformation = (props: Props) => {
           radius={"md"}
           icon={<IconInfoCircle />}
         >
-          Chúng tôi nhận thấy bạn chưa xác nhận tài khoản. Hãy xác nhận tài
-          khoản để tiếp tục đặt vé xem phim.
+          <div>
+            <p>
+              Chúng tôi nhận thấy bạn chưa xác nhận tài khoản. Hãy xác nhận tài
+              khoản để tiếp tục đặt vé xem phim.
+            </p>
+            <p
+              className="underline underline-offset-2 text-blue-500 cursor-pointer"
+              onClick={() => handleVerifyEmail()}
+            >
+              Nhấn vào đây để xác nhận
+            </p>
+          </div>
         </Alert>
       )}
 

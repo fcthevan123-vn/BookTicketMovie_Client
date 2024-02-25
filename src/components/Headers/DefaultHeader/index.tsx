@@ -36,7 +36,7 @@ import { useDispatch } from "react-redux";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import { useAuthenticate } from "../../../hooks";
 import { userSlice } from "../../../redux/reducers";
-import { authenticateServices } from "../../../services";
+import { authenticateServices, userServices } from "../../../services";
 import {
   IconDashboard,
   IconFileText,
@@ -169,7 +169,29 @@ export default function DefaultHeader() {
     },
   ];
 
+  const getProfile = async () => {
+    const res = await userServices.getProfile();
+    if (res.statusCode === 0) {
+      dispatch(
+        userSlice.actions.handleLogin({
+          id: res?.data?.id,
+          email: res?.data?.email,
+          fullName: res?.data?.fullName,
+          isVerifyEmail: res?.data?.isVerifyEmail,
+          phone: res?.data?.phone,
+          address: res?.data?.address,
+          age: res?.data?.age,
+          count: res?.data?.count,
+          gender: res?.data?.sex === 0 ? "Nam" : "Nữ",
+          type: res?.data?.type,
+        })
+      );
+    }
+  };
+
   useEffect(() => {
+    getProfile();
+
     const pathName = location.pathname;
 
     const modifiedPath = pathName.slice(1);

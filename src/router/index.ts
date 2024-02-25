@@ -9,6 +9,7 @@ const AboutPage = lazy(() => import("../pages/AboutPage"));
 const AdminPage = lazy(() => import("../pages/AdminPage"));
 const PickSeatPage = lazy(() => import("../pages/PickSeatPage"));
 const MovieDetailPage = lazy(() => import("../pages/DetailMoviePage"));
+const VerifyEmailPage = lazy(() => import("../pages/VerifyEmailPage"));
 
 import { AdminLayout, DefaultLayout, UserLayout } from "../layouts";
 
@@ -41,6 +42,13 @@ const router: IRouter[] = [
     isProtected: null,
     layout: "None",
     element: RegisterPage,
+  },
+
+  {
+    path: "/verify-email/:id",
+    isProtected: false,
+    layout: "None",
+    element: VerifyEmailPage,
   },
 
   // User
