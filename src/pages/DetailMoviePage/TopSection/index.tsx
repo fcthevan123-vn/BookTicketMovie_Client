@@ -108,7 +108,7 @@ function TopSecton({ dataMovie }: Props) {
                     <Button
                       variant="gradient"
                       radius={"md"}
-                      w={200}
+                      w={"50%"}
                       ml="xs"
                       disabled={!isLogged ? true : false}
                       gradient={{ from: "blue", to: "pink", deg: 90 }}
@@ -120,12 +120,17 @@ function TopSecton({ dataMovie }: Props) {
                     <Button
                       variant="gradient"
                       radius={"md"}
-                      w={200}
+                      w={"50%"}
                       ml="xs"
+                      onClick={() =>
+                        window.location.replace(
+                          `/movie/${dataMovie.id}#reviews`
+                        )
+                      }
                       disabled={!isLogged ? true : false}
                       gradient={{ from: "pink", to: "blue", deg: 0 }}
                     >
-                      Viết đánh giá
+                      Xem đánh giá
                     </Button>
                   </div>
                 </div>

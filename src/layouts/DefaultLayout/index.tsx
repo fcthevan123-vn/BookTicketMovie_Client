@@ -1,11 +1,12 @@
-import { useDisclosure } from "@mantine/hooks";
-import { AppShell } from "@mantine/core";
+import { useDisclosure, useWindowScroll } from "@mantine/hooks";
+import { ActionIcon, Affix, AppShell, Transition, rem } from "@mantine/core";
 
 import DefaultHeader from "../../components/Headers/DefaultHeader";
 import FooterComponent from "../../components/FooterComponent";
 import { useAuthenticate } from "../../hooks";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { IconArrowUp } from "@tabler/icons-react";
 
 type DefaultLayoutProps = {
   children: React.ReactNode;
@@ -14,6 +15,8 @@ function DefaultLayout({ children }: DefaultLayoutProps) {
   const [opened, { toggle }] = useDisclosure();
   const navigate = useNavigate();
   const [, , dataUser] = useAuthenticate();
+  const [scroll, scrollTo] = useWindowScroll();
+
   useEffect(() => {
     if (dataUser.type == "admin") {
       navigate("/admin/dashboard");
@@ -40,6 +43,19 @@ function DefaultLayout({ children }: DefaultLayoutProps) {
       </AppShell.Main>
 
       <FooterComponent></FooterComponent>
+      <Affix position={{ bottom: 20, right: 20 }}>
+        <Transition transition="slide-up" mounted={scroll.y > 0}>
+          {(transitionStyles) => (
+            <ActionIcon
+              size={"lg"}
+              style={transitionStyles}
+              onClick={() => scrollTo({ y: 0 })}
+            >
+              <IconArrowUp style={{ width: rem(20), height: rem(20) }} />
+            </ActionIcon>
+          )}
+        </Transition>
+      </Affix>
     </AppShell>
   );
 }

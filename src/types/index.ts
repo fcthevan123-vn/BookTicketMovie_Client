@@ -42,6 +42,17 @@ export type SeatStatus = {
   updatedAt: string;
 };
 
+export type ReviewTS = {
+  id?: string;
+  userId?: string;
+  movieId?: string;
+  star: number;
+  User?: UserTS;
+  content: string;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
 export type SeatType = {
   id: string;
   name: string;

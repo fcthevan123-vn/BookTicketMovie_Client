@@ -1,6 +1,15 @@
-/* This example requires Tailwind CSS v2.0+ */
-
-import { IconStarFilled } from "@tabler/icons-react";
+import { Textarea, Rating, Modal, Button, Divider } from "@mantine/core";
+import { modals } from "@mantine/modals";
+import { IconCircleCheck, IconStarFilled } from "@tabler/icons-react";
+import { DataTableMoviesProps } from "../../../components/Provider/MovieProvider/MovieProvider";
+import { useEffect, useState } from "react";
+import { useDisclosure } from "@mantine/hooks";
+import { useAuthenticate } from "../../../hooks";
+import { reviewServices } from "../../../services";
+import { notifications } from "@mantine/notifications";
+import { loadingApi } from "../../../untils/loadingApi";
+import { ReviewTS } from "../../../types";
+import moment from "moment";
 
 const reviews = {
   average: 4,
@@ -36,13 +45,109 @@ const reviews = {
   ],
 };
 
+type Props = {
+  dataMovie: DataTableMoviesProps;
+};
+
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function ReviewsOfMovie() {
+export default function ReviewsOfMovie({ dataMovie }: Props) {
+  const [reviewContent, setReviewContent] = useState("");
+  const [star, setStar] = useState(3);
+  const [allReview, setAllReview] = useState<ReviewTS[]>();
+  const [opened, { open, close }] = useDisclosure(false);
+  const [, , dataUser] = useAuthenticate();
+
+  async function createReview(reviewContent: string, star: number) {
+    const data = {
+      userId: dataUser.id,
+      movieId: dataMovie.id,
+      star: star,
+      content: reviewContent,
+    };
+    const api = reviewServices.createReview(data);
+
+    const res = await loadingApi(api, "Đánh giá");
+
+    if (res) {
+      getAllReviews(dataMovie.id);
+      close();
+    }
+
+    return res;
+  }
+
+  async function getAllReviews(movieId: string) {
+    try {
+      const res = await reviewServices.getALLReview(movieId);
+      if (res.statusCode === 0) {
+        setAllReview(res.data);
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+  }
+
+  useEffect(() => {
+    getAllReviews(dataMovie.id);
+  }, [dataMovie.id]);
+
   return (
     <div className="bg-white">
+      <Modal
+        opened={opened}
+        radius={"lg"}
+        onClose={close}
+        size={"lg"}
+        title={<p className="font-bold text-md text-blue-500">Viết đánh giá</p>}
+      >
+        <div>
+          <div className="flex flex-col gap-4">
+            <Textarea
+              radius="sm"
+              label="Đánh giá của bạn"
+              withAsterisk
+              resize="vertical"
+              description="Chúng tôi cảm ơn và trân trọng những góp ý của bạn về bộ phim này."
+              error={
+                reviewContent.length > 5
+                  ? ""
+                  : "Đánh giá phải lớn hơn 5 ký tự và nhỏ hơn 250 ký tự"
+              }
+              value={reviewContent}
+              onChange={(event) => setReviewContent(event.currentTarget.value)}
+              placeholder="Nhập đánh giá của bạn ở đây"
+            />
+            <div>
+              <p className="text-sm mb-1">Mức độ hài lòng của bạn về phim</p>
+              <Rating value={star} onChange={(e) => setStar(e)} />
+            </div>
+          </div>
+          <div className="mt-5 flex gap-3 justify-end">
+            <Button
+              onClick={close}
+              variant="outline"
+              color="gray"
+              size="xs"
+              radius="md"
+            >
+              Huỷ
+            </Button>
+
+            <Button
+              onClick={() => createReview(reviewContent, star)}
+              variant="filled"
+              disabled={reviewContent.length > 5 ? false : true}
+              size="xs"
+              radius="md"
+            >
+              Xác nhận
+            </Button>
+          </div>
+        </div>
+      </Modal>
       <div className="max-w-2xl mx-auto  lg:max-w-7xl  lg:grid lg:grid-cols-12 lg:gap-x-8">
         <div className="lg:col-span-4">
           <h2 className="text-lg font-medium tracking-tight text-gray-900">
@@ -125,56 +230,68 @@ export default function ReviewsOfMovie() {
               người khác.
             </p>
 
-            <a
-              href="#"
-              className="mt-6 inline-flex w-full bg-white border border-gray-300 rounded-md py-2 px-8 items-center justify-center text-sm font-medium text-gray-900 hover:bg-gray-50 sm:w-auto lg:w-full"
+            <p
+              onClick={open}
+              className="cursor-pointer mt-6 inline-flex w-full bg-white border border-gray-300 rounded-md py-2 px-8 items-center justify-center text-sm font-medium text-gray-900 hover:bg-gray-50 sm:w-auto lg:w-full"
             >
               Viết đánh giá
-            </a>
+            </p>
           </div>
+        </div>
+        <div className="flex justify-center">
+          <Divider size="sm" orientation="vertical" className="my-7" />
         </div>
 
         <div className="mt-16 lg:mt-0 lg:col-start-6 lg:col-span-7">
           <h3 className="sr-only">Recent reviews</h3>
 
           <div className="flow-root">
-            <div className="-my-12 divide-y divide-gray-200">
-              {reviews.featured.map((review) => (
-                <div key={review.id} className="py-12">
-                  <div className="flex items-center">
-                    <img
-                      src={review.avatarSrc}
-                      alt={`${review.author}.`}
-                      className="h-12 w-12 rounded-full"
-                    />
-                    <div className="ml-4">
-                      <h4 className="text-sm font-bold text-gray-900">
-                        {review.author}
-                      </h4>
-                      <div className="mt-1 flex items-center">
-                        {[0, 1, 2, 3, 4].map((rating) => (
-                          <IconStarFilled
-                            key={rating}
-                            className={classNames(
-                              review.rating > rating
-                                ? "text-yellow-400"
-                                : "text-gray-300",
-                              "h-5 w-5 flex-shrink-0"
-                            )}
-                            aria-hidden="true"
-                          />
-                        ))}
+            <div className="mt-4 divide-y divide-gray-200 max-h-[480px] overflow-y-auto">
+              {allReview && allReview.length > 0
+                ? allReview.map((review: ReviewTS) => (
+                    <div key={review.id} className="py-12">
+                      <div className="flex items-center">
+                        <img
+                          src={
+                            "https://i.pinimg.com/564x/68/7e/b4/687eb4f4e53653e2e9231ccc085c59ec.jpg"
+                          }
+                          alt={`${review.User?.fullName}.`}
+                          className="h-12 w-12 rounded-full"
+                        />
+                        <div className="ml-4">
+                          <h4 className="text-sm font-bold text-gray-900">
+                            {review.User?.fullName}
+                          </h4>
+                          <div className="mt-1 flex items-center">
+                            {[0, 1, 2, 3, 4].map((rating) => (
+                              <IconStarFilled
+                                key={rating}
+                                className={classNames(
+                                  review.star > rating
+                                    ? "text-yellow-400"
+                                    : "text-gray-300",
+                                  "h-5 w-5 flex-shrink-0"
+                                )}
+                                aria-hidden="true"
+                              />
+                            ))}
+                          </div>
+                          <p className="sr-only">
+                            {review.star} out of 5 stars
+                          </p>
+                        </div>
                       </div>
-                      <p className="sr-only">{review.rating} out of 5 stars</p>
-                    </div>
-                  </div>
 
-                  <div
-                    className="mt-4 space-y-6 text-base italic text-gray-600"
-                    dangerouslySetInnerHTML={{ __html: review.content }}
-                  />
-                </div>
-              ))}
+                      <div
+                        className="mt-4 space-y-6  text-gray-700"
+                        dangerouslySetInnerHTML={{ __html: review.content }}
+                      />
+                      <p className="text-xs text-gray-500">
+                        {moment(review.updatedAt).format("L")}
+                      </p>
+                    </div>
+                  ))
+                : "Phim này chưa có đánh giá nào. Chúng tôi đang chờ đợi những đánh giá của bạn"}
             </div>
           </div>
         </div>

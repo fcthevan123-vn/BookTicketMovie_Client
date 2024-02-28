@@ -1,13 +1,4 @@
-import {
-  Badge,
-  Divider,
-  Paper,
-  ScrollArea,
-  SegmentedControl,
-  SimpleGrid,
-} from "@mantine/core";
-
-import Comment from "../../../components/Comment";
+import { Badge, Divider, SegmentedControl } from "@mantine/core";
 
 import ChartCustom from "../../../components/ChartCustom";
 import { DataTableMoviesProps } from "../../../components/Provider/MovieProvider/MovieProvider";
@@ -83,7 +74,25 @@ function MidSection({ dataMovie }: Props) {
         </div>
       </div>
 
-      <Divider mx={10} my={30} size={"sm"} label="Đánh giá" />
+      <Divider mx={10} my={30} size={"sm"} label="Thống kê" />
+      <div>
+        <div className="flex justify-between items-center mb-10">
+          <Badge variant="dot" color="blue">
+            Thống kê nhanh
+          </Badge>
+        </div>
+
+        <div className="flex justify-center items-center gap-8">
+          <div className="w-1/2">
+            <ChartCustom></ChartCustom>
+          </div>
+          <div className="w-1/2">
+            <ChartCustom></ChartCustom>
+          </div>
+        </div>
+      </div>
+
+      <Divider mx={10} my={30} size={"sm"} label="Đánh giá" id={"reviews"} />
 
       <div className="">
         <div className="mb-3 flex justify-between items-center">
@@ -107,26 +116,7 @@ function MidSection({ dataMovie }: Props) {
             ]}
           />
         </div>
-
-        <ReviewsOfMovie></ReviewsOfMovie>
-      </div>
-      <Divider mx={10} my={30} size={"sm"} label="Thống kê" />
-
-      <div>
-        <div className="flex justify-between items-center mb-10">
-          <Badge variant="dot" color="blue">
-            Thống kê nhanh
-          </Badge>
-        </div>
-
-        <div className="flex justify-center items-center gap-8">
-          <div className="w-1/2">
-            <ChartCustom></ChartCustom>
-          </div>
-          <div className="w-1/2">
-            <ChartCustom></ChartCustom>
-          </div>
-        </div>
+        <ReviewsOfMovie dataMovie={dataMovie}></ReviewsOfMovie>
       </div>
     </div>
   );
