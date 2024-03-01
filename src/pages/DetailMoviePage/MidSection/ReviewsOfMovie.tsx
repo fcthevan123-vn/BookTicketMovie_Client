@@ -1,15 +1,32 @@
-import { Textarea, Rating, Modal, Button, Divider } from "@mantine/core";
-import { modals } from "@mantine/modals";
-import { IconCircleCheck, IconStarFilled } from "@tabler/icons-react";
+import {
+  Textarea,
+  Rating,
+  Modal,
+  Button,
+  Divider,
+  Alert,
+  Select,
+  Badge,
+  Tabs,
+  ActionIcon,
+} from "@mantine/core";
+import {
+  IconEdit,
+  IconInfoCircle,
+  IconMessageCircle,
+  IconPhoto,
+  IconStarFilled,
+  IconTrash,
+} from "@tabler/icons-react";
 import { DataTableMoviesProps } from "../../../components/Provider/MovieProvider/MovieProvider";
 import { useEffect, useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
 import { useAuthenticate } from "../../../hooks";
 import { reviewServices } from "../../../services";
-import { notifications } from "@mantine/notifications";
 import { loadingApi } from "../../../untils/loadingApi";
 import { ReviewTS } from "../../../types";
 import moment from "moment";
+import { modals } from "@mantine/modals";
 
 const reviews = {
   average: 4,
@@ -20,28 +37,6 @@ const reviews = {
     { rating: 3, count: 97 },
     { rating: 2, count: 199 },
     { rating: 1, count: 147 },
-  ],
-  featured: [
-    {
-      id: 1,
-      rating: 4,
-      content: `
-        <p>Đây là chiếc túi trong mơ của tôi. Tôi đã mang nó vào kỳ nghỉ vừa qua của mình và có thể mang theo một lượng đồ ăn nhẹ vô lý cho nhiều chuyến bay dài và đói.</p>
-      `,
-      author: "The Van",
-      avatarSrc:
-        "https://images.unsplash.com/photo-1542282088-fe8426682b8f?auto=format&fit=crop&q=80&w=1887&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      id: 2,
-      rating: 3,
-      content: `
-          <p>Đây là chiếc túi trong mơ của tôi. Tôi đã mang nó vào kỳ nghỉ vừa qua của mình và có thể mang theo một lượng đồ ăn nhẹ vô lý cho nhiều chuyến bay dài và đói.</p>
-        `,
-      author: "Bui Kiet",
-      avatarSrc:
-        "https://images.unsplash.com/photo-1542282088-fe8426682b8f?auto=format&fit=crop&q=80&w=1887&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
   ],
 };
 
@@ -58,6 +53,11 @@ export default function ReviewsOfMovie({ dataMovie }: Props) {
   const [star, setStar] = useState(3);
   const [allReview, setAllReview] = useState<ReviewTS[]>();
   const [opened, { open, close }] = useDisclosure(false);
+  const [openUpdateReview, setOpenUpdateReview] = useState(false);
+  const [openAllReview, setOpenAllReview] = useState(false);
+  const [userReview, setUserReview] = useState<ReviewTS[]>();
+  const [idReviewToUpdate, setIdReviewToUpdate] = useState<string>();
+
   const [, , dataUser] = useAuthenticate();
 
   async function createReview(reviewContent: string, star: number) {
@@ -73,7 +73,45 @@ export default function ReviewsOfMovie({ dataMovie }: Props) {
 
     if (res) {
       getAllReviews(dataMovie.id);
+      getUserReview(dataMovie.id, dataUser.id);
       close();
+    }
+
+    return res;
+  }
+
+  async function deleteReview(idReview: string) {
+    console.log("idReview", idReview);
+    const api = reviewServices.deleteReview(idReview);
+
+    const res = await loadingApi(api, "Xoá đánh giá");
+
+    if (res) {
+      getAllReviews(dataMovie.id);
+      getUserReview(dataMovie.id, dataUser.id);
+    }
+
+    return res;
+  }
+
+  async function updateReview(
+    reviewContent: string,
+    star: number,
+    reviewId: string
+  ) {
+    const data = {
+      id: reviewId,
+      star: star,
+      content: reviewContent,
+    };
+    const api = reviewServices.updateReview(data);
+
+    const res = await loadingApi(api, "Chỉnh sửa đánh giá");
+
+    if (res) {
+      getAllReviews(dataMovie.id);
+      getUserReview(dataMovie.id, dataUser.id);
+      setOpenUpdateReview(false);
     }
 
     return res;
@@ -90,12 +128,53 @@ export default function ReviewsOfMovie({ dataMovie }: Props) {
     }
   }
 
+  async function getUserReview(movieId: string, userId: string) {
+    try {
+      const res = await reviewServices.getUserReview(movieId, userId);
+      if (res.statusCode === 0) {
+        setUserReview(res.data);
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+  }
+
+  const openModal = (idReview: string) =>
+    modals.openConfirmModal({
+      title: (
+        <p className="text-red-500 font-bold text-md">Xác nhận xoá đánh giá</p>
+      ),
+      radius: "lg",
+      children: (
+        <div>
+          <p>
+            Đánh giá của bạn sẽ bị xoá vĩnh viễn và không thể khôi phục được.
+            Bạn có muốn tiếp tục hay không?
+          </p>
+        </div>
+      ),
+      confirmProps: {
+        color: "red",
+        radius: "md",
+        size: "xs",
+      },
+      cancelProps: {
+        radius: "md",
+        size: "xs",
+      },
+      labels: { confirm: "Đồng ý", cancel: "Huỷ bỏ" },
+
+      onConfirm: () => deleteReview(idReview),
+    });
+
   useEffect(() => {
     getAllReviews(dataMovie.id);
-  }, [dataMovie.id]);
+    getUserReview(dataMovie.id, dataUser.id);
+  }, [dataMovie.id, dataUser.id]);
 
   return (
     <div className="bg-white">
+      {/* modal review */}
       <Modal
         opened={opened}
         radius={"lg"}
@@ -148,6 +227,155 @@ export default function ReviewsOfMovie({ dataMovie }: Props) {
           </div>
         </div>
       </Modal>
+
+      {/* modal update review */}
+      <Modal
+        opened={openUpdateReview}
+        radius={"lg"}
+        onClose={() => setOpenUpdateReview(false)}
+        size={"lg"}
+        title={
+          <p className="font-bold text-md text-blue-500">
+            Chỉnh sửa đánh giá của bạn
+          </p>
+        }
+      >
+        <div>
+          <div className="flex flex-col gap-4">
+            <Textarea
+              radius="sm"
+              label="Đánh giá của bạn"
+              withAsterisk
+              resize="vertical"
+              description="Chúng tôi cảm ơn và trân trọng những góp ý của bạn về bộ phim này."
+              error={
+                reviewContent.length > 5
+                  ? ""
+                  : "Đánh giá phải lớn hơn 5 ký tự và nhỏ hơn 250 ký tự"
+              }
+              value={reviewContent}
+              onChange={(event) => setReviewContent(event.currentTarget.value)}
+              placeholder="Nhập đánh giá của bạn ở đây"
+            />
+            <div>
+              <p className="text-sm mb-1">Mức độ hài lòng của bạn về phim</p>
+              <Rating value={star} onChange={(e) => setStar(e)} />
+            </div>
+          </div>
+          <div className="mt-5 flex gap-3 justify-end">
+            <Button
+              onClick={() => setOpenUpdateReview(false)}
+              variant="outline"
+              color="gray"
+              size="xs"
+              radius="md"
+            >
+              Huỷ
+            </Button>
+
+            <Button
+              onClick={() =>
+                updateReview(reviewContent, star, idReviewToUpdate as string)
+              }
+              variant="filled"
+              disabled={reviewContent.length > 5 ? false : true}
+              size="xs"
+              radius="md"
+            >
+              Xác nhận
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* modal show all review */}
+
+      <Modal
+        opened={openAllReview}
+        onClose={() => setOpenAllReview(false)}
+        title={
+          <p className="text-xl text-blue-500 font-semibold">Tất cả đánh giá</p>
+        }
+        fullScreen
+        radius={0}
+        transitionProps={{ transition: "fade", duration: 200 }}
+      >
+        <div>
+          <div className="flex ">
+            <Select
+              className="ms-12"
+              label="Sắp xếp theo"
+              placeholder="Pick value"
+              radius={"md"}
+              data={[
+                {
+                  value: "new",
+                  label: "Mới nhất",
+                },
+                {
+                  value: "old",
+                  label: "Cũ nhất",
+                },
+              ]}
+              defaultValue={"new"}
+              allowDeselect={false}
+            />
+          </div>
+
+          <div className="mt-5">
+            <div className="my-4 divide-y divide-gray-200 mx-12 border rounded-2xl shadow-md">
+              {allReview &&
+                allReview.length > 0 &&
+                allReview.map((review: ReviewTS) => (
+                  <div key={review.id} className="py-5 px-8">
+                    <div className="flex items-center">
+                      <img
+                        src={
+                          "https://i.pinimg.com/564x/68/7e/b4/687eb4f4e53653e2e9231ccc085c59ec.jpg"
+                        }
+                        alt={`${review.User?.fullName}.`}
+                        className="h-12 w-12 rounded-full"
+                      />
+                      <div className="ml-4">
+                        <h4 className="text-sm font-bold text-gray-900">
+                          {review.User?.fullName}
+                        </h4>
+                        <div className="mt-1 flex items-center">
+                          {[0, 1, 2, 3, 4].map((rating) => (
+                            <IconStarFilled
+                              key={rating}
+                              className={classNames(
+                                review.star > rating
+                                  ? "text-yellow-400"
+                                  : "text-gray-300",
+                                "h-5 w-5 flex-shrink-0"
+                              )}
+                              aria-hidden="true"
+                            />
+                          ))}
+                        </div>
+                        <p className="sr-only">{review.star} out of 5 stars</p>
+                      </div>
+                    </div>
+
+                    <div
+                      className="mt-4 space-y-6  text-gray-700"
+                      dangerouslySetInnerHTML={{ __html: review.content }}
+                    />
+                    <p className="text-xs text-gray-500">
+                      {moment(review.updatedAt).format("L")}
+                    </p>
+                  </div>
+                ))}
+            </div>
+          </div>
+        </div>
+      </Modal>
+      <div className="mb-3 flex justify-between items-center">
+        <Badge variant="dot" color="blue">
+          Tất cả đánh giá
+        </Badge>
+      </div>
       <div className="max-w-2xl mx-auto  lg:max-w-7xl  lg:grid lg:grid-cols-12 lg:gap-x-8">
         <div className="lg:col-span-4">
           <h2 className="text-lg font-medium tracking-tight text-gray-900">
@@ -245,55 +473,231 @@ export default function ReviewsOfMovie({ dataMovie }: Props) {
         <div className="mt-16 lg:mt-0 lg:col-start-6 lg:col-span-7">
           <h3 className="sr-only">Recent reviews</h3>
 
-          <div className="flow-root">
-            <div className="mt-4 divide-y divide-gray-200 max-h-[480px] overflow-y-auto">
-              {allReview && allReview.length > 0
-                ? allReview.map((review: ReviewTS) => (
-                    <div key={review.id} className="py-12">
-                      <div className="flex items-center">
-                        <img
-                          src={
-                            "https://i.pinimg.com/564x/68/7e/b4/687eb4f4e53653e2e9231ccc085c59ec.jpg"
-                          }
-                          alt={`${review.User?.fullName}.`}
-                          className="h-12 w-12 rounded-full"
-                        />
-                        <div className="ml-4">
-                          <h4 className="text-sm font-bold text-gray-900">
-                            {review.User?.fullName}
-                          </h4>
-                          <div className="mt-1 flex items-center">
-                            {[0, 1, 2, 3, 4].map((rating) => (
-                              <IconStarFilled
-                                key={rating}
-                                className={classNames(
-                                  review.star > rating
-                                    ? "text-yellow-400"
-                                    : "text-gray-300",
-                                  "h-5 w-5 flex-shrink-0"
-                                )}
-                                aria-hidden="true"
-                              />
-                            ))}
+          <Tabs defaultValue="gallery">
+            <Tabs.List grow>
+              <Tabs.Tab value="gallery" leftSection={<IconPhoto />}>
+                Tất cả đánh giá
+              </Tabs.Tab>
+              <Tabs.Tab value="messages" leftSection={<IconMessageCircle />}>
+                Đánh giá của bạn
+              </Tabs.Tab>
+            </Tabs.List>
+
+            <Tabs.Panel value="gallery">
+              {" "}
+              <div className="flow-root">
+                <div className="mt-4 divide-y divide-gray-200 max-h-[580px] ">
+                  {allReview && allReview.length > 0 ? (
+                    allReview.slice(0, 3).map((review: ReviewTS) => (
+                      <div key={review.id} className="py-6">
+                        <div className="flex items-center">
+                          <img
+                            src={
+                              "https://i.pinimg.com/564x/68/7e/b4/687eb4f4e53653e2e9231ccc085c59ec.jpg"
+                            }
+                            alt={`${review.User?.fullName}.`}
+                            className="h-12 w-12 rounded-full"
+                          />
+                          <div className="ml-4">
+                            <h4 className="text-sm font-bold text-gray-900">
+                              {review.User?.fullName}
+                            </h4>
+                            <div className="mt-1 flex items-center">
+                              {[0, 1, 2, 3, 4].map((rating) => (
+                                <IconStarFilled
+                                  key={rating}
+                                  className={classNames(
+                                    review.star > rating
+                                      ? "text-yellow-400"
+                                      : "text-gray-300",
+                                    "h-5 w-5 flex-shrink-0"
+                                  )}
+                                  aria-hidden="true"
+                                />
+                              ))}
+                            </div>
+                            <p className="sr-only">
+                              {review.star} out of 5 stars
+                            </p>
                           </div>
-                          <p className="sr-only">
-                            {review.star} out of 5 stars
+                        </div>
+
+                        <div
+                          className="mt-4 space-y-6  text-gray-700"
+                          dangerouslySetInnerHTML={{ __html: review.content }}
+                        />
+                        <div className="flex justify-between items-center">
+                          <p className="text-xs text-gray-500">
+                            {moment(review.updatedAt).format("L")}
                           </p>
+                          {review.userId == dataUser.id && (
+                            <div className="flex gap-2">
+                              <ActionIcon
+                                radius={"md"}
+                                variant="light"
+                                onClick={() => {
+                                  if (userReview && userReview.length > 0) {
+                                    setReviewContent(userReview[0].content);
+                                    setStar(userReview[0].star);
+                                    setIdReviewToUpdate(userReview[0].id);
+                                    setOpenUpdateReview(true);
+                                  }
+                                }}
+                                aria-label="Settings"
+                              >
+                                <IconEdit
+                                  style={{ width: "70%", height: "70%" }}
+                                  stroke={1.5}
+                                />
+                              </ActionIcon>
+
+                              <ActionIcon
+                                radius={"md"}
+                                variant="light"
+                                color="red"
+                                onClick={() => openModal(review.id as string)}
+                                aria-label="Settings"
+                              >
+                                <IconTrash
+                                  style={{ width: "70%", height: "70%" }}
+                                  stroke={1.5}
+                                />
+                              </ActionIcon>
+                            </div>
+                          )}
                         </div>
                       </div>
-
-                      <div
-                        className="mt-4 space-y-6  text-gray-700"
-                        dangerouslySetInnerHTML={{ __html: review.content }}
-                      />
-                      <p className="text-xs text-gray-500">
-                        {moment(review.updatedAt).format("L")}
+                    ))
+                  ) : (
+                    <div className="flex items-center justify-center">
+                      <Alert
+                        variant="light"
+                        color="blue"
+                        radius={"lg"}
+                        title="Thông báo nhỏ"
+                        icon={<IconInfoCircle></IconInfoCircle>}
+                      >
+                        Phim này hiện chưa có đánh giá nào. Chúng tôi đang mong
+                        đợi đánh giá của bạn. <br></br> <br></br>Hãy xem phim và
+                        đưa ra đánh giá để mọi người cùng biết nhé.
+                      </Alert>
+                    </div>
+                  )}
+                  {allReview && allReview.length > 0 && (
+                    <div>
+                      <p
+                        onClick={() => {
+                          setOpenAllReview(true);
+                        }}
+                        className="float-end mt-3 text-sm italic underline text-blue-400 cursor-pointer hover:text-blue-600"
+                      >
+                        Xem tất cả
                       </p>
                     </div>
-                  ))
-                : "Phim này chưa có đánh giá nào. Chúng tôi đang chờ đợi những đánh giá của bạn"}
-            </div>
-          </div>
+                  )}
+                </div>
+              </div>
+            </Tabs.Panel>
+
+            <Tabs.Panel value="messages">
+              <div className="flow-root">
+                <div className="mt-4 divide-y divide-gray-200 max-h-[580px] ">
+                  {userReview && userReview.length > 0 ? (
+                    userReview.slice(0, 3).map((review: ReviewTS) => (
+                      <div key={review.id} className="py-6">
+                        <div className="flex items-center">
+                          <img
+                            src={
+                              "https://i.pinimg.com/564x/68/7e/b4/687eb4f4e53653e2e9231ccc085c59ec.jpg"
+                            }
+                            alt={`${review.User?.fullName}.`}
+                            className="h-12 w-12 rounded-full"
+                          />
+                          <div className="ml-4">
+                            <h4 className="text-sm font-bold text-gray-900">
+                              {review.User?.fullName}
+                            </h4>
+                            <div className="mt-1 flex items-center">
+                              {[0, 1, 2, 3, 4].map((rating) => (
+                                <IconStarFilled
+                                  key={rating}
+                                  className={classNames(
+                                    review.star > rating
+                                      ? "text-yellow-400"
+                                      : "text-gray-300",
+                                    "h-5 w-5 flex-shrink-0"
+                                  )}
+                                  aria-hidden="true"
+                                />
+                              ))}
+                            </div>
+                            <p className="sr-only">
+                              {review.star} out of 5 stars
+                            </p>
+                          </div>
+                        </div>
+
+                        <div
+                          className="mt-4 space-y-6  text-gray-700"
+                          dangerouslySetInnerHTML={{ __html: review.content }}
+                        />
+                        <div className="flex justify-between items-center">
+                          <p className="text-xs text-gray-500">
+                            {moment(review.updatedAt).format("L")}
+                          </p>
+                          <div className="flex gap-2">
+                            <ActionIcon
+                              radius={"md"}
+                              variant="light"
+                              aria-label="Settings"
+                              onClick={() => {
+                                if (userReview && userReview.length > 0) {
+                                  setReviewContent(userReview[0].content);
+                                  setStar(userReview[0].star);
+                                  setIdReviewToUpdate(userReview[0].id);
+                                  setOpenUpdateReview(true);
+                                }
+                              }}
+                            >
+                              <IconEdit
+                                style={{ width: "70%", height: "70%" }}
+                                stroke={1.5}
+                              />
+                            </ActionIcon>
+
+                            <ActionIcon
+                              radius={"md"}
+                              variant="light"
+                              color="red"
+                              aria-label="Settings"
+                              onClick={() => openModal(review.id as string)}
+                            >
+                              <IconTrash
+                                style={{ width: "70%", height: "70%" }}
+                                stroke={1.5}
+                              />
+                            </ActionIcon>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="flex items-center justify-center">
+                      <Alert
+                        variant="light"
+                        color="blue"
+                        radius={"lg"}
+                        title="Thông báo nhỏ"
+                        icon={<IconInfoCircle></IconInfoCircle>}
+                      >
+                        Hiện tại bạn chưa đánh giá cho phim này.
+                      </Alert>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </Tabs.Panel>
+          </Tabs>
         </div>
       </div>
     </div>

@@ -95,27 +95,6 @@ function MidSection({ dataMovie }: Props) {
       <Divider mx={10} my={30} size={"sm"} label="Đánh giá" id={"reviews"} />
 
       <div className="">
-        <div className="mb-3 flex justify-between items-center">
-          <Badge variant="dot" color="blue">
-            Tất cả đánh giá
-          </Badge>
-
-          <SegmentedControl
-            size="xs"
-            radius={"lg"}
-            color="blue"
-            data={[
-              {
-                value: "all",
-                label: "Tất cả đánh giá",
-              },
-              {
-                value: "forMe",
-                label: "Đánh giá của bạn",
-              },
-            ]}
-          />
-        </div>
         <ReviewsOfMovie dataMovie={dataMovie}></ReviewsOfMovie>
       </div>
     </div>
