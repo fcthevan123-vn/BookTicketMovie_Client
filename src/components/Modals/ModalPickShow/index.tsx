@@ -167,11 +167,13 @@ function ModalPickShow({ opened, close, dataMovie }: Props) {
 
   const callApiCity = useCallback(async () => {
     try {
-      const res = await apiProvinceVietNam.callApiCity("?depth=1");
+      const res = await apiProvinceVietNam.callApiCity("");
 
-      const convertData = res.map((item: { code: number; name: string }) => {
-        return { value: item.code.toString(), label: item.name };
-      });
+      const convertData = res.results.map(
+        (item: { province_id: string; province_name: string }) => {
+          return { value: item.province_id, label: item.province_name };
+        }
+      );
       setDataProvince(convertData);
     } catch (error) {
       const err = error as Error;

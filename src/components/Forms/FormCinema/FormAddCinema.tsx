@@ -36,11 +36,14 @@ function FormAddCinema({ getAllCinema }: { getAllCinema: () => void }) {
 
   async function callApiCity() {
     try {
-      const res = await apiProvinceVietNam.callApiCity("?depth=1");
+      const res = await apiProvinceVietNam.callApiCity("");
+      console.log("res", res);
 
-      const convertData = res.map((item: { code: number; name: string }) => {
-        return { value: item.code.toString(), label: item.name };
-      });
+      const convertData = res.results.map(
+        (item: { province_id: string; province_name: string }) => {
+          return { value: item.province_id, label: item.province_name };
+        }
+      );
       const cityData = { ward: [], district: [], city: convertData };
       setDataProvince(cityData);
     } catch (error) {
@@ -57,11 +60,11 @@ function FormAddCinema({ getAllCinema }: { getAllCinema: () => void }) {
     setValueWard(null);
     setValueCity(city);
     try {
-      const res = await apiProvinceVietNam.callApiCity(`p/${city}?depth=2`);
+      const res = await apiProvinceVietNam.callApiCity(`district/${city}`);
 
-      const convertData = res.districts.map(
-        (item: { code: number; name: string }) => {
-          return { value: item.code.toString(), label: item.name };
+      const convertData = res.results.map(
+        (item: { district_id: string; district_name: string }) => {
+          return { value: item.district_id, label: item.district_name };
         }
       );
 
@@ -79,11 +82,11 @@ function FormAddCinema({ getAllCinema }: { getAllCinema: () => void }) {
 
   async function callApiWard(district: string) {
     try {
-      const res = await apiProvinceVietNam.callApiCity(`d/${district}?depth=2`);
-
-      const convertData = res.wards.map(
-        (item: { code: number; name: string }) => {
-          return { value: item.code.toString(), label: item.name };
+      const res = await apiProvinceVietNam.callApiCity(`ward/${district}`);
+      console.log("res", res);
+      const convertData = res.results.map(
+        (item: { ward_id: string; ward_name: string }) => {
+          return { value: item.ward_id, label: item.ward_name };
         }
       );
 
@@ -93,7 +96,7 @@ function FormAddCinema({ getAllCinema }: { getAllCinema: () => void }) {
       console.log(error);
       NormalToast({
         title: "Lỗi lấy api tỉnh thành",
-        message: "Đã có lỗi xảy ra trong quá trình gọi api lấy tỉnh thành",
+        message: "Đã có lỗi xảy ra trong quá trình gọi api lấy phường/xã",
         color: "red",
       });
     }

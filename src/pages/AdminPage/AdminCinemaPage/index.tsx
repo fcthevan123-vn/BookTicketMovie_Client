@@ -55,13 +55,32 @@ function AdminCinemaPage() {
     setIsLoading(true);
     try {
       let resultProvince = "";
-      const resWard = await apiProvinceVietNam.callApiCity(`w/${codes[2]}`);
-      const resDistrict = await apiProvinceVietNam.callApiCity(`d/${codes[1]}`);
-      const resCity = await apiProvinceVietNam.callApiCity(`p/${codes[0]}`);
+      const resWard = await apiProvinceVietNam.callApiCity(`ward/${codes[1]}`);
+      const resDistrict = await apiProvinceVietNam.callApiCity(
+        `district/${codes[0]}`
+      );
+      const resCity = await apiProvinceVietNam.callApiCity("");
+      // console.log("resCity", resCity);
+      // console.log("resDistrict", resDistrict);
+      // console.log("resWard", resWard);
+      // console.log("codes", codes);
       setIsLoading(false);
 
+      const allName = {
+        city: resCity.results.find(
+          (item: { province_id: string }) => item.province_id == codes[0]
+        ).province_name,
+        district: resDistrict.results.find(
+          (item: { district_id: string }) => item.district_id == codes[1]
+        ).district_name,
+        ward: resWard.results.find(
+          (item: { ward_id: string }) => item.ward_id == codes[2]
+        ).ward_name,
+      };
+
       resultProvince =
-        resWard.name + " - " + resDistrict.name + " - " + resCity.name;
+        allName.ward + " - " + allName.district + " - " + allName.city;
+
       return resultProvince;
     } catch (error) {
       console.log(error);

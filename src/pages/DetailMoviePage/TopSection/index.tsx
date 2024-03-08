@@ -6,6 +6,7 @@ import {
   Rating,
   Stack,
   Text,
+  Tooltip,
   rem,
 } from "@mantine/core";
 import { DataTableMoviesProps } from "../../../components/Provider/MovieProvider/MovieProvider";
@@ -16,6 +17,7 @@ import Autoplay from "embla-carousel-autoplay";
 import { useEffect, useRef, useState } from "react";
 import ModalPickShow from "../../../components/Modals/ModalPickShow";
 import { useAuthenticate } from "../../../hooks";
+import { reviewServices } from "../../../services";
 
 type Props = {
   dataMovie: DataTableMoviesProps;
@@ -26,11 +28,27 @@ const PRIMARY_COL_HEIGHT = rem(500);
 function TopSecton({ dataMovie }: Props) {
   const autoplay = useRef(Autoplay({ delay: 2000 }));
   const [isOpen, setIsOpen] = useState(false);
-  const [isLogged, ,] = useAuthenticate();
+  const [isLogged, , dataUser] = useAuthenticate();
 
   const urlParams = new URLSearchParams(window.location.search);
 
   const openModal = urlParams.get("open");
+
+  function getToolTipFromState(
+    isLogin?: boolean,
+    isVerifyEmail?: boolean,
+    isWatched?: boolean
+  ) {
+    if (!isLogin) {
+      return "Bạn chưa đăng nhập";
+    }
+    if (!isVerifyEmail) {
+      return "Bạn cần phải xác nhận tài khoản";
+    }
+    if (!isWatched) {
+      return "Bạn chưa xem phim này";
+    }
+  }
 
   useEffect(() => {
     if (openModal) {
@@ -105,33 +123,53 @@ function TopSecton({ dataMovie }: Props) {
                   </div>
 
                   <div className="flex justify-center">
-                    <Button
-                      variant="gradient"
-                      radius={"md"}
-                      w={"50%"}
-                      ml="xs"
-                      disabled={!isLogged ? true : false}
-                      gradient={{ from: "blue", to: "pink", deg: 90 }}
-                      onClick={() => setIsOpen(true)}
+                    <Tooltip
+                      label={getToolTipFromState(
+                        isLogged,
+                        dataUser.isVerifyEmail
+                      )}
+                      disabled={isLogged && dataUser.isVerifyEmail}
                     >
-                      Đặt vé
-                    </Button>
+                      <Button
+                        variant="gradient"
+                        radius={"md"}
+                        w={"50%"}
+                        ml="xs"
+                        disabled={
+                          !isLogged || !dataUser.isVerifyEmail ? true : false
+                        }
+                        gradient={{ from: "blue", to: "pink", deg: 90 }}
+                        onClick={() => setIsOpen(true)}
+                      >
+                        Đặt vé
+                      </Button>
+                    </Tooltip>
 
-                    <Button
-                      variant="gradient"
-                      radius={"md"}
-                      w={"50%"}
-                      ml="xs"
-                      onClick={() =>
-                        window.location.replace(
-                          `/movie/${dataMovie.id}#reviews`
-                        )
-                      }
-                      disabled={!isLogged ? true : false}
-                      gradient={{ from: "pink", to: "blue", deg: 0 }}
+                    <Tooltip
+                      label={getToolTipFromState(
+                        isLogged,
+                        dataUser.isVerifyEmail
+                      )}
+                      disabled={isLogged && dataUser.isVerifyEmail}
                     >
-                      Xem đánh giá
-                    </Button>
+                      <Button
+                        variant="gradient"
+                        radius={"md"}
+                        w={"50%"}
+                        ml="xs"
+                        onClick={() =>
+                          window.location.replace(
+                            `/movie/${dataMovie.id}#reviews`
+                          )
+                        }
+                        disabled={
+                          !isLogged || !dataUser.isVerifyEmail ? true : false
+                        }
+                        gradient={{ from: "pink", to: "blue", deg: 0 }}
+                      >
+                        Xem đánh giá
+                      </Button>
+                    </Tooltip>
                   </div>
                 </div>
               </Paper>

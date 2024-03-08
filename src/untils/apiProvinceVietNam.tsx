@@ -1,5 +1,5 @@
 import axios from "axios";
-const host = "https://provinces.open-api.vn/api/";
+const host = "https://vapi.vnappmob.com/api/province/";
 
 const apiProvinceVietNam = {
   async callApiCity(api: string) {

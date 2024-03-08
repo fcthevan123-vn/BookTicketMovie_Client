@@ -9,6 +9,7 @@ import {
   Badge,
   Tabs,
   ActionIcon,
+  Tooltip,
 } from "@mantine/core";
 import {
   IconEdit,
@@ -57,8 +58,9 @@ export default function ReviewsOfMovie({ dataMovie }: Props) {
   const [openAllReview, setOpenAllReview] = useState(false);
   const [userReview, setUserReview] = useState<ReviewTS[]>();
   const [idReviewToUpdate, setIdReviewToUpdate] = useState<string>();
+  const [userCanReview, setUserCanReview] = useState(false);
 
-  const [, , dataUser] = useAuthenticate();
+  const [isLogged, , dataUser] = useAuthenticate();
 
   async function createReview(reviewContent: string, star: number) {
     const data = {
@@ -81,7 +83,6 @@ export default function ReviewsOfMovie({ dataMovie }: Props) {
   }
 
   async function deleteReview(idReview: string) {
-    console.log("idReview", idReview);
     const api = reviewServices.deleteReview(idReview);
 
     const res = await loadingApi(api, "Xoá đánh giá");
@@ -139,6 +140,38 @@ export default function ReviewsOfMovie({ dataMovie }: Props) {
     }
   }
 
+  async function checkUserCanReview(userId: string, movieId: string) {
+    try {
+      const res = await reviewServices.checkUserCanReview(movieId, userId);
+
+      if (res.statusCode === 0) {
+        if (res.check == true) {
+          setUserCanReview(true);
+        } else {
+          setUserCanReview(false);
+        }
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+  }
+
+  function getToolTipFromState(
+    isLogin?: boolean,
+    isVerifyEmail?: boolean,
+    isWatched?: boolean
+  ) {
+    if (!isLogin) {
+      return "Bạn chưa đăng nhập";
+    }
+    if (!isVerifyEmail) {
+      return "Bạn cần phải xác nhận tài khoản";
+    }
+    if (!isWatched) {
+      return "Bạn chưa xem phim này";
+    }
+  }
+
   const openModal = (idReview: string) =>
     modals.openConfirmModal({
       title: (
@@ -170,6 +203,7 @@ export default function ReviewsOfMovie({ dataMovie }: Props) {
   useEffect(() => {
     getAllReviews(dataMovie.id);
     getUserReview(dataMovie.id, dataUser.id);
+    checkUserCanReview(dataUser.id, dataMovie.id);
   }, [dataMovie.id, dataUser.id]);
 
   return (
@@ -458,12 +492,25 @@ export default function ReviewsOfMovie({ dataMovie }: Props) {
               người khác.
             </p>
 
-            <p
-              onClick={open}
-              className="cursor-pointer mt-6 inline-flex w-full bg-white border border-gray-300 rounded-md py-2 px-8 items-center justify-center text-sm font-medium text-gray-900 hover:bg-gray-50 sm:w-auto lg:w-full"
+            <Tooltip
+              label={getToolTipFromState(
+                isLogged,
+                dataUser.isVerifyEmail,
+                userCanReview
+              )}
+              disabled={isLogged && dataUser.isVerifyEmail && userCanReview}
             >
-              Viết đánh giá
-            </p>
+              <button
+                disabled={
+                  !isLogged || !dataUser.isVerifyEmail || !userCanReview
+                }
+                onClick={open}
+                className="cursor-pointer mt-6 inline-flex w-full bg-white border border-gray-300 rounded-md py-2 px-8 items-center justify-center text-sm font-medium text-gray-900 hover:bg-gray-50 sm:w-auto lg:w-full disabled:bg-gray-200 disabled:text-gray-400 disabled:line-through
+                disabled:cursor-not-allowed"
+              >
+                Viết đánh giá
+              </button>
+            </Tooltip>
           </div>
         </div>
         <div className="flex justify-center">

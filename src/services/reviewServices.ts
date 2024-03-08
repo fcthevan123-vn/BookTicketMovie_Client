@@ -24,7 +24,14 @@ const reviewServices = {
 
   async getUserReview(movieId: string, userId: string) {
     const res = await axios.post(
-      `/api/v1/review//get-user-review?movieId=${movieId}&userId=${userId}`
+      `/api/v1/review/get-user-review?movieId=${movieId}&userId=${userId}`
+    );
+    return res.data;
+  },
+
+  async checkUserCanReview(movieId: string, userId: string) {
+    const res = await axios.get(
+      `/api/v1/review/check-user-review?movieId=${movieId}&userId=${userId}`
     );
     return res.data;
   },
