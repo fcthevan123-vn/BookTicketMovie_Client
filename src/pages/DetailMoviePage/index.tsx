@@ -29,7 +29,6 @@ function DetailMoviePage() {
   return (
     <Container my="xl" size={"xl"}>
       {dataMovie && <TopSecton dataMovie={dataMovie}></TopSecton>}
-      <Divider mx={10} my={40} size={"sm"} label="Thông tin chi tiết" />
 
       <div className="">
         {dataMovie && <MidSection dataMovie={dataMovie}></MidSection>}

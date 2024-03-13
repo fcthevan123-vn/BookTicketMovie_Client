@@ -35,6 +35,13 @@ const reviewServices = {
     );
     return res.data;
   },
+
+  async calculateStar(movieId: string) {
+    const res = await axios.get(
+      `/api/v1/review/calculate-star-rating?movieId=${movieId}`
+    );
+    return res.data;
+  },
 };
 
 export default reviewServices;

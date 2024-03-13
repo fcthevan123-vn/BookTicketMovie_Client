@@ -29,20 +29,26 @@ import { ReviewTS } from "../../../types";
 import moment from "moment";
 import { modals } from "@mantine/modals";
 
-const reviews = {
-  average: 4,
-  totalCount: 1624,
-  counts: [
-    { rating: 5, count: 1019 },
-    { rating: 4, count: 162 },
-    { rating: 3, count: 97 },
-    { rating: 2, count: 199 },
-    { rating: 1, count: 147 },
-  ],
+type StarRating = {
+  average: number;
+  totalCount: number;
+  counts: { rating: number; count: number }[];
 };
 
 type Props = {
   dataMovie: DataTableMoviesProps;
+};
+
+const initialStarRating = {
+  average: 0,
+  totalCount: 0,
+  counts: [
+    { rating: 5, count: 0 },
+    { rating: 4, count: 0 },
+    { rating: 3, count: 0 },
+    { rating: 2, count: 0 },
+    { rating: 1, count: 0 },
+  ],
 };
 
 function classNames(...classes: string[]) {
@@ -58,6 +64,8 @@ export default function ReviewsOfMovie({ dataMovie }: Props) {
   const [openAllReview, setOpenAllReview] = useState(false);
   const [userReview, setUserReview] = useState<ReviewTS[]>();
   const [idReviewToUpdate, setIdReviewToUpdate] = useState<string>();
+  const [dataStarRating, setDataStarRating] =
+    useState<StarRating>(initialStarRating);
   const [userCanReview, setUserCanReview] = useState(false);
 
   const [isLogged, , dataUser] = useAuthenticate();
@@ -112,6 +120,7 @@ export default function ReviewsOfMovie({ dataMovie }: Props) {
     if (res) {
       getAllReviews(dataMovie.id);
       getUserReview(dataMovie.id, dataUser.id);
+      calculateStarRating(dataMovie.id);
       setOpenUpdateReview(false);
     }
 
@@ -123,6 +132,17 @@ export default function ReviewsOfMovie({ dataMovie }: Props) {
       const res = await reviewServices.getALLReview(movieId);
       if (res.statusCode === 0) {
         setAllReview(res.data);
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+  }
+
+  async function calculateStarRating(movieId: string) {
+    try {
+      const res = await reviewServices.calculateStar(movieId);
+      if (res.statusCode === 0) {
+        setDataStarRating(res.data);
       }
     } catch (error) {
       console.log("error", error);
@@ -204,6 +224,7 @@ export default function ReviewsOfMovie({ dataMovie }: Props) {
     getAllReviews(dataMovie.id);
     getUserReview(dataMovie.id, dataUser.id);
     checkUserCanReview(dataUser.id, dataMovie.id);
+    calculateStarRating(dataMovie.id);
   }, [dataMovie.id, dataUser.id]);
 
   return (
@@ -419,23 +440,28 @@ export default function ReviewsOfMovie({ dataMovie }: Props) {
           <div className="mt-3 flex items-center">
             <div>
               <div className="flex items-center">
-                {[0, 1, 2, 3, 4].map((rating) => (
-                  <IconStarFilled
-                    key={rating}
-                    className={classNames(
-                      reviews.average > rating
-                        ? "text-yellow-400"
-                        : "text-gray-300",
-                      "flex-shrink-0 h-5 w-5"
-                    )}
-                    aria-hidden="true"
-                  />
-                ))}
+                <Rating
+                  fractions={2}
+                  value={dataStarRating.average}
+                  readOnly
+                  fullSymbol={
+                    <IconStarFilled
+                      className={"text-yellow-400"}
+                      aria-hidden="true"
+                    />
+                  }
+                  emptySymbol={
+                    <IconStarFilled
+                      className={"text-gray-300"}
+                      aria-hidden="true"
+                    />
+                  }
+                />
               </div>
-              <p className="sr-only">{reviews.average} out of 5 stars</p>
+              <p className="sr-only">{dataStarRating.average} out of 5 stars</p>
             </div>
             <p className="ml-2 text-sm text-gray-900">
-              Dựa trên {reviews.totalCount} đánh giá
+              Dựa trên {dataStarRating.totalCount} đánh giá
             </p>
           </div>
 
@@ -443,7 +469,7 @@ export default function ReviewsOfMovie({ dataMovie }: Props) {
             <h3 className="sr-only">Review data</h3>
 
             <dl className="space-y-3">
-              {reviews.counts.map((count) => (
+              {dataStarRating.counts.map((count) => (
                 <div key={count.rating} className="flex items-center text-sm">
                   <dt className="flex-1 flex items-center">
                     <p className="w-3 font-medium text-gray-900">
@@ -468,16 +494,19 @@ export default function ReviewsOfMovie({ dataMovie }: Props) {
                           <div
                             className="absolute inset-y-0 bg-yellow-400 border border-yellow-400 rounded-full"
                             style={{
-                              width: `calc(${count.count} / ${reviews.totalCount} * 100%)`,
+                              width: `calc(${count.count} / ${dataStarRating.totalCount} * 100%)`,
                             }}
                           />
                         ) : null}
                       </div>
                     </div>
                   </dt>
-                  <dd className="ml-3 w-10 text-right tabular-nums text-sm text-gray-900">
-                    {Math.round((count.count / reviews.totalCount) * 100)}%
-                  </dd>
+                  <p className="ml-3 w-10 text-right tabular-nums text-sm text-gray-900">
+                    {Math.round(
+                      (count.count / dataStarRating.totalCount) * 100
+                    )}
+                    %
+                  </p>
                 </div>
               ))}
             </dl>

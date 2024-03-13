@@ -12,6 +12,10 @@ type Props = {
 function MidSection({ dataMovie }: Props) {
   return (
     <div className="p-3 flex flex-col gap-8">
+      {/* <Divider mx={10} my={30} size={"sm"} label="Trailer phim" /> */}
+
+      <Divider mx={10} my={10} mt={30} size={"sm"} label="Thông tin chi tiết" />
+
       <div>
         <div>
           <h3 className="text-lg leading-6 font-medium text-blue-500">
@@ -74,8 +78,7 @@ function MidSection({ dataMovie }: Props) {
         </div>
       </div>
 
-      <Divider mx={10} my={30} size={"sm"} label="Thống kê" />
-      <div>
+      {/* <div>
         <div className="flex justify-between items-center mb-10">
           <Badge variant="dot" color="blue">
             Thống kê nhanh
@@ -90,7 +93,7 @@ function MidSection({ dataMovie }: Props) {
             <ChartCustom></ChartCustom>
           </div>
         </div>
-      </div>
+      </div> */}
 
       <Divider mx={10} my={30} size={"sm"} label="Đánh giá" id={"reviews"} />
 
