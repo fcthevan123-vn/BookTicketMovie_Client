@@ -12,6 +12,7 @@ type DefaultLayoutProps = {
   children: React.ReactNode;
 };
 function DefaultLayout({ children }: DefaultLayoutProps) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [opened, { toggle }] = useDisclosure();
   const navigate = useNavigate();
   const [, , dataUser] = useAuthenticate();
@@ -20,6 +21,9 @@ function DefaultLayout({ children }: DefaultLayoutProps) {
   useEffect(() => {
     if (dataUser.type == "admin") {
       navigate("/admin/dashboard");
+    }
+    if (dataUser.type == "employee") {
+      navigate(`/employee/${dataUser.id}/dashboard`);
     }
   }, [dataUser, navigate]);
 

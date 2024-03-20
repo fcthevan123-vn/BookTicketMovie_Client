@@ -1,31 +1,21 @@
 import { useDisclosure } from "@mantine/hooks";
-import {
-  AppShell,
-  Box,
-  Burger,
-  Divider,
-  Group,
-  ScrollArea,
-  ThemeIcon,
-  UnstyledButton,
-  rem,
-} from "@mantine/core";
+import { AppShell, Burger, Group } from "@mantine/core";
 import Logo from "../../components/Logo";
-import { IconLogout } from "@tabler/icons-react";
+import { IconHome, IconLogout } from "@tabler/icons-react";
 import classes from "./EmployeeLayout.module.css";
 import { modals } from "@mantine/modals";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { userSlice } from "../../redux/reducers";
 import { authenticateServices } from "../../services";
 import { loadingApi } from "../../untils/loadingApi";
-import AdminNav from "../../components/Navbars/AdminNav";
+import { EmployeeNav } from "../../components/Navbars/EmployeeNav";
 
-type EmployeeLayoutType = {
+type EmployeeLayoutProps = {
   children: React.ReactNode;
 };
 
-function EmployeeLayout({ children }: EmployeeLayoutType) {
+function EmployeeLayout({ children }: EmployeeLayoutProps) {
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
   const dispatch = useDispatch();
@@ -35,10 +25,9 @@ function EmployeeLayout({ children }: EmployeeLayoutType) {
     const api = await authenticateServices.handleLogout();
     const res = await loadingApi(api, "Đăng xuất");
     if (res) {
-      navigate("/register");
       dispatch(userSlice.actions.toggleLogin({}));
+      navigate("/");
     }
-
     return res;
   };
 
@@ -46,7 +35,7 @@ function EmployeeLayout({ children }: EmployeeLayoutType) {
     modals.openConfirmModal({
       title: <p className="text-red-500 font-medium">Đăng xuất</p>,
       centered: true,
-      children: <p>Bạn có chắc chắn muốn đăng xuất không?</p>,
+      children: <p>Bạn có chắc chắc muốn đăng xuất không?</p>,
       zIndex: 1600,
       labels: {
         confirm: "Đăng xuất",
@@ -60,6 +49,7 @@ function EmployeeLayout({ children }: EmployeeLayoutType) {
         blur: 3,
       },
       radius: "lg",
+      onCancel: () => console.log("Cancel"),
       onConfirm: () => handleLogout(),
     });
 
@@ -77,10 +67,8 @@ function EmployeeLayout({ children }: EmployeeLayoutType) {
         styles={{
           header: {
             backgroundColor: "var(--mantine-color-blue-6)",
-            // borderBottom: "0px",
+            borderBottom: "0px",
             transition: "0ms",
-            borderBottom: "2px solid var(--mantine-color-blue-7)",
-            boxShadow: " rgba(0, 0, 0, 0.15) 0px 3px 3px 0px",
           },
         }}
       >
@@ -105,43 +93,31 @@ function EmployeeLayout({ children }: EmployeeLayoutType) {
       <AppShell.Navbar
         styles={{
           navbar: {
-            backgroundColor: "var(--mantine-color-blue-6)",
+            borderRight: "1px solid var(--mantine-color-blue-3)",
+            boxShadow: "var(--mantine-shadow-xl)",
           },
         }}
       >
-        <AppShell.Section
-          grow
-          style={{
-            padding: "0px var(--mantine-spacing-md)",
-          }}
-          component={ScrollArea}
-          scrollbarSize={8}
-        >
-          <AdminNav></AdminNav>
+        <AppShell.Section grow>
+          <EmployeeNav></EmployeeNav>
         </AppShell.Section>
-
         <AppShell.Section
           style={{
-            // borderTop: "1px solid var(--mantine-color-blue-3)",
             backgroundColor: "var(--mantine-color-blue-6)",
-            padding: "10px var(--mantine-spacing-md)",
           }}
+          p="md"
         >
-          <Divider my="sm" size={"sm"} color="blue.7" />
           <div className={classes.footer}>
-            <UnstyledButton
-              className={classes.control}
-              onClick={openLogoutModal}
-            >
-              <Group justify="space-between" gap={0}>
-                <Box style={{ display: "flex", alignItems: "center" }}>
-                  <ThemeIcon variant="white" size={30}>
-                    <IconLogout style={{ width: rem(18), height: rem(18) }} />
-                  </ThemeIcon>
-                  <Box ml="md">Đăng xuất</Box>
-                </Box>
-              </Group>
-            </UnstyledButton>
+            <Link to="/">
+              <span className={classes.link}>
+                <IconHome className={classes.linkIcon} stroke={1.5} />
+                <span>Trang chủ</span>
+              </span>
+            </Link>
+            <a href="#" className={classes.link} onClick={openLogoutModal}>
+              <IconLogout className={classes.linkIcon} stroke={1.5} />
+              <span>Đăng xuất</span>
+            </a>
           </div>
         </AppShell.Section>
       </AppShell.Navbar>

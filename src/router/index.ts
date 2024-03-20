@@ -10,8 +10,14 @@ const AdminPage = lazy(() => import("../pages/AdminPage"));
 const PickSeatPage = lazy(() => import("../pages/PickSeatPage"));
 const MovieDetailPage = lazy(() => import("../pages/DetailMoviePage"));
 const VerifyEmailPage = lazy(() => import("../pages/VerifyEmailPage"));
+const EmployeePage = lazy(() => import("../pages/EmployeePage"));
 
-import { AdminLayout, DefaultLayout, UserLayout } from "../layouts";
+import {
+  AdminLayout,
+  DefaultLayout,
+  EmployeeLayout,
+  UserLayout,
+} from "../layouts";
 
 type LayoutComponent = FC<{ children: ReactNode }>;
 
@@ -202,6 +208,21 @@ const router: IRouter[] = [
     isProtected: true,
     layout: "None",
     element: PickSeatPage,
+  },
+
+  // employee
+  {
+    path: "/employee/:id/dashboard",
+    isProtected: true,
+    layout: EmployeeLayout,
+    element: EmployeePage,
+  },
+
+  {
+    path: "/employee/:id/manage-booking",
+    isProtected: true,
+    layout: EmployeeLayout,
+    element: EmployeePage,
   },
 ];
 
