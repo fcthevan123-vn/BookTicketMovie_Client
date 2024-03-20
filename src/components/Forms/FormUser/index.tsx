@@ -187,7 +187,6 @@ function FormUser({ isUpdate, data, apiFetch }: Props) {
           placeholder="Chọn vị trí"
           data={[
             { value: "admin", label: "Quản trị viên" },
-            { value: "manager", label: "Quản lý" },
             { value: "employee", label: "Nhân viên" },
             { value: "user", label: "Người dùng" },
           ]}

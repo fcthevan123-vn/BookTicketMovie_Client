@@ -23,14 +23,35 @@ type Props = {
   dataMovie: DataTableMoviesProps;
 };
 
+type StarRating = {
+  average: number;
+  totalCount: number;
+  counts: { rating: number; count: number }[];
+};
+
+const initialStarRating = {
+  average: 0,
+  totalCount: 0,
+  counts: [
+    { rating: 5, count: 0 },
+    { rating: 4, count: 0 },
+    { rating: 3, count: 0 },
+    { rating: 2, count: 0 },
+    { rating: 1, count: 0 },
+  ],
+};
+
 const PRIMARY_COL_HEIGHT = rem(500);
 
 function TopSecton({ dataMovie }: Props) {
-  const autoplay = useRef(Autoplay({ delay: 2000 }));
+  const autoplay = useRef(Autoplay({ delay: 5000 }));
   const [isOpen, setIsOpen] = useState(false);
   const [isLogged, , dataUser] = useAuthenticate();
 
   const urlParams = new URLSearchParams(window.location.search);
+
+  const [dataStarRating, setDataStarRating] =
+    useState<StarRating>(initialStarRating);
 
   const openModal = urlParams.get("open");
 
@@ -50,7 +71,20 @@ function TopSecton({ dataMovie }: Props) {
     }
   }
 
+  async function calculateStarRating(movieId: string) {
+    try {
+      const res = await reviewServices.calculateStar(movieId);
+      if (res.statusCode === 0) {
+        console.log("res", res);
+        setDataStarRating(res.data);
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+  }
+
   useEffect(() => {
+    calculateStarRating(dataMovie.id);
     if (openModal) {
       setIsOpen(true);
     }
@@ -78,12 +112,23 @@ function TopSecton({ dataMovie }: Props) {
               controls: classes.carouselControls,
               indicator: classes.carouselIndicator,
             }}
+            onMouseEnter={autoplay.current.stop}
           >
-            {dataMovie.images.map((img, index) => (
-              <Carousel.Slide key={index}>
-                <Image src={img} h={"100%"} fit="fill" radius={"md"}></Image>
+            <>
+              <Carousel.Slide key={88291}>
+                <iframe
+                  height="100%"
+                  width={"100%"}
+                  src="https://www.youtube.com/embed/zSWdZVtXT7E"
+                ></iframe>
               </Carousel.Slide>
-            ))}
+
+              {dataMovie.images.map((img, index) => (
+                <Carousel.Slide key={index}>
+                  <Image src={img} h={"100%"} fit="fill" radius={"md"}></Image>
+                </Carousel.Slide>
+              ))}
+            </>
           </Carousel>
         </Grid.Col>
 
@@ -112,12 +157,17 @@ function TopSecton({ dataMovie }: Props) {
                     </Text>
 
                     <div className="flex">
-                      <Rating value={4} readOnly px={"xs"} mb={"xs"} />
+                      <Rating
+                        value={dataStarRating.average}
+                        readOnly
+                        px={"xs"}
+                        mb={"xs"}
+                      />
                       <Text size="sm" c="dimmed">
                         •
                       </Text>
                       <Text size="sm" c="dimmed" ml={"xs"}>
-                        257 đánh giá
+                        {dataStarRating.totalCount} đánh giá
                       </Text>
                     </div>
                   </div>

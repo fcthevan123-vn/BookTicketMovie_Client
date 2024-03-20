@@ -1,0 +1,19 @@
+.control {
+  font-weight: 500 !important;
+  display: block !important;
+  width: 100% !important;
+  padding: var(--mantine-spacing-xs) var(--mantine-spacing-md) !important;
+  margin: var(--mantine-spacing-xs) 0 !important;
+  color: var(--mantine-color-white) !important;
+  font-size: var(--mantine-font-size-sm) !important;
+  background-color: var(--mantine-color-blue-4) !important;
+  border-radius: var(--mantine-radius-md) !important;
+  box-shadow: var(--mantine-shadow-sm) !important;
+  @mixin hover {
+    background-color: light-dark(
+      var(--mantine-color-blue-3) !important,
+      var(--mantine-color-dark-7)
+    );
+    color: light-dark(var(--mantine-color-black), var(--mantine-color-dark-0));
+  }
+}
