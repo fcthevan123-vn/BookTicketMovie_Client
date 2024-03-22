@@ -26,12 +26,6 @@ import {
 } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 
-// interface dataSelectProps {
-//   value: string;
-//   label: string;
-//   disabled?: boolean;
-// }
-
 const AddMoviePage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isResetImg, setIsResetImg] = useState(false);
@@ -92,6 +86,7 @@ const AddMoviePage = () => {
     []
   );
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [dataActors, setDataActors] = useState([
     {
       value: "no",
@@ -100,6 +95,7 @@ const AddMoviePage = () => {
     },
   ]);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [dataDirectors, setDataDirectors] = useState([
     {
       value: "no",
@@ -122,6 +118,7 @@ const AddMoviePage = () => {
       country: "",
       subtitle: "",
       genre: [],
+      trailerLink: "",
       images: [],
     },
 
@@ -172,6 +169,9 @@ const AddMoviePage = () => {
       subtitle: (value) => (value.length <= 0 ? "Chưa nhập phụ đề" : null),
 
       genre: (value) => (value.length <= 0 ? "Chưa nhập thể loại" : null),
+
+      trailerLink: (value) =>
+        value?.length <= 0 ? "Chưa nhập link trailer" : null,
 
       images: (value) =>
         value.length > 1 && value.length <= 6
@@ -283,6 +283,14 @@ const AddMoviePage = () => {
                     clearable
                     radius="md"
                     {...form.getInputProps("endDate")}
+                  />
+
+                  <TextInput
+                    placeholder="Nhập link trailer ở đây"
+                    label="Link trailer"
+                    radius="md"
+                    withAsterisk
+                    {...form.getInputProps("trailerLink")}
                   />
 
                   <TextInput

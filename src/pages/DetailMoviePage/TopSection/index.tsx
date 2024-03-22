@@ -83,6 +83,19 @@ function TopSecton({ dataMovie }: Props) {
     }
   }
 
+  function getIdInTrailerLink(trailerLink: string) {
+    if (trailerLink) {
+      const videoID = trailerLink.match(
+        /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
+      );
+
+      if (videoID) {
+        return videoID[1];
+      }
+    }
+    return "B2Jlyq_Tf3Y";
+  }
+
   useEffect(() => {
     calculateStarRating(dataMovie.id);
     if (openModal) {
@@ -115,11 +128,21 @@ function TopSecton({ dataMovie }: Props) {
             onMouseEnter={autoplay.current.stop}
           >
             <>
-              <Carousel.Slide key={88291}>
+              {/* <Carousel.Slide key={88291}>
                 <iframe
                   height="100%"
                   width={"100%"}
-                  src="https://www.youtube.com/embed/zSWdZVtXT7E"
+                  src="https://www.youtube.com/embed/B2Jlyq_Tf3Y"
+                ></iframe>
+              </Carousel.Slide> */}
+
+              <Carousel.Slide key={882912}>
+                <iframe
+                  height="100%"
+                  width={"100%"}
+                  src={`https://www.youtube.com/embed/${getIdInTrailerLink(
+                    dataMovie.trailerLink
+                  )}`}
                 ></iframe>
               </Carousel.Slide>
 

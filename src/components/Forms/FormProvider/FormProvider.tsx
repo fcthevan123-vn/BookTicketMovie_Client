@@ -12,7 +12,7 @@ interface MovieFormValues {
   language: string;
   country: string;
   subtitle: string;
-
+  trailerLink: string;
   genre: string[];
   images: File[] | string[];
   imagesDelete?: string | string[];

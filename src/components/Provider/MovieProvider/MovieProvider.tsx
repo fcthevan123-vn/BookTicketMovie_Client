@@ -15,6 +15,7 @@ export type DataTableMoviesProps = {
   country: string;
   directors: string[];
   genre: string[];
+  trailerLink: string;
   language: string;
   updatedAt?: string;
 };

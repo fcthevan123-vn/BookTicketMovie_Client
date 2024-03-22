@@ -14,6 +14,7 @@ interface MovieFormValuesProps {
   subtitle: string;
   genre: string[];
   images: File[] | string[] | { imageName: string; imageUrl: string }[];
+  trailerLink: string;
   imagesDelete?: string | string[];
   id?: string;
 }
@@ -33,6 +34,7 @@ const movieServices = {
     subtitle,
     genre,
     images,
+    trailerLink,
   }: MovieFormValuesProps) {
     const formData = new FormData();
     formData.append("title", title);
@@ -44,6 +46,7 @@ const movieServices = {
     formData.append("language", language.toString());
     formData.append("country", country.toString());
     formData.append("subtitle", subtitle);
+    formData.append("trailerLink", trailerLink);
 
     for (let i = 0; i < images.length; i++) {
       const image = images[i];
@@ -112,6 +115,7 @@ const movieServices = {
       subtitle,
       genre,
       images,
+      trailerLink,
       imagesDelete,
     }: MovieFormValuesProps,
     id: string
@@ -126,6 +130,7 @@ const movieServices = {
     formData.append("language", language);
     formData.append("country", country);
     formData.append("subtitle", subtitle);
+    formData.append("trailerLink", trailerLink);
 
     if (imagesDelete) {
       for (let i = 0; i < imagesDelete.length; i++) {
