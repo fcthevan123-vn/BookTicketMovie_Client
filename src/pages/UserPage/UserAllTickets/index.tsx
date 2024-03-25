@@ -3,30 +3,19 @@ import { useAuthenticate } from "../../../hooks";
 import NormalToast from "../../../components/AllToast/NormalToast";
 import bookingServices from "../../../services/bookingServices";
 import { BookingTypeTS } from "../../../types";
-import { ActionIcon, Badge, Text, Tooltip } from "@mantine/core";
+import { ActionIcon, Badge, Button, Text, Tooltip } from "@mantine/core";
 import { useTableCustom } from "../../../components/Provider/TableFilterProvider";
 import TableFilter from "../../../components/TableFilter";
 import moment from "moment";
 import { IconTrash } from "@tabler/icons-react";
 import { modals } from "@mantine/modals";
 import { loadingApi } from "../../../untils/loadingApi";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import UserTicketPdf from "./UserTicketPdf";
 
-type Props = {};
-
-function UserAllTickets({}: Props) {
+function UserAllTickets() {
   const [, , dataUser] = useAuthenticate();
-  const {
-    setRows,
-    headers,
-    setHeaders,
-    limitRow,
-    setIsLoading,
-    activePage,
-    setTotalPagination,
-    currentSearchValue,
-    totalPagination,
-    setActivePage,
-  } = useTableCustom();
+  const { setRows, headers, setHeaders } = useTableCustom();
 
   const [data, setData] = useState<BookingTypeTS[] | null>(null);
 
@@ -209,6 +198,30 @@ function UserAllTickets({}: Props) {
               ) : null}
             </div>
           ),
+          printTicket: (
+            <div>
+              {console.log(row)}
+              {row.status == "Đã xác nhận" ? (
+                <PDFDownloadLink
+                  document={
+                    <UserTicketPdf ticketData={row} userData={dataUser} />
+                  }
+                >
+                  {({ loading }) =>
+                    loading ? (
+                      <Button size="compact-xs" radius={"md"}>
+                        Loading
+                      </Button>
+                    ) : (
+                      <Button size="compact-xs" radius={"md"}>
+                        Xuất vé
+                      </Button>
+                    )
+                  }
+                </PDFDownloadLink>
+              ) : null}
+            </div>
+          ),
         };
       });
 
@@ -263,6 +276,11 @@ function UserAllTickets({}: Props) {
         {
           label: "#",
           value: "action",
+          isSortable: false,
+        },
+        {
+          label: "Xuất vé",
+          value: "printTicket",
           isSortable: false,
         },
       ]);

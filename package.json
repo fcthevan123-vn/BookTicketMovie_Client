@@ -22,6 +22,7 @@
     "@mantine/modals": "^7.5.3",
     "@mantine/notifications": "^7.5.3",
     "@mantine/spotlight": "^7.5.3",
+    "@react-pdf/renderer": "^3.4.0",
     "@reduxjs/toolkit": "^2.2.1",
     "@tabler/icons-react": "^2.47.0",
     "animate.css": "^4.1.1",
