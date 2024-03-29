@@ -48,6 +48,7 @@ export type ReviewTS = {
   movieId?: string;
   star: number;
   User?: UserTS;
+  Movie?: MovieTS;
   content: string;
   createdAt?: string;
   updatedAt?: string;

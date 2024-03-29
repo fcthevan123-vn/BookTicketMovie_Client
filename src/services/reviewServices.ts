@@ -42,6 +42,13 @@ const reviewServices = {
     );
     return res.data;
   },
+
+  async getAllReviewsOfUser(userId: string) {
+    const res = await axios.get(
+      `/api/v1/review/all-user-review?userId=${userId}`
+    );
+    return res.data;
+  },
 };
 
 export default reviewServices;

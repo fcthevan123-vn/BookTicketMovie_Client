@@ -84,6 +84,7 @@ export default function ReviewsOfMovie({ dataMovie }: Props) {
     if (res) {
       getAllReviews(dataMovie.id);
       getUserReview(dataMovie.id, dataUser.id);
+      calculateStarRating(dataMovie.id);
       close();
     }
 
@@ -98,6 +99,7 @@ export default function ReviewsOfMovie({ dataMovie }: Props) {
     if (res) {
       getAllReviews(dataMovie.id);
       getUserReview(dataMovie.id, dataUser.id);
+      calculateStarRating(dataMovie.id);
     }
 
     return res;
@@ -502,9 +504,11 @@ export default function ReviewsOfMovie({ dataMovie }: Props) {
                     </div>
                   </dt>
                   <p className="ml-3 w-10 text-right tabular-nums text-sm text-gray-900">
-                    {Math.round(
-                      (count.count / dataStarRating.totalCount) * 100
-                    )}
+                    {count.count > 0
+                      ? Math.round(
+                          (count.count / dataStarRating.totalCount) * 100
+                        )
+                      : "0"}
                     %
                   </p>
                 </div>
