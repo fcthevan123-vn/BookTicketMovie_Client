@@ -33,7 +33,7 @@ export function TrendingMovie({ dataMovies }: TrendingMovieProps) {
               <Badge
                 size="xl"
                 variant="gradient"
-                gradient={{ from: "blue", to: "teal", deg: 90 }}
+                gradient={{ from: "pink", to: "grape", deg: 90 }}
                 style={{
                   textTransform: "none",
                 }}

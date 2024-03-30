@@ -18,6 +18,7 @@ import "@mantine/charts/styles.css";
 
 const theme = createTheme({
   fontFamily: "Be Vietnam Pro",
+  primaryColor: "pink",
 });
 
 function App() {

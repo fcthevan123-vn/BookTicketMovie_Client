@@ -212,8 +212,8 @@ export default function DefaultHeader() {
       <Container className={classes.mainSection} size="xl">
         <Group justify="space-between" style={{ height: "54px" }}>
           <Badge size="lg" radius="lg" className={classes.badge}>
-            <Group gap="sm">
-              <ActionIcon color="blue" size="md" radius="md" variant="filled">
+            <Group gap="xs">
+              <ActionIcon color="pink" size="md" radius="md" variant="filled">
                 <BiMoviePlay size="1.125rem" />
               </ActionIcon>
               Show Booking
@@ -284,13 +284,13 @@ export default function DefaultHeader() {
                 <Menu.Item
                   className={classes.menuItem}
                   color="blue"
-                  leftSection={<BiUserCircle size="0.9rem" stroke={1.5} />}
+                  leftSection={<BiUserCircle size="0.9rem" stroke={"1.5"} />}
                 >
                   {dataUser?.fullName}
                 </Menu.Item>
                 <Menu.Item
                   className={classes.menuItem}
-                  leftSection={<AiOutlineMail size="0.9rem" stroke={1.5} />}
+                  leftSection={<AiOutlineMail size="0.9rem" stroke={"1.5"} />}
                 >
                   {dataUser?.email}
                 </Menu.Item>
@@ -299,7 +299,7 @@ export default function DefaultHeader() {
                 <Link to={`/user/${dataUser.id}/profile`}>
                   <Menu.Item
                     leftSection={
-                      <AiOutlineSetting size="0.9rem" stroke={1.5} />
+                      <AiOutlineSetting size="0.9rem" stroke={"1.5"} />
                     }
                   >
                     Trang cá nhân
@@ -311,9 +311,9 @@ export default function DefaultHeader() {
                   onClick={() => toggleColorScheme()}
                   leftSection={
                     dark ? (
-                      <BiSun size="0.9rem" stroke={1.5} />
+                      <BiSun size="0.9rem" stroke={"1.5"} />
                     ) : (
-                      <BiMoon size="0.9rem" stroke={1.5} />
+                      <BiMoon size="0.9rem" stroke={"1.5"} />
                     )
                   }
                 >
@@ -326,7 +326,7 @@ export default function DefaultHeader() {
 
                 <Menu.Item
                   color="red"
-                  leftSection={<AiOutlineLogout size="0.9rem" stroke={1.5} />}
+                  leftSection={<AiOutlineLogout size="0.9rem" stroke={"1.5"} />}
                   onClick={() => handleLogout()}
                 >
                   Đăng xuất

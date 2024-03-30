@@ -200,8 +200,7 @@ function UserAllTickets() {
           ),
           printTicket: (
             <div>
-              {console.log(row)}
-              {row.status == "Đã xác nhận" ? (
+              {row.status == "Đã xác nhận" || row.status == "Đã thanh toán" ? (
                 <PDFDownloadLink
                   document={
                     <UserTicketPdf ticketData={row} userData={dataUser} />

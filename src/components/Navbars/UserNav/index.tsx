@@ -3,7 +3,6 @@ import { Group, Code, Text } from "@mantine/core";
 
 import classes from "./UserNav.module.css";
 import {
-  AiOutlineCheckCircle,
   AiOutlineEye,
   AiOutlineLineChart,
   AiOutlineProfile,
@@ -64,7 +63,7 @@ export function UserNav() {
           setActive(item.label);
         }}
       >
-        <item.icon className={classes.linkIcon} stroke={1.5} />
+        <item.icon className={classes.linkIcon} stroke={"1.5"} />
         <span>{item.label}</span>
       </p>
     </Link>

@@ -11,7 +11,7 @@ function MoviePage() {
   const [valueSearch, setValueSearch] = useState<string>();
   const icon = (
     <div
-      className="bg-blue-500 text-white cursor-pointer w-full h-full flex items-center justify-center rounded-r-md"
+      className="bg-pink-500 text-white cursor-pointer w-full h-full flex items-center justify-center rounded-r-md"
       style={{
         marginBottom: "1.2px",
       }}
