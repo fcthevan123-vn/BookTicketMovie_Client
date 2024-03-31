@@ -7,7 +7,8 @@ function HeroHome() {
         <div className="flex items-center justify-center w-full px-6 py-8 lg:h-[32rem] lg:w-1/2">
           <div className="max-w-xl">
             <h2 className="text-3xl font-semibold text-gray-800  lg:text-4xl">
-              Cùng khám phá <span className="text-pink-500">Show Booking</span>
+              Cùng khám phá{" "}
+              <span className="text-violet-500">Show Booking</span>
             </h2>
 
             <p className="mt-4 text-sm text-gray-500 dark:text-gray-400 lg:text-base">
@@ -19,7 +20,7 @@ function HeroHome() {
             <div className="flex flex-col mt-6 space-y-3 lg:space-y-0 lg:flex-row">
               <Link
                 to="/movie"
-                className="block px-5 py-2 text-sm font-medium tracking-wider text-center text-white transition-colors duration-300 transform bg-pink-500 rounded-md hover:bg-pink-700"
+                className="block px-5 py-2 text-sm font-medium tracking-wider text-center text-white transition-colors duration-300 transform bg-violet-500 rounded-md hover:bg-violet-700"
               >
                 Khám phá ngay
               </Link>

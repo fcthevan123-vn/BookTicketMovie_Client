@@ -11,11 +11,11 @@ import {
   rem,
 } from "@mantine/core";
 import Logo from "../../components/Logo";
-import { IconHome, IconLogout } from "@tabler/icons-react";
+import { IconLogout } from "@tabler/icons-react";
 import classes from "./AdminLayout.module.css";
 import { modals } from "@mantine/modals";
 import { useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { userSlice } from "../../redux/reducers";
 import { authenticateServices } from "../../services";
 import { loadingApi } from "../../untils/loadingApi";
@@ -76,10 +76,10 @@ function AdminLayout({ children }: AdminLayoutProps) {
       <AppShell.Header
         styles={{
           header: {
-            backgroundColor: "var(--mantine-color-blue-6)",
+            backgroundColor: "var(--mantine-color-violet-6)",
             // borderBottom: "0px",
             transition: "0ms",
-            borderBottom: "2px solid var(--mantine-color-blue-7)",
+            borderBottom: "2px solid var(--mantine-color-violet-7)",
             boxShadow: " rgba(0, 0, 0, 0.15) 0px 3px 3px 0px",
           },
         }}
@@ -105,7 +105,7 @@ function AdminLayout({ children }: AdminLayoutProps) {
       <AppShell.Navbar
         styles={{
           navbar: {
-            backgroundColor: "var(--mantine-color-blue-6)",
+            backgroundColor: "var(--mantine-color-violet-6)",
           },
         }}
       >
@@ -122,12 +122,11 @@ function AdminLayout({ children }: AdminLayoutProps) {
 
         <AppShell.Section
           style={{
-            // borderTop: "1px solid var(--mantine-color-blue-3)",
-            backgroundColor: "var(--mantine-color-blue-6)",
+            backgroundColor: "var(--mantine-color-violet-6)",
             padding: "10px var(--mantine-spacing-md)",
           }}
         >
-          <Divider my="sm" size={"sm"} color="blue.7" />
+          <Divider my="sm" size={"sm"} color="violet.7" />
           <div className={classes.footer}>
             <UnstyledButton
               className={classes.control}

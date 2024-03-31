@@ -13,6 +13,7 @@ import AdminMovieHallPage from "./AdminMovieHallPage";
 import AdminLayoutPage from "./AdminLayoutPage";
 import ManageBookingPage from "./ManageBookingPage";
 import ShowTimePage from "./ShowTimePage";
+import ManageEventPage from "./ManageEventPage";
 
 // Type
 type userRows = {
@@ -168,6 +169,18 @@ const allPath = [
     jsx: (
       <TableFilterProvider<[]> initialData={[]}>
         <ShowTimePage></ShowTimePage>
+      </TableFilterProvider>
+    ),
+  },
+  {
+    urlInclude: "event",
+    breadcrumbs: [
+      { title: "Admin", href: "/admin/event" },
+      { title: "Event", href: "#" },
+    ],
+    jsx: (
+      <TableFilterProvider<[]> initialData={[]}>
+        <ManageEventPage></ManageEventPage>
       </TableFilterProvider>
     ),
   },

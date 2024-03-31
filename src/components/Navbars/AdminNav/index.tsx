@@ -3,6 +3,7 @@ import {
   IconChalkboard,
   IconClockHour1,
   IconGauge,
+  IconGift,
   IconListCheck,
   IconMovie,
   IconSubtask,
@@ -56,6 +57,11 @@ const allLinks = [
     label: "Quản lý đặt vé",
     icon: IconListCheck,
     link: `/admin/manage-booking`,
+  },
+  {
+    label: "Quản lý sự kiện",
+    icon: IconGift,
+    link: `/admin/event`,
   },
 ];
 

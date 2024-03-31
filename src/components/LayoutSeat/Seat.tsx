@@ -60,7 +60,7 @@ function Seat({ dataSeat, dataOrdered }: Props) {
               dataSeat.SeatType.name === "Ghế VIP"
                 ? "1.5px solid var(--mantine-color-green-4)"
                 : dataSeat.SeatType.name === "Ghế Sweet"
-                ? "1.5px solid var(--mantine-color-pink-4)"
+                ? "1.5px solid var(--mantine-color-violet-4)"
                 : "1.5px solid var(--mantine-color-blue-4)",
           },
         }}
@@ -71,7 +71,7 @@ function Seat({ dataSeat, dataOrdered }: Props) {
           dataSeat.SeatType.name === "Ghế VIP"
             ? "green"
             : dataSeat.SeatType.name === "Ghế Sweet"
-            ? "pink"
+            ? "violet"
             : "blue"
         }
         variant="filled"

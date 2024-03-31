@@ -98,8 +98,8 @@ export default function DefaultHeader() {
       notifications.update({
         id,
         radius: "lg",
-        color: "teal",
-        title: <p className="text-teal-600">Đăng xuất thành công</p>,
+        color: "violet",
+        title: <p className="text-violet-600">Đăng xuất thành công</p>,
         message: res.message,
         withBorder: true,
         icon: <AiOutlineCheckCircle size="1.2rem" />,
@@ -213,7 +213,7 @@ export default function DefaultHeader() {
         <Group justify="space-between" style={{ height: "54px" }}>
           <Badge size="lg" radius="lg" className={classes.badge}>
             <Group gap="xs">
-              <ActionIcon color="pink" size="md" radius="md" variant="filled">
+              <ActionIcon color="violet" size="md" radius="md" variant="filled">
                 <BiMoviePlay size="1.125rem" />
               </ActionIcon>
               Show Booking
@@ -365,7 +365,7 @@ export default function DefaultHeader() {
           </Tabs>
 
           {/* <Button
-            // color="cyan"
+            // color="violet"
             variant="gradient"
             gradient={{ from: "#ed6ea0", to: "#ec8c69", deg: 35 }}
             onClick={spotlight.open}

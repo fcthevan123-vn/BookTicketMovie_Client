@@ -1,7 +1,7 @@
 .header {
   padding-top: var(--mantine-spacing-sm);
   background-color: light-dark(
-    var(--mantine-color-pink-6),
+    var(--mantine-color-violet-6),
     var(--mantine-color-dark-6)
   );
   height: rem(120px);
@@ -14,7 +14,7 @@
   padding-bottom: var(--mantine-spacing-md);
 
   .badge {
-    background-color: var(--mantine-color-pink-4);
+    background-color: var(--mantine-color-violet-4);
     padding: var(--mantine-spacing-lg);
 
     box-shadow: var(--mantine-shadow-md);
@@ -30,7 +30,7 @@
 
   &:hover {
     background-color: light-dark(
-      var(--mantine-color-pink-6),
+      var(--mantine-color-violet-6),
       var(--mantine-color-dark-8)
     );
   }
@@ -42,7 +42,7 @@
 
 .userActive {
   background-color: light-dark(
-    var(--mantine-color-pink-3),
+    var(--mantine-color-violet-3),
     var(--mantine-color-dark-8)
   );
   /* opacity: 0.1; */
@@ -64,18 +64,18 @@
 
   &:hover {
     background-color: light-dark(
-      var(--mantine-color-pink-3),
+      var(--mantine-color-violet-3),
       var(--mantine-color-dark-5)
     );
   }
 
   &[data-active] {
     background-color: light-dark(
-      var(--mantine-color-pink-4),
+      var(--mantine-color-violet-4),
       var(--mantine-color-dark-7)
     );
     border-color: light-dark(
-      var(--mantine-color-pink-4),
+      var(--mantine-color-violet-4),
       var(--mantine-color-dark-7)
     );
     border-bottom: 3px solid var(--mantine-color-white);

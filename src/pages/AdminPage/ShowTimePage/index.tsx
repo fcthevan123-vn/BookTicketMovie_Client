@@ -336,7 +336,7 @@ const ShowTimePage = () => {
                     className="flex justify-between items-center w-full gap-10"
                   >
                     <div className="flex gap-2 items-center">
-                      <ThemeIcon color="pink" size={28} radius="xl">
+                      <ThemeIcon color="violet" size={28} radius="xl">
                         <IconAlarm
                           style={{ width: rem(22), height: rem(22) }}
                         />

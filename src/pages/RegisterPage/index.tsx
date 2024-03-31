@@ -18,8 +18,8 @@ const cx = classNames.bind(styles);
 
 function RegisterPage() {
   return (
-    <div className="bg-gradient-to-r from-cyan-500 to-blue-500  sm:bg-none sm:bg-gray-300  grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-4 p-5 h-screen  boxshadow-custom">
-      {/* <div className="lg:col-span-3  md:col-span-2	sm:col-span-2 hidden boxshadow-custom rounded-l-xl relative bg-gradient-to-r from-cyan-500 to-blue-500 sm:flex flex-col items-center justify-center ">
+    <div className="bg-gradient-to-r from-violet-500 to-blue-500  sm:bg-none sm:bg-gray-300  grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-4 p-5 h-screen  boxshadow-custom">
+      {/* <div className="lg:col-span-3  md:col-span-2	sm:col-span-2 hidden boxshadow-custom rounded-l-xl relative bg-gradient-to-r from-violet-500 to-blue-500 sm:flex flex-col items-center justify-center ">
        */}
       <div className="lg:col-span-3  md:col-span-2 	sm:col-span-2 hidden boxshadow-custom rounded-l-xl relative sm:flex flex-col items-center justify-center ">
         <div className="h-full rounded-l-xl  overflow-hidden">

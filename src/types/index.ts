@@ -197,3 +197,16 @@ export type BookingTypeTS = {
   Show: Show;
   SeatStatuses: SeatStatus[];
 };
+
+export type EventTS = {
+  id?: string;
+  content: string;
+  discount: string | null;
+  title: string;
+  thumbnail?: string;
+  imageFile?: File | null;
+  startDate: Date;
+  endDate: Date;
+  createdAt?: string;
+  updatedAt?: string;
+};

@@ -43,7 +43,7 @@ type userRows = {
 const jobColors: Record<string, string> = {
   user: "blue",
   admin: "orange",
-  manager: "pink",
+  manager: "violet",
   employee: "green",
 };
 
@@ -55,13 +55,10 @@ function ManageAccountPage() {
     headers,
     setHeaders,
     limitRow,
-    dataGloBal,
-    setDataGlobal,
     setIsLoading,
     activePage,
     setTotalPagination,
     currentSearchValue,
-    totalPagination,
     setActivePage,
   } = useTableCustom();
 
@@ -364,7 +361,7 @@ function ManageAccountPage() {
     <div>
       <div className="flex justify-end">
         <Button
-          size="compact-sm"
+          size="xs"
           variant="filled"
           mb={"lg"}
           radius={"md"}

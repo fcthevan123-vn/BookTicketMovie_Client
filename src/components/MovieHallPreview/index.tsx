@@ -17,7 +17,7 @@ function MovieHallPreview({}: Props) {
 
         <Group justify="space-between" mt="md" mb="xs">
           <Text fw={500}>Norway Fjord Adventures</Text>
-          <Badge color="pink" variant="light">
+          <Badge color="violet" variant="light">
             On Sale
           </Badge>
         </Group>

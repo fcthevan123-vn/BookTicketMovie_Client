@@ -17,18 +17,7 @@ function ManageBookingPage({}: Props) {
   const [statusBooking, setStatusBooking] = useState("Tất cả");
   const [data, setData] = useState<BookingTypeTS[]>([]);
   const [, , dataUser] = useAuthenticate();
-  const {
-    setRows,
-    headers,
-    setHeaders,
-    limitRow,
-    setIsLoading,
-    activePage,
-    setTotalPagination,
-    currentSearchValue,
-    totalPagination,
-    setActivePage,
-  } = useTableCustom();
+  const { setRows, headers, setHeaders, setIsLoading } = useTableCustom();
 
   const getBooking = useCallback(async () => {
     try {
@@ -186,7 +175,7 @@ function ManageBookingPage({}: Props) {
                     : row.status === "Chưa thanh toán"
                     ? "orange"
                     : row.status === "Đã xác nhận"
-                    ? "teal"
+                    ? "violet"
                     : row.status === "Đã thanh toán"
                     ? "green"
                     : "blue"
@@ -202,7 +191,7 @@ function ManageBookingPage({}: Props) {
                 <Tooltip label="Xác nhận">
                   <ActionIcon
                     variant="filled"
-                    color={"teal"}
+                    color={"violet"}
                     size="sm"
                     onClick={() =>
                       openConfirm(row.id, "Đã xác nhận", "Xác nhận đặt vé")

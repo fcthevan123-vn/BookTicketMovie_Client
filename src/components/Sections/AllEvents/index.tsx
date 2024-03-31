@@ -72,7 +72,7 @@ function AllEvents() {
             <Badge
               size="xl"
               variant="gradient"
-              gradient={{ from: "pink", to: "grape", deg: 90 }}
+              gradient={{ from: "violet", to: "violet", deg: 90 }}
               style={{
                 textTransform: "none",
               }}

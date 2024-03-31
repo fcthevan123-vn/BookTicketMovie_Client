@@ -196,7 +196,7 @@ function PickSeatPage({}: Props) {
                 center
                 icon={
                   <ThemeIcon
-                    color="cyan"
+                    color="violet"
                     variant="filled"
                     size={30}
                     radius="md"
@@ -208,7 +208,7 @@ function PickSeatPage({}: Props) {
                 <List.Item
                   icon={
                     <ThemeIcon
-                      color="cyan"
+                      color="violet"
                       variant="filled"
                       size={30}
                       radius="md"
@@ -223,7 +223,7 @@ function PickSeatPage({}: Props) {
                 <List.Item
                   icon={
                     <ThemeIcon
-                      color="cyan"
+                      color="violet"
                       variant="filled"
                       size={30}
                       radius="md"
@@ -237,7 +237,7 @@ function PickSeatPage({}: Props) {
                 <List.Item
                   icon={
                     <ThemeIcon
-                      color="cyan"
+                      color="violet"
                       variant="filled"
                       size={30}
                       radius="md"
@@ -251,7 +251,7 @@ function PickSeatPage({}: Props) {
                 <List.Item
                   icon={
                     <ThemeIcon
-                      color="cyan"
+                      color="violet"
                       variant="filled"
                       size={30}
                       radius="md"
@@ -265,7 +265,7 @@ function PickSeatPage({}: Props) {
                 <List.Item
                   icon={
                     <ThemeIcon
-                      color="cyan"
+                      color="violet"
                       variant="filled"
                       size={30}
                       radius="md"
@@ -279,7 +279,7 @@ function PickSeatPage({}: Props) {
                 <List.Item
                   icon={
                     <ThemeIcon
-                      color="cyan"
+                      color="violet"
                       variant="filled"
                       size={30}
                       radius="md"
@@ -415,7 +415,7 @@ function PickSeatPage({}: Props) {
                 className={classes.box}
                 style={{
                   background: "var(--mantine-color-gray-1)",
-                  border: "1.5px solid var(--mantine-color-pink-4)",
+                  border: "1.5px solid var(--mantine-color-violet-4)",
                 }}
               ></Box>
               <Text size="xs" c={"dimmed"}>

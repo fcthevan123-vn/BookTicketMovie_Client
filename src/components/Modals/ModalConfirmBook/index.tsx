@@ -121,7 +121,7 @@ function ModalConfirmBook({ opened, close }: Props) {
                 p="md"
                 w={600}
                 // h={400}
-                className="bg-gradient-to-r from-cyan-500 to-blue-500"
+                className="bg-gradient-to-r from-violet-500 to-blue-500"
                 // style={{ background: "var(--mantine-color-blue-6)" }}
               >
                 <div>
@@ -163,7 +163,7 @@ function ModalConfirmBook({ opened, close }: Props) {
               </Paper>
 
               <div
-                className="bg-gradient-to-r p-3 from-cyan-500 to-blue-500 w-full"
+                className="bg-gradient-to-r p-3 from-violet-500 to-blue-500 w-full"
                 style={{
                   borderRadius: "var(--mantine-radius-md)",
                 }}
@@ -195,7 +195,7 @@ function ModalConfirmBook({ opened, close }: Props) {
                 p="md"
                 w={600}
                 // h={400}
-                className="bg-gradient-to-r from-cyan-500 to-blue-500"
+                className="bg-gradient-to-r from-violet-500 to-blue-500"
                 // style={{ background: "var(--mantine-color-blue-6)" }}
               >
                 <div className="flex flex-col gap-2">

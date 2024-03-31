@@ -66,7 +66,7 @@ function UserLayout({ children }: UserLayoutProps) {
       <AppShell.Header
         styles={{
           header: {
-            backgroundColor: "var(--mantine-color-pink-6)",
+            backgroundColor: "var(--mantine-color-violet-6)",
             borderBottom: "0px",
             transition: "0ms",
           },
@@ -93,7 +93,7 @@ function UserLayout({ children }: UserLayoutProps) {
       <AppShell.Navbar
         styles={{
           navbar: {
-            borderRight: "1px solid var(--mantine-color-pink-3)",
+            borderRight: "1px solid var(--mantine-color-violet-3)",
             boxShadow: "var(--mantine-shadow-xl)",
           },
         }}
@@ -103,7 +103,7 @@ function UserLayout({ children }: UserLayoutProps) {
         </AppShell.Section>
         <AppShell.Section
           style={{
-            backgroundColor: "var(--mantine-color-pink-6)",
+            backgroundColor: "var(--mantine-color-violet-6)",
           }}
           p="md"
         >

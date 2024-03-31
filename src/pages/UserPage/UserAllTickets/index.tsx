@@ -151,7 +151,7 @@ function UserAllTickets() {
                     : row.status === "Chưa thanh toán"
                     ? "orange"
                     : row.status === "Đã xác nhận"
-                    ? "teal"
+                    ? "violet"
                     : row.status === "Đã thanh toán"
                     ? "green"
                     : "blue"

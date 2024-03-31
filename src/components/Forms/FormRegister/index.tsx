@@ -75,9 +75,9 @@ function FormRegister() {
         notifications.update({
           id,
           radius: "lg",
-          color: "teal",
+          color: "violet",
           loading: false,
-          title: <p className="text-teal-600">Đăng ký thành công</p>,
+          title: <p className="text-violet-600">Đăng ký thành công</p>,
           message: res.message,
           withBorder: true,
           withCloseButton: true,
@@ -260,7 +260,7 @@ function FormRegister() {
             type="submit"
             mt="xl"
             variant="gradient"
-            gradient={{ from: "indigo", to: "cyan" }}
+            gradient={{ from: "indigo", to: "violet" }}
           >
             Đăng ký ngay
           </Button>

@@ -150,6 +150,14 @@ const router: IRouter[] = [
   },
 
   {
+    path: "/admin/event",
+    isProtected: true,
+    isAdmin: true,
+    layout: AdminLayout,
+    element: AdminPage,
+  },
+
+  {
     path: "/admin/movie-hall/overview",
     isProtected: true,
     isAdmin: true,

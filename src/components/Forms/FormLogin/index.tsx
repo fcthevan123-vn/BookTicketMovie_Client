@@ -116,7 +116,7 @@ function FormLogin() {
             mt="xl"
             variant="gradient"
             loading={isLoading}
-            gradient={{ from: "teal", to: "blue", deg: 60 }}
+            gradient={{ from: "violet", to: "blue", deg: 60 }}
           >
             Đăng nhập
           </Button>

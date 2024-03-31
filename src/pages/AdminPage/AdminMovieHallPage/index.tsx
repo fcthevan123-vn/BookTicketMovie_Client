@@ -67,7 +67,7 @@ function AdminMovieHallPage() {
           size="sm"
           center
           icon={
-            <ThemeIcon color="cyan" size={24} radius="md">
+            <ThemeIcon color="violet" size={24} radius="md">
               <IconChevronRight size="1rem" />
             </ThemeIcon>
           }

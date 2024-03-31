@@ -173,7 +173,7 @@ function ManageBookingPage() {
                     : row.status === "Chưa thanh toán"
                     ? "orange"
                     : row.status === "Đã xác nhận"
-                    ? "teal"
+                    ? "violet"
                     : row.status === "Đã thanh toán"
                     ? "green"
                     : "blue"
@@ -189,7 +189,7 @@ function ManageBookingPage() {
                 <Tooltip label="Xác nhận">
                   <ActionIcon
                     variant="filled"
-                    color={"teal"}
+                    color={"violet"}
                     size="sm"
                     onClick={() =>
                       openConfirm(row.id, "Đã xác nhận", "Xác nhận đặt vé")

@@ -211,7 +211,7 @@ function TopSecton({ dataMovie }: Props) {
                         disabled={
                           !isLogged || !dataUser.isVerifyEmail ? true : false
                         }
-                        gradient={{ from: "blue", to: "pink", deg: 90 }}
+                        gradient={{ from: "blue", to: "violet", deg: 90 }}
                         onClick={() => setIsOpen(true)}
                       >
                         Đặt vé
@@ -238,7 +238,7 @@ function TopSecton({ dataMovie }: Props) {
                         disabled={
                           !isLogged || !dataUser.isVerifyEmail ? true : false
                         }
-                        gradient={{ from: "pink", to: "blue", deg: 0 }}
+                        gradient={{ from: "violet", to: "blue", deg: 0 }}
                       >
                         Xem đánh giá
                       </Button>
