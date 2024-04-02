@@ -1,6 +1,6 @@
-import { Button, NumberInput, Select, Text, TextInput } from "@mantine/core";
+import { Button, NumberInput, Text, TextInput } from "@mantine/core";
 
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { layoutType } from "../../../types";
 import { layoutServices } from "../../../services";
 import NormalToast from "../../../components/AllToast/NormalToast";
@@ -149,18 +149,7 @@ function FormCreateLayout({
 function AdminLayoutPage() {
   const [data, setData] = useState<layoutType[]>([]);
 
-  const {
-    setRows,
-    headers,
-    setHeaders,
-    limitRow,
-    setIsLoading,
-    activePage,
-    setTotalPagination,
-    currentSearchValue,
-    totalPagination,
-    setActivePage,
-  } = useTableCustom();
+  const { setRows, headers, setHeaders } = useTableCustom();
 
   const getAllLayout = useCallback(async () => {
     try {

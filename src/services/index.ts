@@ -9,3 +9,4 @@ export { default as layoutServices } from "./layoutServices";
 export { default as seatServices } from "./seatServices";
 
 export { default as reviewServices } from "./reviewServices";
+export { default as eventServices } from "./eventServices";

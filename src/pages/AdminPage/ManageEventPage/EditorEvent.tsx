@@ -9,9 +9,7 @@ import SubScript from "@tiptap/extension-subscript";
 import BulletList from "@tiptap/extension-bullet-list";
 import { UseFormReturnType } from "@mantine/form";
 import { EventTS } from "../../../types";
-
-const content =
-  '<h2 style="text-align: center;">Tiêu đề</h2><p> Thêm sự kiện mới </p>';
+import { useEffect } from "react";
 
 type Props = {
   form: UseFormReturnType<EventTS>;
@@ -33,22 +31,21 @@ function EditorEvent({ form }: Props) {
       Highlight,
       TextAlign.configure({ types: ["heading", "paragraph"] }),
     ],
-    content,
+
     onUpdate: ({ editor }) => {
-      form.setValues({
-        content: editor.getHTML(),
-      });
-    },
-    onCreate: ({ editor }) => {
       form.setValues({
         content: editor.getHTML(),
       });
     },
   });
 
+  /* set content value of editor */
+  useEffect(() => {
+    editor?.commands.setContent(form.values.content);
+  }, [editor]);
+
   return (
     <RichTextEditor editor={editor}>
-      {/* {console.log("editor.", editor?.getHTML())} */}
       <RichTextEditor.Toolbar sticky stickyOffset={60}>
         <RichTextEditor.ControlsGroup>
           <RichTextEditor.Bold />
