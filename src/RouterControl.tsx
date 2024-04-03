@@ -1,5 +1,5 @@
 import { FC, ReactNode } from "react";
-import { createBrowserRouter } from "react-router-dom";
+import { ScrollRestoration, createBrowserRouter } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectRoute";
 import router from "./router";
 
@@ -34,12 +34,14 @@ const routes = createBrowserRouter(
         path: route.path,
         element: isProtectedElement ? (
           <ProtectedRoute checkAdmin={checkAdmin}>
+            <ScrollRestoration />
             <MappingLayout>
               <Element />
             </MappingLayout>
           </ProtectedRoute>
         ) : (
           <MappingLayout>
+            <ScrollRestoration />
             <Element />
           </MappingLayout>
         ),

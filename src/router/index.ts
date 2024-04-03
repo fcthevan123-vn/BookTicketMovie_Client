@@ -11,6 +11,7 @@ const PickSeatPage = lazy(() => import("../pages/PickSeatPage"));
 const MovieDetailPage = lazy(() => import("../pages/DetailMoviePage"));
 const VerifyEmailPage = lazy(() => import("../pages/VerifyEmailPage"));
 const EmployeePage = lazy(() => import("../pages/EmployeePage"));
+const EventPage = lazy(() => import("../pages/EventPage"));
 
 import {
   AdminLayout,
@@ -35,6 +36,12 @@ const router: IRouter[] = [
     isProtected: true,
     layout: DefaultLayout,
     element: HomePage,
+  },
+  {
+    path: "/event/:id",
+    isProtected: false,
+    layout: DefaultLayout,
+    element: EventPage,
   },
   {
     path: "/home",

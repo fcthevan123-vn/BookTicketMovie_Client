@@ -1,8 +1,13 @@
 .header {
   padding-top: var(--mantine-spacing-sm);
-  background-color: light-dark(
+  /* background-color: light-dark(
     var(--mantine-color-violet-6),
     var(--mantine-color-dark-6)
+  ); */
+  background-image: linear-gradient(
+    to right,
+    var(--mantine-color-violet-6),
+    var(--mantine-color-pink-6)
   );
   height: rem(120px);
   border-bottom: rem(1px) solid

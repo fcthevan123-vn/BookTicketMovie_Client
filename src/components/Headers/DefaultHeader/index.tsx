@@ -338,7 +338,7 @@ export default function DefaultHeader() {
               <Link to={"/register"}>
                 <Button
                   variant="gradient"
-                  gradient={{ from: "#0061ff", to: "#60efff" }}
+                  gradient={{ from: "violet.8", to: "pink" }}
                   radius="lg"
                   className="shadow-md drop-shadow-md"
                 >

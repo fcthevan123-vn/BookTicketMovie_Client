@@ -67,6 +67,12 @@ const movieServices = {
     return res.data;
   },
 
+  async getOneEvent(id: string) {
+    const res = await axios.get(`/api/v1/event/get-event/${id}`);
+
+    return res.data;
+  },
+
   async deleteEvent(id: string) {
     const res = await axios.delete(`/api/v1/event/delete-event/${id}`);
 
