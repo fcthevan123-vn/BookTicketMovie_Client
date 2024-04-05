@@ -10,19 +10,41 @@ import RelatedMovie from "../../components/RelatedMovie";
 function DetailMoviePage() {
   const { id } = useParams();
   const [dataMovie, setDataMovie] = useState<DataTableMoviesProps>();
+  const [relatedMovies, setRelatedMovies] = useState<DataTableMoviesProps[]>();
 
   const getMovieById = useCallback(async () => {
     try {
       const res = await movieServices.getMovieById(id as string);
       if (res.statusCode === 0) {
         setDataMovie(res.data);
+        console.log(res.data);
       }
     } catch (error) {
       console.log(error);
     }
   }, [id]);
 
+  async function getAllMovies() {
+    try {
+      const res = await movieServices.getAllMovies({ isCount: false });
+      if (res.statusCode === 0) {
+        const dataLength = res.data.length;
+
+        // genareate random index of movies array
+        const randomNumbers = Array.from({ length: dataLength }, (_, i) => i)
+          .sort(() => Math.random() - 0.5)
+          .slice(0, 4);
+
+        const selectedMovies = randomNumbers.map((index) => res.data[index]);
+        setRelatedMovies(selectedMovies);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   useEffect(() => {
+    getAllMovies();
     getMovieById();
   }, [getMovieById, id]);
 
@@ -43,7 +65,9 @@ function DetailMoviePage() {
       />
 
       <div className="">
-        {dataMovie && <RelatedMovie dataMovie={dataMovie}></RelatedMovie>}
+        {dataMovie && relatedMovies && (
+          <RelatedMovie dataMovie={relatedMovies}></RelatedMovie>
+        )}
       </div>
     </Container>
   );

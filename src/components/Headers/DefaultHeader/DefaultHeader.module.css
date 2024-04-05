@@ -35,7 +35,7 @@
 
   &:hover {
     background-color: light-dark(
-      var(--mantine-color-violet-6),
+      var(--mantine-color-pink-6),
       var(--mantine-color-dark-8)
     );
   }

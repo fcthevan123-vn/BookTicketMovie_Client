@@ -21,19 +21,17 @@ import { useDisclosure } from "@mantine/hooks";
 
 import classes from "./DefaultHeader.module.css";
 import { BiMoon, BiMoviePlay, BiSun, BiUserCircle } from "react-icons/bi";
-import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
-import { SpotlightActionData, Spotlight, spotlight } from "@mantine/spotlight";
+import { SpotlightActionData, Spotlight } from "@mantine/spotlight";
 import {
   AiOutlineCheckCircle,
   AiOutlineUser,
   AiOutlineMail,
   AiOutlineSetting,
   AiOutlineLogout,
-  AiOutlineSearch,
 } from "react-icons/ai";
 import { useDispatch } from "react-redux";
-import { useLocation, useNavigate, Link } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import { useAuthenticate } from "../../../hooks";
 import { userSlice } from "../../../redux/reducers";
 import { authenticateServices, userServices } from "../../../services";
@@ -42,7 +40,6 @@ import {
   IconFileText,
   IconHome,
   IconSearch,
-  IconSwitchHorizontal,
 } from "@tabler/icons-react";
 
 export default function DefaultHeader() {
@@ -56,7 +53,6 @@ export default function DefaultHeader() {
   const dark = colorScheme === "dark";
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const data = {
     user: {
@@ -110,28 +106,6 @@ export default function DefaultHeader() {
       dispatch(userSlice.actions.toggleLogin({}));
     }
   };
-
-  const openSwitchAdmin = () =>
-    modals.openConfirmModal({
-      title: <p className="text-blue-500 font-medium">Switch to admin page</p>,
-      centered: true,
-      children: <p>Are you sure to switch to admin page?</p>,
-      zIndex: 1600,
-      labels: {
-        confirm: "Confirm",
-        cancel: "Cancel",
-      },
-      confirmProps: { color: "blue", radius: "lg" },
-      cancelProps: { color: "gray", radius: "lg" },
-      overlayProps: {
-        color: "#141517",
-        opacity: 0.55,
-        blur: 3,
-      },
-      radius: "lg",
-      onCancel: () => console.log("Cancel"),
-      onConfirm: () => navigate(`/admin/dashboard`),
-    });
 
   const actions: SpotlightActionData[] = [
     {
@@ -249,7 +223,7 @@ export default function DefaultHeader() {
                       size={32}
                       radius="xl"
                       bg={"white"}
-                      color="blue"
+                      color="violet"
                       ml={"sm"}
                     >
                       <AiOutlineUser size="1.3rem" />
@@ -289,10 +263,10 @@ export default function DefaultHeader() {
                   {dataUser?.fullName}
                 </Menu.Item>
                 <Menu.Item
-                  className={classes.menuItem}
+                  className="break-all"
                   leftSection={<AiOutlineMail size="0.9rem" stroke={"1.5"} />}
                 >
-                  {dataUser?.email}
+                  <p className="">{dataUser?.email}</p>
                 </Menu.Item>
                 <Menu.Divider className={classes.menuItem} />
                 <Menu.Label>Cài đặt</Menu.Label>
