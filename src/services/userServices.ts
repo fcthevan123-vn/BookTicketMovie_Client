@@ -17,6 +17,11 @@ const userServices = {
     return res.data;
   },
 
+  async getUserStatistic(id: string) {
+    const res = await axios.get(`/api/v1/user/get-statistic/${id}`);
+    return res.data;
+  },
+
   async getStatistic() {
     const res = await axios.get(`/api/v1/user/statistic`);
     return res.data;

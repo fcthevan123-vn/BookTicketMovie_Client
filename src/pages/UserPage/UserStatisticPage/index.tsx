@@ -1,43 +1,24 @@
-import React, { useCallback, useEffect, useState } from "react";
-import classes from "./UserStatisticPage.module.css";
-import { Text } from "@mantine/core";
-import { IconUser } from "@tabler/icons-react";
+import { useCallback, useEffect, useState } from "react";
+import { IconBrandCashapp, IconTicket } from "@tabler/icons-react";
 import NormalToast from "../../../components/AllToast/NormalToast";
-import bookingServices from "../../../services/bookingServices";
 import { BookingTypeTS } from "../../../types";
 import { useAuthenticate } from "../../../hooks";
-import { Link } from "react-router-dom";
-type Props = {};
+import { Divider, Tabs, rem } from "@mantine/core";
+import { BarChart } from "@mantine/charts";
+import { userServices } from "../../../services";
 
-const data = [
-  {
-    title: "Page views",
-    stats: "456,133",
-    description:
-      "24% more than in the same month last year, 33% more that two years ago",
-  },
-  {
-    title: "New users",
-    stats: "2,175",
-    description:
-      "13% less compared to last month, new user engagement up by 6%",
-  },
-  {
-    title: "Completed orders",
-    stats: "1,994",
-    description: "1994 orders were completed this month, 97% satisfaction rate",
-  },
-];
-
-function UserStatisticPage({}: Props) {
+function UserStatisticPage() {
   const [, , dataUser] = useAuthenticate();
 
-  const [data, setData] = useState<BookingTypeTS[] | null>(null);
+  const [data, setData] = useState<BookingTypeTS[]>();
+
+  const iconStyle = { width: rem(16), height: rem(16) };
 
   const getAllBookings = useCallback(async () => {
     try {
-      const res = await bookingServices.getBookingByUserId(dataUser.id);
+      const res = await userServices.getUserStatistic(dataUser.id);
       if (res.statusCode === 0) {
+        console.log("res.data", res.data);
         setData(res.data);
       }
     } catch (error) {
@@ -54,8 +35,59 @@ function UserStatisticPage({}: Props) {
     getAllBookings();
   }, [getAllBookings]);
   return (
-    <div className="relative bg-white mt-4">
-      <div className="h-56  sm:h-72 lg:absolute lg:left-0 lg:h-full lg:w-1/2">
+    <div className="">
+      <Tabs variant="pills" radius="sm" defaultValue="ticketStatistic">
+        <Tabs.List>
+          <Tabs.Tab
+            value="ticketStatistic"
+            leftSection={<IconTicket style={iconStyle} />}
+          >
+            Thống kê đặt vé
+          </Tabs.Tab>
+          <Tabs.Tab
+            value="moneyStatistic"
+            leftSection={<IconBrandCashapp style={iconStyle} />}
+          >
+            Thống kê chi tiêu
+          </Tabs.Tab>
+        </Tabs.List>
+
+        <Divider my={"lg"} size={"sm"}></Divider>
+
+        <Tabs.Panel value="ticketStatistic">
+          {data && data.length > 0 ? (
+            <div className="mx-10">
+              <BarChart
+                h={400}
+                data={data}
+                dataKey="month"
+                series={[
+                  {
+                    name: "successBooking",
+                    label: "Vé hoàn thành",
+                    color: "teal.7",
+                  },
+                  {
+                    name: "pendingBooking",
+                    label: "Vé chờ duyệt",
+                    color: "violet.7",
+                  },
+                  { name: "cancelBooking", label: "Vé đã huỷ", color: "red.6" },
+                ]}
+                withLegend
+                xAxisLabel="Thời gian"
+                yAxisLabel="Số lượng vé"
+              />
+            </div>
+          ) : (
+            <p>Bạn chưa đặt vé lần nào trong 6 tháng gần đây</p>
+          )}
+        </Tabs.Panel>
+
+        <Tabs.Panel value="moneyStatistic">Messages tab content</Tabs.Panel>
+      </Tabs>
+
+      {/* <div className="h-56  sm:h-72 lg:absolute lg:left-0 lg:h-full lg:w-1/2">
         <img
           className="w-full h-full object-cover rounded-2xl "
           src="https://images.unsplash.com/photo-1559570278-eb8d71d06403?auto=format&fit=crop&q=80&w=1852&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
@@ -119,7 +151,7 @@ function UserStatisticPage({}: Props) {
             </dl>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
