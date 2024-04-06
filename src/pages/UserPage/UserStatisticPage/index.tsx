@@ -1,30 +1,53 @@
 import { useCallback, useEffect, useState } from "react";
 import { IconBrandCashapp, IconTicket } from "@tabler/icons-react";
 import NormalToast from "../../../components/AllToast/NormalToast";
-import { BookingTypeTS } from "../../../types";
 import { useAuthenticate } from "../../../hooks";
 import { Divider, Tabs, rem } from "@mantine/core";
-import { BarChart } from "@mantine/charts";
+import { AreaChart, BarChart } from "@mantine/charts";
 import { userServices } from "../../../services";
 
 function UserStatisticPage() {
   const [, , dataUser] = useAuthenticate();
 
-  const [data, setData] = useState<BookingTypeTS[]>();
+  const [data, setData] = useState({
+    bookingStatistic: [],
+    moneyStatistic: [],
+  });
 
   const iconStyle = { width: rem(16), height: rem(16) };
 
-  const getAllBookings = useCallback(async () => {
+  const getUserBookingStatistic = useCallback(async () => {
     try {
       const res = await userServices.getUserStatistic(dataUser.id);
       if (res.statusCode === 0) {
-        console.log("res.data", res.data);
-        setData(res.data);
+        setData((prevData) => ({
+          ...prevData,
+          bookingStatistic: res.data,
+        }));
       }
     } catch (error) {
       const err = error as Error;
       NormalToast({
-        title: "getAllBookings",
+        title: "getUserBookingStatistic",
+        color: "red",
+        message: err.message,
+      });
+    }
+  }, [dataUser.id]);
+
+  const getUserMoneyStatistic = useCallback(async () => {
+    try {
+      const res = await userServices.getUserMoneyStatistic(dataUser.id);
+      if (res.statusCode === 0) {
+        setData((prevData) => ({
+          ...prevData,
+          moneyStatistic: res.data,
+        }));
+      }
+    } catch (error) {
+      const err = error as Error;
+      NormalToast({
+        title: "getUserMoneyStatistic",
         color: "red",
         message: err.message,
       });
@@ -32,8 +55,9 @@ function UserStatisticPage() {
   }, [dataUser.id]);
 
   useEffect(() => {
-    getAllBookings();
-  }, [getAllBookings]);
+    getUserBookingStatistic();
+    getUserMoneyStatistic();
+  }, [getUserBookingStatistic, getUserMoneyStatistic]);
   return (
     <div className="">
       <Tabs variant="pills" radius="sm" defaultValue="ticketStatistic">
@@ -55,11 +79,11 @@ function UserStatisticPage() {
         <Divider my={"lg"} size={"sm"}></Divider>
 
         <Tabs.Panel value="ticketStatistic">
-          {data && data.length > 0 ? (
+          {data && data.bookingStatistic.length > 0 ? (
             <div className="mx-10">
               <BarChart
-                h={400}
-                data={data}
+                h={500}
+                data={data.bookingStatistic}
                 dataKey="month"
                 series={[
                   {
@@ -84,7 +108,33 @@ function UserStatisticPage() {
           )}
         </Tabs.Panel>
 
-        <Tabs.Panel value="moneyStatistic">Messages tab content</Tabs.Panel>
+        <Tabs.Panel value="moneyStatistic">
+          <div className="mx-10">
+            <AreaChart
+              h={500}
+              data={data.moneyStatistic}
+              withLegend
+              dataKey="month"
+              xAxisLabel="Thời gian"
+              yAxisLabel="Tổng tiền đã chi (VND)"
+              yAxisProps={{ width: 90 }}
+              fillOpacity={0.6}
+              series={[
+                {
+                  name: "totalMoney",
+                  label: "Tổng tiền đã chi",
+                  color: "violet.6",
+                },
+              ]}
+              curveType="linear"
+              gridAxis="x"
+            />
+            <p className="text-center italic text-sm mt-3 text-gray-500">
+              Lưu ý: Thống kê chỉ dựa trên những vé đã được khách hàng thanh
+              toán thành công
+            </p>
+          </div>
+        </Tabs.Panel>
       </Tabs>
 
       {/* <div className="h-56  sm:h-72 lg:absolute lg:left-0 lg:h-full lg:w-1/2">

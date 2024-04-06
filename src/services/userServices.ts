@@ -22,6 +22,11 @@ const userServices = {
     return res.data;
   },
 
+  async getUserMoneyStatistic(id: string) {
+    const res = await axios.get(`/api/v1/user/get-money-statistic/${id}`);
+    return res.data;
+  },
+
   async getStatistic() {
     const res = await axios.get(`/api/v1/user/statistic`);
     return res.data;
