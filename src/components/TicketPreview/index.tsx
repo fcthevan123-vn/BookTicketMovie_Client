@@ -6,13 +6,8 @@ import {
   ScrollArea,
   Text,
 } from "@mantine/core";
-import React from "react";
 import { usePickSeatContext } from "../Provider/PickSeatProvider";
 import { SeatTS } from "../../types";
-import moment from "moment";
-import { IconInfoCircle } from "@tabler/icons-react";
-
-type Props = {};
 
 type SeatToPayProps = {
   dataSeat: SeatTS;
@@ -53,8 +48,9 @@ function SeatToPay({ dataSeat }: SeatToPayProps) {
   );
 }
 
-function TicketPreview({}: Props) {
-  const { dataTotal, seatSelected, allPrice } = usePickSeatContext();
+function TicketPreview() {
+  const { dataTotal, seatSelected, allPrice, paymentMethod } =
+    usePickSeatContext();
 
   return (
     <div>
@@ -71,7 +67,7 @@ function TicketPreview({}: Props) {
               radius="md"
               withBorder
               h={"100%"}
-              className="bg-gradient-to-r from-sky-500 to-green-500"
+              className="bg-gradient-to-tr from-violet-500 to-orange-300"
               p="sm"
             >
               <div className="flex gap-1 flex-col h-full justify-center">
@@ -190,7 +186,9 @@ function TicketPreview({}: Props) {
               <Text size="sm" fw={500}>
                 Phương thức thanh toán:
               </Text>
-              <Text size="sm">Trực tiếp</Text>
+              <Text size="sm">
+                {paymentMethod == "direct" ? "Trực tiếp" : "Online"}
+              </Text>
             </div>
           </Grid.Col>
         </Grid>

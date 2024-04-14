@@ -48,11 +48,7 @@ const allLinks = [
     icon: IconBorderAll,
     link: `/admin/layout/overview`,
   },
-  {
-    label: "Quản lý tài khoản",
-    icon: IconSubtask,
-    link: `/admin/manage-account`,
-  },
+
   {
     label: "Quản lý đặt vé",
     icon: IconListCheck,
@@ -61,7 +57,15 @@ const allLinks = [
   {
     label: "Quản lý sự kiện",
     icon: IconGift,
-    link: `/admin/event`,
+    links: [
+      { label: "Sự kiện", link: "/admin/event" },
+      { label: "Mã giảm giá", link: "/admin/manage-discount" },
+    ],
+  },
+  {
+    label: "Quản lý tài khoản",
+    icon: IconSubtask,
+    link: `/admin/manage-account`,
   },
 ];
 

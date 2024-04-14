@@ -57,11 +57,6 @@ function ModalPickShow({ opened, close, dataMovie }: Props) {
     cityControl: cityControl,
   };
 
-  // const previousValue = usePrevious(cityControl);
-
-  // const urlParams = new URLSearchParams(window.location.search);
-  // const openQuery = urlParams.get("open");
-
   const titleCustom = (
     <div className="w-full flex justify-between px-20">
       <div className="flex gap-6">
@@ -236,16 +231,8 @@ function ModalPickShow({ opened, close, dataMovie }: Props) {
     getShows();
   }, [callApiCity, getAllRoomType, getShows, opened]);
 
-  // useEffect(() => {
-  //   console.log("previousValue", previousValue);
-  //   if (openQuery) {
-  //     console.log("openQuery", openQuery);
-  //   }
-  // }, [openQuery, previousValue]);
-
   return (
     <div>
-      {/* {console.log("dateControl", moment(dateControl).format("YYYY-MM-DD"))} */}
       <Modal
         opened={opened}
         onClose={close}
@@ -264,7 +251,7 @@ function ModalPickShow({ opened, close, dataMovie }: Props) {
             width: "100%",
           },
           content: {
-            background: "var(--mantine-color-gray-1)",
+            background: "var(--mantine-color-gray-2)",
           },
         }}
         // transitionProps={{ transition: "fade", duration: 200 }}

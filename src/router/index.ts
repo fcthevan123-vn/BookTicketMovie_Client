@@ -12,6 +12,7 @@ const MovieDetailPage = lazy(() => import("../pages/DetailMoviePage"));
 const VerifyEmailPage = lazy(() => import("../pages/VerifyEmailPage"));
 const EmployeePage = lazy(() => import("../pages/EmployeePage"));
 const EventPage = lazy(() => import("../pages/EventPage"));
+const PaymentAuthPage = lazy(() => import("../pages/PaymentAuthPage"));
 
 import {
   AdminLayout,
@@ -36,6 +37,12 @@ const router: IRouter[] = [
     isProtected: true,
     layout: DefaultLayout,
     element: HomePage,
+  },
+  {
+    path: "/payment-auth",
+    isProtected: false,
+    layout: "None",
+    element: PaymentAuthPage,
   },
   {
     path: "/event/:id",
@@ -189,6 +196,13 @@ const router: IRouter[] = [
   },
   {
     path: "/admin/show-time",
+    isProtected: true,
+    isAdmin: true,
+    layout: AdminLayout,
+    element: AdminPage,
+  },
+  {
+    path: "/admin/manage-discount",
     isProtected: true,
     isAdmin: true,
     layout: AdminLayout,

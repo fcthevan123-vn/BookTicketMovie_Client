@@ -1,10 +1,19 @@
-import { Button, Divider, Group, Paper, Radio, Text } from "@mantine/core";
-import React, { useEffect, useState } from "react";
+import {
+  ActionIcon,
+  Button,
+  Divider,
+  Group,
+  Paper,
+  Radio,
+  Text,
+  TextInput,
+  Tooltip,
+} from "@mantine/core";
+import { useEffect, useState } from "react";
 import { usePickSeatContext } from "../Provider/PickSeatProvider";
 import { SeatTS } from "../../types";
 import ModalConfirmBook from "../Modals/ModalConfirmBook";
-
-type Props = {};
+import { IconZoomCheck } from "@tabler/icons-react";
 
 type SeatToPayProps = {
   dataSeat: SeatTS;
@@ -32,8 +41,14 @@ function SeatToPay({ dataSeat }: SeatToPayProps) {
   );
 }
 
-function PaymentPreview({}: Props) {
-  const { seatSelected, dataTotal, setAllPrice } = usePickSeatContext();
+function PaymentPreview() {
+  const {
+    seatSelected,
+    dataTotal,
+    setAllPrice,
+    paymentMethod,
+    setPaymentMethod,
+  } = usePickSeatContext();
 
   const [openModalConfirm, setOpenModalConfirm] = useState(false);
 
@@ -139,6 +154,26 @@ function PaymentPreview({}: Props) {
               })}
           </Text>
         </div>
+        {/* Discount */}
+        <div className="mb-2">
+          <Text size="sm" fw={500}>
+            Mã giảm giá:
+          </Text>
+
+          <TextInput
+            radius="md"
+            size="xs"
+            placeholder="Nhập MGG nếu có"
+            rightSection={
+              <Tooltip label="Kiểm tra MGG" withArrow>
+                <ActionIcon variant="filled" aria-label="Settings">
+                  <IconZoomCheck size={18} />
+                </ActionIcon>
+              </Tooltip>
+            }
+          />
+        </div>
+
         <div className="flex justify-between mb-2">
           <Text size="sm" fw={500}>
             Tổng giá tiền:
@@ -157,11 +192,12 @@ function PaymentPreview({}: Props) {
           name="paymentMethod"
           label="Chọn phương thức thanh toán"
           withAsterisk
-          // px={"md"}
+          value={paymentMethod}
+          onChange={(e) => setPaymentMethod(e)}
         >
           <Group mt="xs">
-            <Radio value="offline" label="Trực tiếp" />
-            <Radio value="online" disabled label="Banking" />
+            <Radio value="direct" label="Trực tiếp" />
+            <Radio value="online" label="Online" />
           </Group>
         </Radio.Group>
         <div className="mt-4 flex justify-center">

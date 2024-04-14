@@ -14,6 +14,7 @@ import AdminLayoutPage from "./AdminLayoutPage";
 import ManageBookingPage from "./ManageBookingPage";
 import ShowTimePage from "./ShowTimePage";
 import ManageEventPage from "./ManageEventPage";
+import ManageDiscountPage from "./ManageDiscountPage";
 
 // Type
 type userRows = {
@@ -45,14 +46,6 @@ const intinialUserData = [
     age: "",
   },
 ];
-
-// const intinialCinemaData = [
-//   {
-//     name: "",
-//     location: "",
-//     detailLocation: "",
-//   },
-// ];
 
 const allPath = [
   {
@@ -181,6 +174,18 @@ const allPath = [
     jsx: (
       <TableFilterProvider<[]> initialData={[]}>
         <ManageEventPage></ManageEventPage>
+      </TableFilterProvider>
+    ),
+  },
+  {
+    urlInclude: "discount",
+    breadcrumbs: [
+      { title: "Admin", href: "/admin/discount" },
+      { title: "Discount", href: "#" },
+    ],
+    jsx: (
+      <TableFilterProvider<[]> initialData={[]}>
+        <ManageDiscountPage></ManageDiscountPage>
       </TableFilterProvider>
     ),
   },

@@ -1,8 +1,6 @@
 import { Text, Avatar, Group } from "@mantine/core";
 
-type Props = {};
-
-function Comment({}: Props) {
+function Comment() {
   return (
     <div
       style={{

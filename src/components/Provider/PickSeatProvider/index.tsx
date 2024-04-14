@@ -24,6 +24,10 @@ type PickSeatContextType = {
   setSeatSelected: (seats: SeatTS[]) => void;
   seatNumberControl: string;
   setSeatNumberControl: (e: string) => void;
+  discount: string;
+  setDiscount: (value: string) => void;
+  paymentMethod: string;
+  setPaymentMethod: (value: string) => void;
 };
 
 const PickSeatContext = createContext<PickSeatContextType | undefined>(
@@ -36,7 +40,6 @@ export function PickSeatProvider({ children }: { children: React.ReactNode }) {
   const [isDisabledSeat, setIsDisabledSeat] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [dataTotal, setDataTotal] = useState<SeatOverView | null>(null);
-  // const [dataShow]
   const [seatNumberControl, setSeatNumberControl] = useState("1");
   const [allPrice, setAllPrice] = useState({
     originalPrice: 0,
@@ -44,6 +47,8 @@ export function PickSeatProvider({ children }: { children: React.ReactNode }) {
     typeRoomPrice: 0,
     totalPrice: 0,
   });
+  const [discount, setDiscount] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("direct");
 
   return (
     <PickSeatContext.Provider
@@ -60,6 +65,10 @@ export function PickSeatProvider({ children }: { children: React.ReactNode }) {
         setSeatSelected,
         seatNumberControl,
         setSeatNumberControl,
+        discount,
+        setDiscount,
+        paymentMethod,
+        setPaymentMethod,
       }}
     >
       {children}

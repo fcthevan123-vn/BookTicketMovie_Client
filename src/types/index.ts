@@ -153,6 +153,8 @@ export type MovieTS = {
   directors: string[];
   actors: string[];
   language: string;
+  discountId?: string | null;
+  Discount?: DiscountTS;
   country: string;
   subtitle: string;
   releaseDate: string;
@@ -203,6 +205,8 @@ export type EventTS = {
   content: string;
   discount: string | null;
   title: string;
+  discountId?: string | null;
+  Discount?: DiscountTS;
   thumbnail?: string;
   imageFile?: File | null;
   startDate: Date;
@@ -210,3 +214,14 @@ export type EventTS = {
   createdAt?: string;
   updatedAt?: string;
 };
+
+export interface DiscountTS {
+  id?: string;
+  nameDiscount: string;
+  percentDiscount: number;
+  quantity: number;
+  startDate: Date;
+  endDate: Date;
+  createdAt?: string;
+  updatedAt?: string;
+}

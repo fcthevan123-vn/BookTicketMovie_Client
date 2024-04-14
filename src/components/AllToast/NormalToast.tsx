@@ -19,4 +19,16 @@ const NormalToast = ({ title, message, color }: Props) => {
   });
 };
 
+export const ErrToast = (err: Error, title: string) => {
+  const errMsg = err.message;
+  return notifications.show({
+    title: title,
+    message: errMsg,
+    withBorder: true,
+    color: "red",
+    radius: "lg",
+    icon: <IconBell style={{ width: rem(20), height: rem(20) }} />,
+  });
+};
+
 export default NormalToast;

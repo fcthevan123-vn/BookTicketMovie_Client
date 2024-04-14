@@ -1,7 +1,6 @@
 import {
   ActionIcon,
   Badge,
-  Divider,
   Grid,
   HoverCard,
   Paper,
@@ -15,7 +14,6 @@ import {
 
 import ShowTime from "./ShowTime";
 import { Cinema, MovieHall, Show } from "../../types";
-import { useMemo } from "react";
 
 type Props = {
   dataShow: dataShowType;
@@ -40,13 +38,13 @@ type GridRenderProps = {
 };
 
 function GridRender({ allShows }: GridRenderProps) {
-  // console.log("allShows.length", allShows.length, allShows);
   const element = allShows.map((show, index) => (
     <ShowTime dataShow={show} key={index}></ShowTime>
   ));
   return element;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function ShowItem({ dataShow, dataControlShow }: Props) {
   const showTimeRender =
     dataShow.allShowsMovieHall.length > 0 &&
@@ -55,10 +53,10 @@ function ShowItem({ dataShow, dataControlShow }: Props) {
         <Grid px={"md"} py={10}>
           <Grid.Col span={3}>
             <div className="flex items-center">
-              <Text c={"orange.8"}>
+              <Text c={"violet.8"}>
                 <IconArrowBadgeRightFilled></IconArrowBadgeRightFilled>
               </Text>
-              <Badge variant="light" p={"sm"} color="orange" radius="md">
+              <Badge variant="light" p={"sm"} color="violet" radius="md">
                 <Text fw={500} size="sm" tt="capitalize">
                   {item.movieHall.name}
                 </Text>
@@ -76,7 +74,6 @@ function ShowItem({ dataShow, dataControlShow }: Props) {
 
   return (
     <>
-      {/* {console.log("dataControlShow", dataControlShow)} */}
       {dataShow.allShowsMovieHall.length > 0 && (
         <Paper
           withBorder
@@ -85,12 +82,12 @@ function ShowItem({ dataShow, dataControlShow }: Props) {
           p="lg"
           styles={{
             root: {
-              borderLeft: "8px solid var(--mantine-color-orange-6)",
+              borderLeft: "8px solid var(--mantine-color-violet-6)",
             },
           }}
         >
           <div className="flex items-center gap-2">
-            <Badge variant="filled" p={"sm"} color="orange" radius="md">
+            <Badge variant="filled" p={"sm"} color="violet" radius="md">
               <Text fw={500} size="sm" tt="capitalize">
                 {dataShow.cinema.name}
               </Text>
@@ -99,7 +96,7 @@ function ShowItem({ dataShow, dataControlShow }: Props) {
               <HoverCard.Target>
                 <ActionIcon
                   variant="light"
-                  color="orange"
+                  color="violet"
                   size="sm"
                   radius="md"
                   aria-label="Settings"

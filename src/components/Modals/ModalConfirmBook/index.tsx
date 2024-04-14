@@ -1,8 +1,5 @@
 import {
-  BackgroundImage,
-  Box,
   Button,
-  Center,
   Code,
   Divider,
   Group,
@@ -18,7 +15,7 @@ import {
   IconMapPin,
   IconPhoneCall,
 } from "@tabler/icons-react";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useAuthenticate } from "../../../hooks";
 import TicketPreview from "../../TicketPreview";
 import { SelectNackAndDrink } from "../../SelectSnackAndDrink";
@@ -37,7 +34,7 @@ function ModalConfirmBook({ opened, close }: Props) {
   const [active, setActive] = useState(0);
   const [, , dataUser] = useAuthenticate();
   const navigate = useNavigate();
-  const { allPrice, seatSelected, dataTotal, isLoading, setIsLoading } =
+  const { allPrice, seatSelected, dataTotal, isLoading, paymentMethod } =
     usePickSeatContext();
 
   const nextStep = () =>
@@ -95,7 +92,8 @@ function ModalConfirmBook({ opened, close }: Props) {
       }}
       title={
         <Text c={"blue"} fw={600} size="lg">
-          Xác nhận thanh toán
+          Xác nhận thanh toán | Phương thức:
+          {paymentMethod == "direct" ? " Trực tiếp" : " Online qua VN Pay"}
         </Text>
       }
     >
@@ -108,12 +106,7 @@ function ModalConfirmBook({ opened, close }: Props) {
           h={"100%"}
         >
           <div className="flex justify-center items-center">
-            <div
-              className="flex flex-col gap-5 justify-center border border-gray-200 px-10 rounded-xl shadow-md items-center "
-              style={{
-                height: "420px",
-              }}
-            >
+            <div className="flex flex-col gap-5 bg-gradient-to-tr from-violet-500 to-orange-300 justify-center border border-gray-200 p-3 rounded-xl shadow-md items-center ">
               <Paper
                 withBorder
                 shadow="xs"
@@ -121,41 +114,41 @@ function ModalConfirmBook({ opened, close }: Props) {
                 p="md"
                 w={600}
                 // h={400}
-                className="bg-gradient-to-r from-violet-500 to-blue-500"
+                // className="bg-gradient-to-r from-violet-500 to-blue-500"
                 // style={{ background: "var(--mantine-color-blue-6)" }}
               >
                 <div>
-                  <Text fz="xs" tt="uppercase" c="white">
+                  <Text fz="xs" tt="uppercase" c="black">
                     Thông tin người dùng
                   </Text>
 
-                  <Text fz="lg" fw={500} c="white" td={"underline"}>
+                  <Text fz="lg" fw={500} c="black" td={"underline"}>
                     {dataUser.fullName}
                   </Text>
 
                   <Group wrap="nowrap" justify="start" gap={10} mt={3}>
-                    <IconAt stroke={1.5} size="1rem" color="white" />
-                    <Text fz="xs" c="white">
+                    <IconAt stroke={1.5} size="1rem" color="black" />
+                    <Text fz="xs" c="black">
                       {dataUser.email}
                     </Text>
                   </Group>
 
                   <Group wrap="nowrap" justify="start" gap={10} mt={5}>
-                    <IconPhoneCall stroke={1.5} size="1rem" color="white" />
-                    <Text fz="xs" c="white">
+                    <IconPhoneCall stroke={1.5} size="1rem" color="black" />
+                    <Text fz="xs" c="black">
                       {dataUser.phone}
                     </Text>
                   </Group>
 
                   <Group wrap="nowrap" justify="start" gap={10} mt={5}>
-                    <IconMapPin stroke={1.5} size="1rem" color="white" />
-                    <Text fz="xs" c="white">
+                    <IconMapPin stroke={1.5} size="1rem" color="black" />
+                    <Text fz="xs" c="black">
                       {dataUser.address}
                     </Text>
                   </Group>
                   <Group wrap="nowrap" justify="start" gap={10} mt={5}>
-                    <IconCalendarEvent stroke={1.5} size="1rem" color="white" />
-                    <Text fz="xs" c="white">
+                    <IconCalendarEvent stroke={1.5} size="1rem" color="black" />
+                    <Text fz="xs" c="black">
                       {dataUser.age} tuổi
                     </Text>
                   </Group>
@@ -163,7 +156,7 @@ function ModalConfirmBook({ opened, close }: Props) {
               </Paper>
 
               <div
-                className="bg-gradient-to-r p-3 from-violet-500 to-blue-500 w-full"
+                className="w-full"
                 style={{
                   borderRadius: "var(--mantine-radius-md)",
                 }}
@@ -177,9 +170,7 @@ function ModalConfirmBook({ opened, close }: Props) {
         <Stepper.Step label="Bước 2" description="Kiểm tra vé xem phim">
           <TicketPreview></TicketPreview>
         </Stepper.Step>
-        {/* <Stepper.Step label="Bước 3" description="Xác nhận thanh toán">
-          Step 3 content: Get full access
-        </Stepper.Step> */}
+
         <Stepper.Completed>
           <div className="flex justify-center items-center">
             <div
