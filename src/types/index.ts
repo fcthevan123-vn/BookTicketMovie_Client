@@ -104,8 +104,8 @@ export type Show = {
   movieId: string;
   date: string;
   movieHallId: string;
-  startTime: string;
-  endTime: string;
+  startTime: Date;
+  endTime: Date;
   createdAt: string;
   updatedAt: string;
   MovieHall: MovieHall;
@@ -155,6 +155,7 @@ export type MovieTS = {
   language: string;
   discountId?: string | null;
   Discount?: DiscountTS;
+  Shows?: Show[];
   country: string;
   subtitle: string;
   releaseDate: string;

@@ -46,15 +46,16 @@ function ManageDiscountPage() {
 
   async function handleSubmit(data: DiscountTS) {
     try {
-      console.log("data", data.id);
       let api;
       let title;
       if (isUpdate) {
         title = "Sửa mã giảm giá";
         api = discountServices.updateDiscount(data);
       } else {
+        const dataConvert = data;
+        delete dataConvert.id;
         title = "Thêm mã giảm giá";
-        api = discountServices.createDiscount(data);
+        api = discountServices.createDiscount(dataConvert);
       }
 
       const res = await loadingApi(api, title);

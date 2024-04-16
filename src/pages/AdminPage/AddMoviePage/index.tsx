@@ -198,7 +198,10 @@ const AddMoviePage = () => {
   return (
     <div className="h-full">
       <MovieFormProvider form={form}>
-        {/* {console.log("value", form.values.actors)} */}
+        {/* {console.log(
+          "test",
+          moment("19:03", "hh:mm").isSameOrBefore(moment("16:03", "hh:mm"))
+        )} */}
 
         <form onSubmit={form.onSubmit(() => handleSubmit(form.values))}>
           <p className="text-xl font-medium text-sky-500 ms-6 mt-6">

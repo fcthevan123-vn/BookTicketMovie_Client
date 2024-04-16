@@ -17,6 +17,10 @@ import "@mantine/carousel/styles.css";
 import "@mantine/charts/styles.css";
 import "@mantine/tiptap/styles.css";
 import "@mantine/charts/styles.css";
+import moment from "moment";
+import "moment/dist/locale/vi";
+
+moment.locale("vi");
 
 const theme = createTheme({
   fontFamily: "Be Vietnam Pro",

@@ -1,78 +1,43 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  cinemaServices,
-  movieHallServices,
-  movieServices,
-  showServices,
-} from "../../../services";
-import { normalApi } from "../../../untils/normalApi";
+import { useCallback, useEffect, useState } from "react";
+import { cinemaServices, movieServices, showServices } from "../../../services";
 import { useTableCustom } from "../../../components/Provider/TableFilterProvider";
 import {
   ActionIcon,
   Button,
-  List,
   Select,
   SimpleGrid,
   Text,
   TextInput,
   ThemeIcon,
+  Tooltip,
   rem,
 } from "@mantine/core";
-import {
-  IconAlarm,
-  IconClock,
-  IconPencil,
-  IconTrash,
-} from "@tabler/icons-react";
+import { IconAlarm, IconPlus, IconTrash } from "@tabler/icons-react";
 import TableFilter from "../../../components/TableFilter";
-import moment from "moment";
 import { modals } from "@mantine/modals";
 import { Cinema, MovieTS } from "../../../types";
-import { DatePickerInput, TimeInput } from "@mantine/dates";
+import { DateTimePicker } from "@mantine/dates";
 import { loadingApi } from "../../../untils/loadingApi";
-import NormalToast from "../../../components/AllToast/NormalToast";
+import NormalToast, {
+  ErrToast,
+} from "../../../components/AllToast/NormalToast";
+import { dateAdd } from "../../../untils/helper";
+import moment from "moment";
 
-function FormAddShow({ updateData }: { updateData: () => void }) {
-  const [dataMovie, setDataMovie] = useState([]);
+function FormAddShow({
+  updateData,
+  movieData,
+}: {
+  updateData: () => void;
+  movieData: MovieTS;
+}) {
   const [dataMovieHall, setDataMovieHall] = useState([]);
-  const [detailDataMovie, setDetailDataMovie] = useState([]);
 
-  const [movie, setMovie] = useState(null);
   const [movieHall, setMovieHall] = useState(null);
 
-  const [startTime, setStartTime] = useState("");
-  const [updatedTime, setUpdatedTime] = useState("");
+  const [startTime, setStartTime] = useState<Date>();
+  const [updatedTime, setUpdatedTime] = useState<Date>();
   const [dateShow, setDateShow] = useState<Date>();
-
-  const refStart = useRef<HTMLInputElement>(null);
-
-  const pickerControlStart = (
-    <ActionIcon
-      variant="subtle"
-      color="gray"
-      onClick={() => refStart.current?.showPicker()}
-    >
-      <IconClock style={{ width: rem(16), height: rem(16) }} stroke={1.5} />
-    </ActionIcon>
-  );
-
-  const getAllShowByMovie = useCallback(async () => {
-    try {
-      const res = await movieServices.getAllShowByMovie();
-      if (res.statusCode === 0) {
-        const formatData = res.data.map((data: MovieTS) => {
-          return {
-            value: data.id,
-            label: `${data.title} - ${data.duration} phút`,
-          };
-        });
-        setDataMovie(formatData);
-        setDetailDataMovie(res.data);
-      }
-    } catch (error) {
-      console.log("error", error);
-    }
-  }, []);
 
   const getAllMovieHall = useCallback(async () => {
     try {
@@ -98,26 +63,30 @@ function FormAddShow({ updateData }: { updateData: () => void }) {
     }
   }, []);
 
-  const generateEndDate = (date: string) => {
-    // console.log("dataMovie", dataMovie);
-    const movieSelected: MovieTS[] = detailDataMovie.filter(
-      (item: MovieTS) => item.id == movie
-    );
-
-    setStartTime(date);
-    const startDate = moment(date, "HH:mm");
-    const updatedDate = startDate.add(movieSelected[0].duration, "minutes");
-    const updatedTime = updatedDate.format("HH:mm");
-    setUpdatedTime(updatedTime);
-  };
+  const generateEndDate = useCallback(
+    (date: Date) => {
+      const updatedDate = dateAdd(date, "minute", movieData.duration);
+      setUpdatedTime(updatedDate);
+    },
+    [movieData.duration]
+  );
 
   const handleSubmitData = async () => {
+    let timeCheckEnd;
+
+    if (updatedTime) {
+      timeCheckEnd = dateAdd(updatedTime, "minute", 16);
+    }
+    const timeCheckStart = moment(startTime).subtract(16, "m").toDate();
+
     const dataPass = {
-      movieId: movie,
+      movieId: movieData.id,
       date: dateShow,
       movieHallId: movieHall,
       startTime: startTime,
       endTime: updatedTime,
+      timeCheckStart: timeCheckStart,
+      timeCheckEnd: timeCheckEnd,
     };
 
     const api = showServices.createShow(dataPass);
@@ -133,28 +102,23 @@ function FormAddShow({ updateData }: { updateData: () => void }) {
   };
 
   useEffect(() => {
-    if (movie) {
+    if (movieData && startTime) {
       generateEndDate(startTime);
     }
-  }, [movie]);
+  }, [generateEndDate, movieData, startTime]);
 
   useEffect(() => {
     getAllMovieHall();
-    getAllShowByMovie();
-  }, [getAllMovieHall, getAllShowByMovie]);
+  }, [getAllMovieHall]);
 
   return (
     <div>
       <SimpleGrid cols={1}>
-        <Select
+        <TextInput
           radius={"md"}
-          placeholder="Vui lòng chọn tên phim"
-          label="Phim: "
-          allowDeselect={false}
-          data={dataMovie}
-          withAsterisk
-          onChange={(e) => setMovie(e as null)}
-          searchable
+          label="Phim"
+          value={movieData.title}
+          readOnly
         />
 
         <Select
@@ -168,35 +132,25 @@ function FormAddShow({ updateData }: { updateData: () => void }) {
           searchable
         />
 
-        <DatePickerInput
-          radius={"md"}
-          label="Ngày: "
-          placeholder="Chọn ngày"
-          withAsterisk
-          minDate={new Date()}
-          onChange={(e) => setDateShow(e as Date)}
-        />
-
-        <div className="flex gap-5">
-          <TimeInput
-            className="w-1/2"
+        <div className="grid grid-cols-2 gap-5">
+          <DateTimePicker
             radius={"md"}
-            withAsterisk
-            disabled={!movie ? true : false}
-            label="Thời gian bắt đầu: "
-            ref={refStart}
-            rightSection={pickerControlStart}
-            onChange={(e) => generateEndDate(e.target.value as string)}
+            label="Chọn ngày và giờ chiếu: "
+            description="Suất chiếu phải được tạo trước 1 ngày"
+            minDate={moment(movieData.releaseDate).add(1, "day").toDate()}
+            maxDate={moment(movieData.endDate).toDate()}
+            onChange={(e) => {
+              setDateShow(e as Date);
+              setStartTime(e as Date);
+            }}
           />
-          {/* {console.log("updatedTime", updatedTime)} */}
-          <TimeInput
-            className="w-1/2"
+
+          <DateTimePicker
             radius={"md"}
-            disabled={!movie ? true : false}
-            withAsterisk
-            readOnly
+            label="Giờ kết thúc: "
+            description="Hệ thống sẽ tự động điền"
             value={updatedTime}
-            label="Thời gian kết thúc: "
+            readOnly
           />
         </div>
       </SimpleGrid>
@@ -214,23 +168,9 @@ function FormAddShow({ updateData }: { updateData: () => void }) {
 }
 
 const ShowTimePage = () => {
-  const {
-    setRows,
-    headers,
-    setHeaders,
-    dataGloBal,
-    setDataGlobal,
-    currentSearchValue,
-  } = useTableCustom();
+  const [allShows, setAllShows] = useState<MovieTS[]>([]);
 
-  // const [dataMovie, setDataMovie] = useState<MovieTS[]>([]);
-
-  // const mulData = useState({
-  //   movie: [],
-  //   cinema: [],
-  //   movieHall: [],
-  //   layout
-  // })
+  const { setRows, headers, setHeaders, currentSearchValue } = useTableCustom();
 
   const openModalDelete = (showId: string) =>
     modals.openConfirmModal({
@@ -280,7 +220,7 @@ const ShowTimePage = () => {
       },
     });
 
-  const openModalAdd = () => {
+  const openModalAdd = (data: MovieTS) => {
     modals.open({
       title: (
         <Text fw={500} size="lg" c={"blue"}>
@@ -288,24 +228,31 @@ const ShowTimePage = () => {
         </Text>
       ),
       size: "lg",
-      children: <FormAddShow updateData={getAllShowByMovie}></FormAddShow>,
+      children: (
+        <FormAddShow
+          updateData={getAllShowByMovie}
+          movieData={data}
+        ></FormAddShow>
+      ),
       radius: "md",
       lockScroll: false,
     });
   };
 
   const getAllShowByMovie = useCallback(async () => {
-    const api = movieServices.getAllShowByMovie();
-    const res = await normalApi(api, "getAllShowByMovie");
-    if (res) {
-      setDataGlobal(res);
+    try {
+      const res = await movieServices.getAllShowByMovie();
+      if (res.statusCode == 0) {
+        setAllShows(res.data);
+      }
+    } catch (error) {
+      ErrToast(error as Error, "getAllShowByMovie");
     }
-    return res;
-  }, [setDataGlobal]);
+  }, []);
 
   useEffect(() => {
-    if (dataGloBal) {
-      const rowRender = dataGloBal.map((row: any) => {
+    if (allShows) {
+      const rowRender = allShows.map((row) => {
         return {
           infoMovie: (
             <div>
@@ -328,7 +275,7 @@ const ShowTimePage = () => {
             </div>
           ),
           showTime:
-            row.Shows.length > 0 ? (
+            row.Shows && row.Shows.length > 0 ? (
               <div className="flex gap-3 flex-col justify-center">
                 {row.Shows.map((show, index: number) => (
                   <div
@@ -342,7 +289,8 @@ const ShowTimePage = () => {
                         />
                       </ThemeIcon>
                       <Text fz="sm" fw={700}>
-                        {show.startTime} ~ {show.endTime}
+                        {moment(show.startTime).format("hh:mm")} ~{" "}
+                        {moment(show.endTime).format("hh:mm")}
                       </Text>
                       |
                       <Text fz="sm">
@@ -351,11 +299,6 @@ const ShowTimePage = () => {
                       |
                       <Text fz="sm">
                         {show.MovieHall.name} - {show.MovieHall.Cinema.name}
-                      </Text>
-                      |
-                      <Text fz="sm">
-                        {show.MovieHall.Layout.name} - Phòng{" "}
-                        {show.MovieHall.RoomType.name}
                       </Text>
                     </div>
                     <div className="flex gap-2 items-center">
@@ -380,21 +323,22 @@ const ShowTimePage = () => {
                 Phim này hiện chưa có suất chiếu!
               </Text>
             ),
-          // number: <Text fz="sm">{row.number}</Text>,
-          // RoomType: (
-          //   <div className="flex items-center gap-2">
-          //     <Text fz="sm">{row.RoomType.name as string} </Text>
-          //     {/* <ActionIcon
-          //       onClick={() => openModalViewRoomType(row.RoomType)}
-          //       variant="light"
-          //       size="sm"
-          //       aria-label="Settings"
-          //     >
-          //       <IconEye style={{ width: "70%", height: "70%" }} stroke={1.5} />
-          //     </ActionIcon> */}
-          //   </div>
-          // ),
-          // Layout: <Text fz="sm">{row.Layout.name as string}</Text>,
+
+          action: (
+            <Tooltip label="Thêm suất chiếu mới">
+              <ActionIcon
+                variant="filled"
+                radius="md"
+                aria-label="Settings"
+                onClick={() => openModalAdd(row)}
+              >
+                <IconPlus
+                  style={{ width: "70%", height: "70%" }}
+                  stroke={1.5}
+                />
+              </ActionIcon>
+            </Tooltip>
+          ),
         };
       });
 
@@ -416,19 +360,14 @@ const ShowTimePage = () => {
           value: "showTime",
           isSortable: false,
         },
-        // {
-        //   label: "Kiểu phòng",
-        //   value: "RoomType",
-        //   isSortable: false,
-        // },
-        // {
-        //   label: "Kiểu bố trí",
-        //   value: "Layout",
-        //   isSortable: false,
-        // },
+        {
+          label: "#",
+          value: "action",
+          isSortable: false,
+        },
       ]);
     }
-  }, [dataGloBal]);
+  }, [allShows]);
 
   useEffect(() => {
     getAllShowByMovie();
@@ -442,11 +381,11 @@ const ShowTimePage = () => {
 
   return (
     <div>
-      <div className="flex justify-end mb-3">
+      {/* <div className="flex justify-end mb-3">
         <Button size="xs" radius={"md"} onClick={openModalAdd}>
           Thêm suất chiếu
         </Button>
-      </div>
+      </div> */}
       <TableFilter headers={headers}></TableFilter>
     </div>
   );
