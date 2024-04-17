@@ -117,8 +117,12 @@ function ManageBookingPage() {
           ),
           timeShow: (
             <div>
-              <Text fz="sm">Bắt đầu: {row.Show?.startTime}</Text>
-              <Text fz="sm">Kết thúc: {row.Show?.endTime}</Text>
+              <Text fz="sm">
+                Bắt đầu: {moment(row?.Show?.startTime).format("hh:mm DD/MM")}
+              </Text>
+              <Text fz="sm">
+                Kết thúc: {moment(row?.Show?.startTime).format("hh:mm DD/MM")}
+              </Text>
               <Text fz="sm">
                 Ngày: {moment(row.Show?.date).format("DD/MM/YYYY")}
               </Text>

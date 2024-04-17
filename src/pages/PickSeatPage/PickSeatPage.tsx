@@ -1,10 +1,4 @@
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
 import {
   ActionIcon,
@@ -19,10 +13,8 @@ import {
   Paper,
   ScrollArea,
   Select,
-  Skeleton,
   Text,
   ThemeIcon,
-  Timeline,
 } from "@mantine/core";
 import LayoutSeat from "../../components/LayoutSeat";
 import classes from "./PickSeatPage.module.css";
@@ -41,17 +33,11 @@ import { Icon123 } from "@tabler/icons-react";
 import NormalToast from "../../components/AllToast/NormalToast";
 import { Link, useParams } from "react-router-dom";
 import { seatServices } from "../../services";
-import { SeatOverView, SeatStatus, SeatTS } from "../../types";
-import MovieHallPreview from "../../components/MovieHallPreview";
-import moment from "moment";
+import { SeatStatus } from "../../types";
 import PaymentPreview from "../../components/PaymentPreview";
-import {
-  PickSeatProvider,
-  usePickSeatContext,
-} from "../../components/Provider/PickSeatProvider";
-type Props = {};
+import { usePickSeatContext } from "../../components/Provider/PickSeatProvider";
 
-function PickSeatPage({}: Props) {
+function PickSeatPage() {
   const [opened, { toggle }] = useDisclosure();
   const { id } = useParams();
   const [, , dataUser] = useAuthenticate();
@@ -108,7 +94,8 @@ function PickSeatPage({}: Props) {
     >
       <AppShell.Header
         style={{
-          background: "var(--mantine-color-blue-6)",
+          background:
+            "linear-gradient(to right, var(--mantine-color-violet-filled),var(--mantine-color-pink-filled)",
         }}
       >
         <Group h="100%" w={"100%"} px="md">
@@ -185,7 +172,7 @@ function PickSeatPage({}: Props) {
       <AppShell.Navbar p="sm">
         <ScrollArea scrollbarSize={6}>
           <div className="flex flex-col items-center gap-4 ">
-            <Badge variant="filled" color="blue" size="lg" radius="md">
+            <Badge variant="filled" size="lg" radius="md">
               Thông tin người dùng
             </Badge>
 
@@ -332,7 +319,7 @@ function PickSeatPage({}: Props) {
       </AppShell.Main>
       <AppShell.Aside p="sm">
         <div className="flex justify-center flex-col items-center gap-3">
-          <Badge variant="filled" color="blue" size="lg" radius="md">
+          <Badge variant="filled" size="lg" radius="md">
             Thông tin thanh toán
           </Badge>
 

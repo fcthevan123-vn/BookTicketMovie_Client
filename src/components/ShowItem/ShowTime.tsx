@@ -5,6 +5,7 @@ import { modals } from "@mantine/modals";
 import { Show } from "../../types";
 import { useAuthenticate } from "../../hooks";
 import { useLocation, useNavigate } from "react-router-dom";
+import moment from "moment";
 
 type Props = {
   dataShow: Show;
@@ -98,13 +99,12 @@ function ShowTime({ dataShow }: Props) {
         padding="lg"
         radius="md"
         withBorder
-        // onClick={open}
         onClick={() => checkLoginStatus()}
       >
-        {/* {console.log("location.path", location.pathname)} */}
         <Card.Section>
           <Text ta={"center"} py={15} size="md">
-            {dataShow.startTime} ~ {dataShow.endTime}
+            {moment(dataShow.startTime).format("hh:mm")} ~{" "}
+            {moment(dataShow.endTime).format("hh:mm")}
           </Text>
         </Card.Section>
 

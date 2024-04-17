@@ -8,6 +8,7 @@ import {
 } from "@mantine/core";
 import { usePickSeatContext } from "../Provider/PickSeatProvider";
 import { SeatTS } from "../../types";
+import moment from "moment";
 
 type SeatToPayProps = {
   dataSeat: SeatTS;
@@ -16,12 +17,11 @@ type SeatToPayProps = {
 function SeatToPay({ dataSeat }: SeatToPayProps) {
   return (
     <Blockquote
-      color="blue"
       radius="lg"
       p={"xs"}
       style={{
         boxShadow: "var(--mantine-shadow-xs)",
-        borderLeft: "5px solid var(--mantine-color-blue-6)",
+        borderLeft: "8px solid var(--mantine-color-pink-5)",
       }}
       my="sm"
       iconSize={39}
@@ -49,21 +49,16 @@ function SeatToPay({ dataSeat }: SeatToPayProps) {
 }
 
 function TicketPreview() {
-  const { dataTotal, seatSelected, allPrice, paymentMethod } =
+  const { dataTotal, seatSelected, allPrice, paymentMethod, discount } =
     usePickSeatContext();
 
   return (
     <div>
-      {/* {console.log("seatSelected", seatSelected)} */}
-
       <Paper shadow="sm" radius="lg" withBorder p="xs">
         <Grid>
           <Grid.Col span={5}>
             <Paper
               shadow="xl"
-              // style={{
-              //   background: "var(--mantine-color-blue-5)",
-              // }}
               radius="md"
               withBorder
               h={"100%"}
@@ -101,7 +96,9 @@ function TicketPreview() {
                   size="xs"
                 ></Divider>
                 <Text c={"white"} size="sm" fw={200}>
-                  Thời gian chiếu: {dataTotal?.startTime} - {dataTotal?.endTime}
+                  Thời gian chiếu: <br></br>
+                  {moment(dataTotal?.startTime).format("hh:mm DD/MM")} -{" "}
+                  {moment(dataTotal?.endTime).format("hh:mm DD/MM")}
                 </Text>
                 <Text c={"white"} size="sm" fw={200}>
                   {dataTotal?.MovieHall.name}
@@ -131,24 +128,7 @@ function TicketPreview() {
                 })}
               </Text>
             </div>
-            <div className="flex justify-between mb-2">
-              <div>
-                <Text size="sm" fw={500}>
-                  Phí VAT:
-                </Text>
 
-                <Text size="xs" c={"dimmed"} ml={"xs"}>
-                  10%
-                </Text>
-              </div>
-
-              <Text size="sm">
-                {allPrice.vatPrice.toLocaleString("it-IT", {
-                  style: "currency",
-                  currency: "VND",
-                })}
-              </Text>
-            </div>
             <div className="flex justify-between mb-2">
               <div>
                 <Text size="sm" fw={500}>
@@ -170,6 +150,32 @@ function TicketPreview() {
                 })}
               </Text>
             </div>
+
+            {discount.nameDiscount && (
+              <div className="flex justify-between mb-2">
+                <div>
+                  <Text size="sm" fw={500}>
+                    Mã giảm giá:
+                  </Text>
+
+                  <Text size="xs" c={"dimmed"} ml={"xs"}>
+                    {discount.nameDiscount}
+                  </Text>
+                </div>
+
+                <Text size="sm">
+                  -
+                  {(
+                    (allPrice.originalTotalPrice * discount.percentDiscount) /
+                    100
+                  ).toLocaleString("it-IT", {
+                    style: "currency",
+                    currency: "VND",
+                  })}
+                </Text>
+              </div>
+            )}
+
             <div className="flex justify-between mb-2">
               <Text size="sm" fw={500}>
                 Tổng giá tiền:

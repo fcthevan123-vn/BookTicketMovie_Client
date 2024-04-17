@@ -9,11 +9,14 @@ import {
   TextInput,
   Tooltip,
 } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { usePickSeatContext } from "../Provider/PickSeatProvider";
 import { SeatTS } from "../../types";
 import ModalConfirmBook from "../Modals/ModalConfirmBook";
-import { IconZoomCheck } from "@tabler/icons-react";
+import { IconCheck } from "@tabler/icons-react";
+import { useInputState } from "@mantine/hooks";
+import { discountServices } from "../../services";
+import moment from "moment";
 
 type SeatToPayProps = {
   dataSeat: SeatTS;
@@ -45,11 +48,15 @@ function PaymentPreview() {
   const {
     seatSelected,
     dataTotal,
+    allPrice,
+    discount,
     setAllPrice,
     paymentMethod,
     setPaymentMethod,
+    setDiscount,
   } = usePickSeatContext();
-
+  const [valueDiscount, setValueDiscount] = useInputState<string>("");
+  const [discountStatus, setDiscountStatus] = useState<ReactElement>();
   const [openModalConfirm, setOpenModalConfirm] = useState(false);
 
   let calculatePrice: number | undefined = undefined;
@@ -78,17 +85,47 @@ function PaymentPreview() {
   const priceSeat = CalculateTotalPriceSeat(seatSelected);
 
   if (calculatePrice) {
-    totalPrice =
-      priceSeat + (priceSeat * 10) / 100 + (calculatePrice * priceSeat) / 100;
+    totalPrice = priceSeat + (calculatePrice * priceSeat) / 100;
+  }
+
+  async function validateDiscount(nameDiscount: string) {
+    if (nameDiscount.length > 0) {
+      const res = await discountServices.checkValidDiscount(nameDiscount);
+      if (res.statusCode === 0 && res.isValid) {
+        setDiscountStatus(
+          <span className="text-xs">
+            -{res.data.percentDiscount}% | Còn lại: {res.data.quantity}
+          </span>
+        );
+        setDiscount({
+          percentDiscount: res.data.percentDiscount,
+          nameDiscount: res.data.nameDiscount,
+        });
+      } else {
+        setDiscount({
+          percentDiscount: 0,
+          nameDiscount: "",
+        });
+        setDiscountStatus(
+          <span className="text-red-500 italic text-xs">{res.message}</span>
+        );
+      }
+    } else {
+      setDiscountStatus(<></>);
+      setDiscount({
+        percentDiscount: 0,
+        nameDiscount: "",
+      });
+    }
   }
 
   useEffect(() => {
     if (calculatePrice && totalPrice && priceSeat) {
       setAllPrice({
         originalPrice: priceSeat,
-        vatPrice: (priceSeat * 10) / 100,
         typeRoomPrice: calculatePrice,
         totalPrice: totalPrice,
+        originalTotalPrice: totalPrice,
       });
     }
   }, [calculatePrice, priceSeat, setAllPrice, totalPrice]);
@@ -96,6 +133,7 @@ function PaymentPreview() {
   return (
     <div className="w-full">
       {/* Modal confirm */}
+
       <ModalConfirmBook
         opened={openModalConfirm}
         close={() => setOpenModalConfirm(false)}
@@ -116,24 +154,7 @@ function PaymentPreview() {
             })}
           </Text>
         </div>
-        <div className="flex justify-between mb-2">
-          <div>
-            <Text size="sm" fw={500}>
-              Phí VAT:
-            </Text>
 
-            <Text size="xs" c={"dimmed"} ml={"xs"}>
-              10%
-            </Text>
-          </div>
-
-          <Text size="sm">
-            {((priceSeat * 10) / 100).toLocaleString("it-IT", {
-              style: "currency",
-              currency: "VND",
-            })}
-          </Text>
-        </div>
         <div className="flex justify-between mb-2">
           <div>
             <Text size="sm" fw={500}>
@@ -155,19 +176,43 @@ function PaymentPreview() {
           </Text>
         </div>
         {/* Discount */}
-        <div className="mb-2">
-          <Text size="sm" fw={500}>
-            Mã giảm giá:
-          </Text>
+        <div className=" mb-2">
+          <div className="flex justify-between">
+            <div>
+              <Text size="sm" fw={500}>
+                Mã giảm giá:
+              </Text>
+            </div>
+
+            <Text size="sm">
+              -
+              {discount.nameDiscount &&
+                totalPrice &&
+                ((discount.percentDiscount * totalPrice) / 100).toLocaleString(
+                  "it-IT",
+                  {
+                    style: "currency",
+                    currency: "VND",
+                  }
+                )}
+            </Text>
+          </div>
 
           <TextInput
             radius="md"
             size="xs"
+            value={valueDiscount}
+            onChange={setValueDiscount}
+            description={discountStatus}
             placeholder="Nhập MGG nếu có"
+            disabled={discount.nameDiscount.length > 0 && true}
             rightSection={
-              <Tooltip label="Kiểm tra MGG" withArrow>
-                <ActionIcon variant="filled" aria-label="Settings">
-                  <IconZoomCheck size={18} />
+              <Tooltip label="Áp dụng MGG" withArrow>
+                <ActionIcon
+                  disabled={discount.nameDiscount.length > 0 && true}
+                  onClick={() => validateDiscount(valueDiscount)}
+                >
+                  <IconCheck size={19} />
                 </ActionIcon>
               </Tooltip>
             }
@@ -179,8 +224,8 @@ function PaymentPreview() {
             Tổng giá tiền:
           </Text>
           <Text size="sm">
-            {totalPrice &&
-              totalPrice.toLocaleString("it-IT", {
+            {allPrice &&
+              allPrice.totalPrice.toLocaleString("it-IT", {
                 style: "currency",
                 currency: "VND",
               })}

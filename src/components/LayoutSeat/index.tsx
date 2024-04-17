@@ -1,8 +1,8 @@
-import { Box, Container, Grid, Paper, SimpleGrid, Text } from "@mantine/core";
-import React, { Fragment, useEffect } from "react";
+import { Box, Grid, Paper, SimpleGrid, Text } from "@mantine/core";
+import { Fragment, useEffect } from "react";
 import Seat from "./Seat";
 import classes from "./LayoutSeat.module.css";
-import { SeatOverView, SeatStatus, SeatTS } from "../../types";
+import { SeatOverView, SeatStatus } from "../../types";
 import { usePickSeatContext } from "../Provider/PickSeatProvider";
 
 type Props = {
@@ -13,14 +13,10 @@ type Props = {
 function LayoutSeat({ dataSeats, dataSeatsPicked }: Props) {
   const seatMatrix = [];
 
-  const {
-    seatNumberControl,
-    isDisabledSeat,
-    setIsDisabledSeat,
-    seatSelected,
-    setSeatSelected,
-  } = usePickSeatContext();
+  const { seatNumberControl, setIsDisabledSeat, seatSelected } =
+    usePickSeatContext();
 
+  // render seat matrix
   if (dataSeats) {
     for (let row = 1; row <= dataSeats.MovieHall.Layout.rows; row++) {
       const rowSeats = dataSeats.MovieHall.Layout.Seats.filter(
@@ -98,6 +94,12 @@ function LayoutSeat({ dataSeats, dataSeatsPicked }: Props) {
           width: "700px",
         }}
       >
+        <div className="mb-5 flex flex-col items-center">
+          <div className={classes.screen}></div>
+          <Text c={"dimmed"} size="sm">
+            Màn hình ở phía này
+          </Text>
+        </div>
         <Grid>
           <Grid.Col span={1}>
             {rowsName?.map((name, index) => (
@@ -118,20 +120,6 @@ function LayoutSeat({ dataSeats, dataSeatsPicked }: Props) {
             </SimpleGrid>
           </Grid.Col>
         </Grid>
-
-        {/* <SimpleGrid
-            cols={dataSeats?.MovieHall.Layout.seatsPerRow}
-            spacing={"xs"}
-          >
-            {renderSeat}
-          </SimpleGrid> */}
-
-        <div className="mt-10 flex flex-col items-center">
-          <div className={classes.screen}></div>
-          <Text c={"dimmed"} size="sm">
-            Màn hình ở phía này
-          </Text>
-        </div>
       </Paper>
     </div>
   );

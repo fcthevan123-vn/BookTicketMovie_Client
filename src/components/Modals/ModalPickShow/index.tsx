@@ -242,7 +242,8 @@ function ModalPickShow({ opened, close, dataMovie }: Props) {
         radius={0}
         styles={{
           header: {
-            background: "var(--mantine-color-blue-5)",
+            background:
+              "linear-gradient(to right,var(--mantine-color-violet-filled),var(--mantine-color-pink-filled)",
           },
           body: {
             marginTop: "15px",
@@ -256,21 +257,15 @@ function ModalPickShow({ opened, close, dataMovie }: Props) {
         }}
         // transitionProps={{ transition: "fade", duration: 200 }}
       >
-        <Paper withBorder shadow="sm" radius="lg    " p="lg">
+        <Paper withBorder shadow="sm" radius="lg" p="lg">
           <div>
-            <div className="flex items-center gap-5 justify-between">
-              <Text fw={700} size="lg" c={"blue"} tt={"uppercase"}>
+            <div className="flex items-center gap-5 justify-between g">
+              <Text fw={700} size="lg" c={"violet"} tt={"uppercase"}>
                 {dataMovie.title} - {dataMovie.duration} phút
               </Text>
               <div className="flex gap-2">
                 {dataMovie.genre.map((g, index) => (
-                  <Badge
-                    key={index}
-                    color="blue"
-                    size="md"
-                    variant="dot"
-                    radius="md"
-                  >
+                  <Badge key={index} size="md" variant="dot" radius="md">
                     {g}
                   </Badge>
                 ))}
@@ -305,7 +300,7 @@ function ModalPickShow({ opened, close, dataMovie }: Props) {
                 withBorder
                 icon={
                   <IconAlertTriangle
-                    style={{ width: rem(20), height: rem(20) }}
+                    style={{ width: rem(16), height: rem(16) }}
                   ></IconAlertTriangle>
                 }
               >

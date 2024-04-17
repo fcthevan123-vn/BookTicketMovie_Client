@@ -34,8 +34,14 @@ function ModalConfirmBook({ opened, close }: Props) {
   const [active, setActive] = useState(0);
   const [, , dataUser] = useAuthenticate();
   const navigate = useNavigate();
-  const { allPrice, seatSelected, dataTotal, isLoading, paymentMethod } =
-    usePickSeatContext();
+  const {
+    allPrice,
+    seatSelected,
+    dataTotal,
+    isLoading,
+    paymentMethod,
+    discount,
+  } = usePickSeatContext();
 
   const nextStep = () =>
     setActive((current) => (current < 2 ? current + 1 : current));
@@ -55,6 +61,7 @@ function ModalConfirmBook({ opened, close }: Props) {
         totalPrice: allPrice.totalPrice,
         showId: dataTotal?.id,
         isPaid: false,
+        discount: discount.nameDiscount,
       };
 
       try {

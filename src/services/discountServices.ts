@@ -22,6 +22,12 @@ const discountServices = {
     const res = await axios.post(`/api/v1/discount/update`, data);
     return res.data;
   },
+  async checkValidDiscount(nameDiscount: string) {
+    const res = await axios.get(
+      `/api/v1/discount/validate-discount?nameDiscount=${nameDiscount}`
+    );
+    return res.data;
+  },
 };
 
 export default discountServices;

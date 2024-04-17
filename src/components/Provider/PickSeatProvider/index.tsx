@@ -1,21 +1,27 @@
-import React, { createContext, useContext, useState } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { SeatOverView, SeatTS } from "../../../types";
 
 type PickSeatContextType = {
   allPrice: {
     originalPrice: number;
-    vatPrice: number;
     typeRoomPrice: number;
     totalPrice: number;
+    originalTotalPrice: number;
   };
   isLoading: boolean;
   setIsLoading: (value: boolean) => void;
   seatSelected: SeatTS[];
   setAllPrice: (value: {
     originalPrice: number;
-    vatPrice: number;
     typeRoomPrice: number;
     totalPrice: number;
+    originalTotalPrice: number;
   }) => void;
   dataTotal: SeatOverView | null;
   setDataTotal: (dataTotal: SeatOverView) => void;
@@ -24,8 +30,14 @@ type PickSeatContextType = {
   setSeatSelected: (seats: SeatTS[]) => void;
   seatNumberControl: string;
   setSeatNumberControl: (e: string) => void;
-  discount: string;
-  setDiscount: (value: string) => void;
+  discount: {
+    percentDiscount: number;
+    nameDiscount: string;
+  };
+  setDiscount: (value: {
+    percentDiscount: number;
+    nameDiscount: string;
+  }) => void;
   paymentMethod: string;
   setPaymentMethod: (value: string) => void;
 };
@@ -43,12 +55,41 @@ export function PickSeatProvider({ children }: { children: React.ReactNode }) {
   const [seatNumberControl, setSeatNumberControl] = useState("1");
   const [allPrice, setAllPrice] = useState({
     originalPrice: 0,
-    vatPrice: 0,
     typeRoomPrice: 0,
     totalPrice: 0,
+    originalTotalPrice: 0,
   });
-  const [discount, setDiscount] = useState("");
+  const [discount, setDiscount] = useState({
+    percentDiscount: 0,
+    nameDiscount: "",
+  });
   const [paymentMethod, setPaymentMethod] = useState("direct");
+
+  const applyDiscount = useCallback(() => {
+    if (discount.nameDiscount.length > 0) {
+      const discountPrice =
+        allPrice.totalPrice -
+        (discount.percentDiscount * allPrice.totalPrice) / 100;
+
+      setAllPrice((prev) => {
+        return {
+          ...prev,
+          totalPrice: discountPrice,
+        };
+      });
+    }
+  }, [discount.nameDiscount.length, discount.percentDiscount, discount]);
+
+  useEffect(() => {
+    applyDiscount();
+  }, [applyDiscount, discount]);
+
+  useEffect(() => {
+    setDiscount({
+      percentDiscount: 0,
+      nameDiscount: "",
+    });
+  }, [seatSelected]);
 
   return (
     <PickSeatContext.Provider

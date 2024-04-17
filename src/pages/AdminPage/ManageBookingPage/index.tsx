@@ -5,15 +5,13 @@ import NormalToast from "../../../components/AllToast/NormalToast";
 import { BookingTypeTS } from "../../../types";
 import { useTableCustom } from "../../../components/Provider/TableFilterProvider";
 import moment from "moment";
-import { IconCheck, IconTrash, IconX } from "@tabler/icons-react";
+import { IconCheck, IconX } from "@tabler/icons-react";
 import TableFilter from "../../../components/TableFilter";
 import { useAuthenticate } from "../../../hooks";
 import { loadingApi } from "../../../untils/loadingApi";
 import { modals } from "@mantine/modals";
 
-type Props = {};
-
-function ManageBookingPage({}: Props) {
+function ManageBookingPage() {
   const [statusBooking, setStatusBooking] = useState("Tất cả");
   const [data, setData] = useState<BookingTypeTS[]>([]);
   const [, , dataUser] = useAuthenticate();
@@ -119,8 +117,12 @@ function ManageBookingPage({}: Props) {
           ),
           timeShow: (
             <div>
-              <Text fz="sm">Bắt đầu: {row.Show?.startTime}</Text>
-              <Text fz="sm">Kết thúc: {row.Show?.endTime}</Text>
+              <Text fz="sm">
+                Bắt đầu: {moment(row?.Show?.startTime).format("hh:mm DD/MM")}
+              </Text>
+              <Text fz="sm">
+                Kết thúc: {moment(row.Show?.endTime).format("hh:mm DD/MM")}
+              </Text>
               <Text fz="sm">
                 Ngày: {moment(row.Show?.date).format("DD/MM/YYYY")}
               </Text>

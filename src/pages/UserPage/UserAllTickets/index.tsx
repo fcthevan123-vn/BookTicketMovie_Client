@@ -52,7 +52,13 @@ function UserAllTickets() {
 
   async function deleleteBooking(idBooking: string) {
     try {
-      const api = bookingServices.deleteBooking(idBooking);
+      const dataPass = {
+        bookingId: idBooking,
+        staffId: null,
+        status: "Đã huỷ",
+      };
+
+      const api = bookingServices.updateBooking(dataPass);
       const res = await loadingApi(api, "Huỷ vé");
 
       if (res) {
@@ -107,10 +113,11 @@ function UserAllTickets() {
           ),
           timeShow: (
             <div>
-              <Text fz="sm">Bắt đầu: {row?.Show?.startTime}</Text>
-              <Text fz="sm">Kết thúc: {row?.Show?.endTime}</Text>
               <Text fz="sm">
-                Ngày: {moment(row?.Show?.date).format("DD/MM/YYYY")}
+                Bắt đầu: {moment(row?.Show?.startTime).format("hh:mm DD/MM")}
+              </Text>
+              <Text fz="sm">
+                Kết thúc: {moment(row?.Show?.endTime).format("hh:mm DD/MM")}
               </Text>
             </div>
           ),
