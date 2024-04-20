@@ -13,6 +13,7 @@ const VerifyEmailPage = lazy(() => import("../pages/VerifyEmailPage"));
 const EmployeePage = lazy(() => import("../pages/EmployeePage"));
 const EventPage = lazy(() => import("../pages/EventPage"));
 const PaymentAuthPage = lazy(() => import("../pages/PaymentAuthPage"));
+const SelectShowPage = lazy(() => import("../pages/SelectShowPage"));
 
 import {
   AdminLayout,
@@ -230,6 +231,13 @@ const router: IRouter[] = [
     isProtected: false,
     layout: DefaultLayout,
     element: AboutPage,
+  },
+
+  {
+    path: "/select-show/:id",
+    isProtected: true,
+    layout: "None",
+    element: SelectShowPage,
   },
 
   {

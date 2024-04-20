@@ -1,8 +1,11 @@
-import { ReactElement, useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { ReactElement, useCallback, useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import QueryString from "qs";
-import { Button, Card, Group, Paper, Text, ThemeIcon } from "@mantine/core";
+import { Button, Card, Group, Text, ThemeIcon } from "@mantine/core";
 import { IconCheck, IconExclamationCircle } from "@tabler/icons-react";
+import { paymentServices } from "../../services";
+import { ErrToast } from "../../components/AllToast/NormalToast";
+import { useAuthenticate } from "../../hooks";
 
 type ResponseInfoTs = {
   label: string;
@@ -49,9 +52,22 @@ function CardInfoPayMent({ data }: CardInfoPayMentProps) {
 function PaymentAuthPage() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [searchParams, setSearchParams] = useSearchParams();
-  const [paymentInfo, setPaymentInfo] = useState<ResponseInfoTs>();
+  const [paymentInfo, setPaymentInfo] = useState<ResponseInfoTs>({
+    title: "Thanh toán lỗi",
+    message:
+      "Có vẻ như bạn đã gặp lỗi trong quá trình thanh toán hoặc giao dịch này đã bị huỷ.",
+    icon: <IconExclamationCircle style={{ width: "70%", height: "70%" }} />,
+    action: (
+      <Button mt="md" radius="md" component="a" href="/">
+        Trở về trang chủ
+      </Button>
+    ),
+    label: "Thanh toán thất bại",
+    status: "Thất bại",
+    statusCode: "07",
+  });
 
-  const navigate = useNavigate();
+  const [, , dataUser] = useAuthenticate();
 
   const vnp_TmnCode = searchParams.get("vnp_TmnCode");
   const vnp_Amount = searchParams.get("vnp_Amount");
@@ -84,67 +100,46 @@ function PaymentAuthPage() {
     { encode: false }
   );
 
-  useEffect(() => {
-    if (vnp_ResponseCode == "00") {
-      setPaymentInfo({
-        title: "Tiến hành tạo vé",
-        message:
-          "Hệ thống đang tạo vé cho bạn, vui lòng đợi giây lát. Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi.",
-        icon: <IconCheck style={{ width: "70%", height: "70%" }} />,
-        action: (
-          <Button mt="md" radius="md" disabled>
-            Xem vé của bạn
-          </Button>
-        ),
-        label: "Thanh toán thành công",
-        status: "Thành công",
-        statusCode: "00",
-      });
-    } else {
-      setPaymentInfo({
-        title: "Thanh toán lỗi",
-        message:
-          "Có vẻ như bạn đã gặp lỗi trong quá trình thanh toán hoặc giao dịch này đã bị huỷ.",
-        icon: <IconExclamationCircle style={{ width: "70%", height: "70%" }} />,
-        action: (
-          <Button mt="md" radius="md">
-            Trở về trang chủ
-          </Button>
-        ),
-        label: "Thanh toán thất bại",
-        status: "Thất bại",
-        statusCode: "07",
-      });
-    }
-  }, [vnp_ResponseCode]);
+  const returnUrl = useCallback(async () => {
+    try {
+      const res = await paymentServices.returnURL(signData);
 
-  // useEffect(() => {
-  //   if (vnp_ResponseCode === "00") {
-  //     setPaymentInfo
-  //   }
-  // }, [navigate, vnp_ResponseCode]);
+      if (res.statusCode == 0) {
+        setPaymentInfo({
+          title: "Tạo vé thành công",
+          message:
+            "Hệ thống đã tạo vé cho bạn thành công. Hy vọng bạn có những phút giây trải nghiệm thật vui vẻ với dịch vụ của chúng tôi.",
+          icon: <IconCheck style={{ width: "70%", height: "70%" }} />,
+          action: (
+            <Button
+              mt="md"
+              radius="md"
+              component="a"
+              href={`/user/${dataUser.id}/all-tickets`}
+            >
+              Xem vé của bạn
+            </Button>
+          ),
+          label: "Thanh toán thành công",
+          status: "Thành công",
+          statusCode: "00",
+        });
+      }
+    } catch (error) {
+      console.log("error", error);
+
+      ErrToast(error as Error, "Thanh toán thất bại");
+    }
+  }, [signData]);
+
+  useEffect(() => {
+    returnUrl();
+  }, [returnUrl]);
 
   return (
     <div className="w-screen h-screen bg-gradient-to-r from-violet-200 to-pink-200">
       <div className="flex justify-center h-full items-center">
-        {paymentInfo && vnp_ResponseCode ? (
-          <CardInfoPayMent data={paymentInfo}></CardInfoPayMent>
-        ) : (
-          <Paper shadow="xs" radius="md" p="xl">
-            <div>
-              <p className="text-2xl font-semibold">Có lỗi đã xảy ra</p>
-
-              <p className="mt-3">
-                Có vẻ như đã có lỗi xảy ra vui lòng liên hệ với quản trị viên
-                thông qua email: fcthevan123@gmail.com
-              </p>
-              <p className="">Chúng tôi vô cùng xin lỗi vì sự bất tiện này.</p>
-              <Button className="mt-3" radius={"md"} component="a" href="/">
-                Trở về trang chủ
-              </Button>
-            </div>
-          </Paper>
-        )}
+        {paymentInfo && <CardInfoPayMent data={paymentInfo}></CardInfoPayMent>}
       </div>
     </div>
   );

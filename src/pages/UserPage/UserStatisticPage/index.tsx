@@ -5,6 +5,7 @@ import { useAuthenticate } from "../../../hooks";
 import { Divider, Tabs, rem } from "@mantine/core";
 import { AreaChart, BarChart } from "@mantine/charts";
 import { userServices } from "../../../services";
+import { StatsGrid } from "../../../components/Stats/StatsGrid/StatsGrid";
 
 function UserStatisticPage() {
   const [, , dataUser] = useAuthenticate();
@@ -122,7 +123,7 @@ function UserStatisticPage() {
               series={[
                 {
                   name: "totalMoney",
-                  label: "Tổng tiền đã chi",
+                  label: "Tổng tiền đã chi trong tháng",
                   color: "violet.6",
                 },
               ]}
@@ -133,7 +134,10 @@ function UserStatisticPage() {
               Lưu ý: Thống kê chỉ dựa trên những vé đã được khách hàng thanh
               toán thành công
             </p>
+
+            {/* <StatsGrid></StatsGrid> */}
           </div>
+          {/* {console.log("data.moneyStatistic", data.moneyStatistic)} */}
         </Tabs.Panel>
       </Tabs>
     </div>

@@ -1,10 +1,17 @@
-import { Button, Modal, NumberInput, Text, TextInput } from "@mantine/core";
+import {
+  Button,
+  Modal,
+  MultiSelect,
+  NumberInput,
+  Text,
+  TextInput,
+} from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { DiscountTS } from "../../../types";
 import moment from "moment";
 import { DateInput } from "@mantine/dates";
-import { discountServices } from "../../../services";
+import { discountServices, movieServices } from "../../../services";
 import { loadingApi } from "../../../untils/loadingApi";
 import { ErrToast } from "../../../components/AllToast/NormalToast";
 import { useEffect, useState } from "react";
@@ -14,8 +21,16 @@ import { modals } from "@mantine/modals";
 
 function ManageDiscountPage() {
   const [opened, { open, close }] = useDisclosure(false);
+  const [openedDiscount, handlers] = useDisclosure(false);
   const [allDiscounts, setAllDiscounts] = useState<DiscountTS[]>([]);
   const [isUpdate, setIsUpdate] = useState(false);
+  const [discountApply, setDiscountApply] = useState({
+    idDiscount: "",
+    nameDiscount: "",
+    moviesPicked: [],
+    dataMovies: [],
+    isError: false,
+  });
 
   const { setRows, headers, setHeaders } = useTableCustom();
 
@@ -43,6 +58,62 @@ function ManageDiscountPage() {
       },
     },
   });
+
+  async function getAllMovies() {
+    try {
+      const res = await movieServices.getAllMovies({ isCount: false });
+      if (res.statusCode === 0) {
+        const convertData = res.data.map(
+          (movie: { id: string; title: string }) => {
+            return {
+              value: movie.id,
+              label: movie.title,
+            };
+          }
+        );
+
+        setDiscountApply((prev) => ({
+          ...prev,
+          dataMovies: convertData,
+        }));
+      }
+    } catch (error) {
+      ErrToast(error as Error, "getAllMovies");
+    }
+  }
+
+  async function hanldeApplyDiscount(data: typeof discountApply) {
+    try {
+      if (data.moviesPicked.length == 0) {
+        return setDiscountApply((prev) => ({
+          ...prev,
+          isError: true,
+        }));
+      }
+      setDiscountApply((prev) => ({
+        ...prev,
+        isError: false,
+      }));
+
+      const dataPass = {
+        idDiscount: data.idDiscount,
+        moviesPicked: data.moviesPicked,
+      };
+
+      const api = discountServices.applyDiscount(dataPass);
+
+      const res = await loadingApi(api, "Áp dụng mã giảm giá");
+
+      if (res) {
+        handleGetAllDiscount();
+        handlers.close();
+      }
+
+      return res;
+    } catch (error) {
+      ErrToast(error as Error, "hanldeApplyDiscount");
+    }
+  }
 
   async function handleSubmit(data: DiscountTS) {
     try {
@@ -118,6 +189,7 @@ function ManageDiscountPage() {
 
   useEffect(() => {
     handleGetAllDiscount();
+    getAllMovies();
   }, []);
 
   // render tabler of all discounts
@@ -150,6 +222,21 @@ function ManageDiscountPage() {
                 }}
               >
                 Xem chi tiết
+              </Button>
+              <Button
+                size="compact-xs"
+                onClick={() => {
+                  setDiscountApply((prev) => ({
+                    ...prev,
+                    idDiscount: row.id ? row.id : "",
+                    nameDiscount: row.nameDiscount,
+                  }));
+                  handlers.open();
+                }}
+                color="blue"
+                radius={"md"}
+              >
+                Áp dụng
               </Button>
               <Button
                 size="compact-xs"
@@ -293,6 +380,73 @@ function ManageDiscountPage() {
           </div>
         </form>
       </Modal>
+
+      {/* Modal apply discount */}
+      <Modal
+        opened={openedDiscount}
+        onClose={() => {
+          // form.reset();
+          handlers.close();
+        }}
+        title={
+          <p className="text-violet-500 font-semibold text-lg">
+            Áp dụng mã giảm giá vào phim
+          </p>
+        }
+        size={"lg"}
+        radius={"md"}
+      >
+        <div className="grid grid-cols-1 gap-4">
+          <TextInput
+            label="Tên mã giảm giá"
+            placeholder="Pick value"
+            value={discountApply.nameDiscount}
+            readOnly
+            radius={"md"}
+          />
+
+          <MultiSelect
+            checkIconPosition="right"
+            radius={"md"}
+            label="Chọn phim muốn áp dụng"
+            withAsterisk
+            error={discountApply.isError && "Phim chưa được chọn"}
+            placeholder="Chọn hoặc tìm kiếm tên phim"
+            onChange={(e) =>
+              setDiscountApply((prev) => ({
+                ...prev,
+                moviesPicked: e as never[],
+              }))
+            }
+            data={discountApply.dataMovies}
+            searchable
+            nothingFoundMessage="Không tìm thấy phim"
+          />
+        </div>
+
+        <div className="flex gap-2">
+          <Button
+            onClick={() => {
+              hanldeApplyDiscount(discountApply);
+            }}
+            size="sm"
+            mt={"sm"}
+            radius={"md"}
+          >
+            Lưu
+          </Button>
+          <Button
+            onClick={() => handlers.close()}
+            size="sm"
+            mt={"sm"}
+            variant="light"
+            radius={"md"}
+          >
+            Huỷ
+          </Button>
+        </div>
+      </Modal>
+
       <div className="flex justify-end">
         <Button
           size="xs"

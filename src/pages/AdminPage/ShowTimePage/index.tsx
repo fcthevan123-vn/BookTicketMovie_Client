@@ -137,7 +137,7 @@ function FormAddShow({
             radius={"md"}
             label="Chọn ngày và giờ chiếu: "
             description="Suất chiếu phải được tạo trước 1 ngày"
-            minDate={moment(movieData.releaseDate).toDate()}
+            minDate={new Date()}
             maxDate={moment(movieData.endDate).toDate()}
             onChange={(e) => {
               setDateShow(e as Date);

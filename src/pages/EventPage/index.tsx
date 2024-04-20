@@ -48,13 +48,13 @@ function EventPage() {
             )}
             <p className="font-medium ">
               Bắt đầu từ:{" "}
-              <span className="font-normal">
+              <span className="font-normal italic text-gray-500">
                 {moment(eventData?.startDate).format("DD/MM/YYYY")}
               </span>
             </p>
             <p className="font-medium ">
-              Bắt đầu từ:{" "}
-              <span className="font-normal">
+              Kết thúc vào:{" "}
+              <span className="font-normal italic text-gray-500">
                 {moment(eventData?.endDate).format("DD/MM/YYYY")}
               </span>
             </p>

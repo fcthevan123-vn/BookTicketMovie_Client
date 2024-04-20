@@ -1,8 +1,6 @@
 import { Divider, RingProgress, ThemeIcon } from "@mantine/core";
 import { useCallback, useEffect, useState } from "react";
 import {
-  Area,
-  AreaChart,
   Bar,
   BarChart,
   CartesianGrid,
@@ -12,12 +10,11 @@ import {
   YAxis,
 } from "recharts";
 import { userServices } from "../../../services";
-import { IconMan, IconPhoto, IconWoman } from "@tabler/icons-react";
+import { IconMan, IconWoman } from "@tabler/icons-react";
 import bookingServices from "../../../services/bookingServices";
+import { AreaChart } from "@mantine/charts";
 
-type Props = {};
-
-const DashboardPage = (props: Props) => {
+const DashboardPage = () => {
   const [dataUser, setDataUser] = useState({
     percentMale: 1,
     percentFemale: 1,
@@ -80,32 +77,25 @@ const DashboardPage = (props: Props) => {
   return (
     <div>
       <div>
+        {/* {console.log("dataAreaChart", dataAreaChart)} */}
         <p className="my-4 font-medium text-lg italic">
           Thống kê doanh thu của hệ thống
         </p>
         <div className="flex justify-center ">
-          <AreaChart
-            width={1100}
-            height={400}
-            data={dataAreaChart}
-            margin={{
-              top: 10,
-              right: 30,
-              left: 70,
-              bottom: 0,
-            }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Area
-              type="monotone"
-              dataKey="Doanh thu"
-              stroke="#39A7FF"
-              fill="#AEDEFC"
+          {dataAreaChart && (
+            <AreaChart
+              h={400}
+              data={dataAreaChart}
+              dataKey="name"
+              xAxisLabel="Thời gian"
+              yAxisLabel="Tổng tiền đã chi (VND)"
+              series={[{ name: "Doanh thu", color: "indigo.6" }]}
+              curveType="linear"
+              yAxisProps={{ width: 90 }}
+              fillOpacity={0.6}
+              gridAxis="xy"
             />
-          </AreaChart>
+          )}
         </div>
       </div>
       <Divider my="xl" size={"sm"} mx={"md"} />

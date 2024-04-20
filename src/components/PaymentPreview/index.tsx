@@ -16,7 +16,6 @@ import ModalConfirmBook from "../Modals/ModalConfirmBook";
 import { IconCheck } from "@tabler/icons-react";
 import { useInputState } from "@mantine/hooks";
 import { discountServices } from "../../services";
-import moment from "moment";
 
 type SeatToPayProps = {
   dataSeat: SeatTS;
@@ -245,6 +244,11 @@ function PaymentPreview() {
             <Radio value="online" label="Online" />
           </Group>
         </Radio.Group>
+        {paymentMethod == "online" && (
+          <span className="text-xs italic font-semibold text-gray-500 ">
+            Thanh toán online sẽ không cần phải đợi nhân viên xác nhận vé.
+          </span>
+        )}
         <div className="mt-4 flex justify-center">
           <Button
             onClick={() => setOpenModalConfirm(true)}

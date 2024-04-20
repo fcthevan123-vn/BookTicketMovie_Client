@@ -18,6 +18,7 @@ import { useEffect, useRef, useState } from "react";
 import ModalPickShow from "../../../components/Modals/ModalPickShow";
 import { useAuthenticate } from "../../../hooks";
 import { reviewServices } from "../../../services";
+import { Link } from "react-router-dom";
 
 type Props = {
   dataMovie: DataTableMoviesProps;
@@ -83,18 +84,19 @@ function TopSecton({ dataMovie }: Props) {
     }
   }
 
-  function getIdInTrailerLink(trailerLink: string) {
-    if (trailerLink) {
-      const videoID = trailerLink.match(
-        /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
-      );
+  // function getIdInTrailerLink(trailerLink: string) {
+  //   if (trailerLink) {
+  //     const videoID = trailerLink.match(
+  //       /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
+  //     );
 
-      if (videoID) {
-        return videoID[1];
-      }
-    }
-    return "B2Jlyq_Tf3Y";
-  }
+  //     if (videoID) {
+  //       return videoID[1];
+  //     }
+  //   }
+  //   // return trailerLink;
+  //   return "B2Jlyq_Tf3Y";
+  // }
 
   useEffect(() => {
     calculateStarRating(dataMovie.id);
@@ -113,7 +115,6 @@ function TopSecton({ dataMovie }: Props) {
       ></ModalPickShow>
 
       <Grid>
-        {/* Carousel */}
         <Grid.Col span={8}>
           <Carousel
             withIndicators
@@ -128,23 +129,16 @@ function TopSecton({ dataMovie }: Props) {
             onMouseEnter={autoplay.current.stop}
           >
             <>
-              {/* <Carousel.Slide key={88291}>
-                <iframe
-                  height="100%"
-                  width={"100%"}
-                  src="https://www.youtube.com/embed/B2Jlyq_Tf3Y"
-                ></iframe>
-              </Carousel.Slide> */}
-
-              <Carousel.Slide key={882912}>
-                <iframe
-                  height="100%"
-                  width={"100%"}
-                  src={`https://www.youtube.com/embed/${getIdInTrailerLink(
-                    dataMovie.trailerLink
-                  )}`}
-                ></iframe>
-              </Carousel.Slide>
+              {dataMovie.trailerLink && (
+                <Carousel.Slide key={882912}>
+                  <iframe
+                    autoFocus={false}
+                    height="100%"
+                    width={"100%"}
+                    src={dataMovie.trailerLink}
+                  ></iframe>
+                </Carousel.Slide>
+              )}
 
               {dataMovie.images.map((img, index) => (
                 <Carousel.Slide key={index}>
@@ -195,28 +189,30 @@ function TopSecton({ dataMovie }: Props) {
                     </div>
                   </div>
 
-                  <div className="flex justify-center">
-                    <Tooltip
-                      label={getToolTipFromState(
-                        isLogged,
-                        dataUser.isVerifyEmail
-                      )}
-                      disabled={isLogged && dataUser.isVerifyEmail}
-                    >
-                      <Button
-                        variant="gradient"
-                        radius={"md"}
-                        w={"50%"}
-                        ml="xs"
-                        disabled={
-                          !isLogged || !dataUser.isVerifyEmail ? true : false
-                        }
-                        gradient={{ from: "violet", to: "pink.7", deg: -90 }}
-                        onClick={() => setIsOpen(true)}
+                  <div className="flex justify-center gap-4">
+                    <Link className="w-1/2" to={`/select-show/${dataMovie.id}`}>
+                      {" "}
+                      <Tooltip
+                        label={getToolTipFromState(
+                          isLogged,
+                          dataUser.isVerifyEmail
+                        )}
+                        disabled={isLogged && dataUser.isVerifyEmail}
                       >
-                        Đặt vé
-                      </Button>
-                    </Tooltip>
+                        <Button
+                          variant="gradient"
+                          radius={"md"}
+                          w={"100%"}
+                          ml="xs"
+                          disabled={
+                            !isLogged || !dataUser.isVerifyEmail ? true : false
+                          }
+                          gradient={{ from: "violet", to: "pink.7", deg: -90 }}
+                        >
+                          Đặt vé
+                        </Button>
+                      </Tooltip>
+                    </Link>
 
                     <Tooltip
                       label={getToolTipFromState(

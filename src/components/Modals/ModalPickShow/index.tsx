@@ -88,7 +88,28 @@ function ModalPickShow({ opened, close, dataMovie }: Props) {
               stroke={1.5}
             />
           }
-          // defaultValue={"92"}
+          searchable
+          allowDeselect={false}
+          checkIconPosition="right"
+          label="Quận/ Huyện (Pending)"
+          radius="md"
+          placeholder="Chọn thành phố của bạn"
+          // data={dataProvince}
+          nothingFoundMessage="Không tìm thấy thành phố"
+          styles={{
+            label: {
+              color: "white",
+            },
+          }}
+        />
+
+        <Select
+          leftSection={
+            <IconLocation
+              style={{ width: rem(18), height: rem(18) }}
+              stroke={1.5}
+            />
+          }
           searchable
           allowDeselect={false}
           checkIconPosition="right"

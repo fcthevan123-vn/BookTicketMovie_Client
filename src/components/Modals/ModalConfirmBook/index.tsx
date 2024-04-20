@@ -22,8 +22,9 @@ import { SelectNackAndDrink } from "../../SelectSnackAndDrink";
 import { usePickSeatContext } from "../../Provider/PickSeatProvider";
 import bookingServices from "../../../services/bookingServices";
 import { loadingApi } from "../../../untils/loadingApi";
-import NormalToast from "../../AllToast/NormalToast";
+import { ErrToast } from "../../AllToast/NormalToast";
 import { useNavigate } from "react-router-dom";
+import { paymentServices } from "../../../services";
 
 type Props = {
   opened: boolean;
@@ -48,39 +49,70 @@ function ModalConfirmBook({ opened, close }: Props) {
   const prevStep = () =>
     setActive((current) => (current > 0 ? current - 1 : current));
 
-  async function handleCreateBooking() {
-    if (active < 2) {
-      nextStep();
-    } else {
-      const seatIds = seatSelected.map((seat) => seat.id);
-
+  async function createDirectBooking() {
+    const seatIds = seatSelected.map((seat) => seat.id);
+    try {
       const data = {
         userId: dataUser.id,
-        paymentMethod: "direct",
+        paymentMethod: paymentMethod,
         seatIds: seatIds,
         totalPrice: allPrice.totalPrice,
         showId: dataTotal?.id,
         isPaid: false,
         discount: discount.nameDiscount,
+        status: "Chờ xác nhận",
+        sendEmail: true,
       };
 
-      try {
-        const api = bookingServices.createBooking(data);
-        const res = await loadingApi(api, "Đặt vé xem phim");
+      const api = bookingServices.createBooking(data);
 
-        if (res) {
-          navigate(`/user/${dataUser.id}/all-tickets`);
-        }
+      const res = await loadingApi(api, "Đặt vé xem phim");
 
-        return res;
-      } catch (error) {
-        const err = error as Error;
+      if (res) {
+        navigate(`/user/${dataUser.id}/all-tickets`);
+      }
 
-        NormalToast({
-          title: "getShows",
-          message: err.message,
-          color: "red",
-        });
+      return res;
+    } catch (error) {
+      ErrToast(error as Error, "createDirectBooking");
+    }
+  }
+
+  async function createOnlineBooking() {
+    const seatIds = seatSelected.map((seat) => seat.id);
+    try {
+      const data = {
+        userId: dataUser.id,
+        paymentMethod: paymentMethod,
+        seatIds: seatIds,
+        totalPrice: allPrice.totalPrice,
+        showId: dataTotal?.id,
+        isPaid: false,
+        discount: discount.nameDiscount,
+        status: "Chưa thanh toán",
+        sendEmail: false,
+      };
+
+      const res = await paymentServices.createPaymentURL(data);
+      console.log("res", res);
+      if (res.statusCode == 0) {
+        window.location.href = res.data.url;
+      }
+
+      return res;
+    } catch (error) {
+      ErrToast(error as Error, "createOnlineBooking");
+    }
+  }
+
+  async function handleCreateBooking() {
+    if (active < 2) {
+      nextStep();
+    } else {
+      if (paymentMethod == "direct") {
+        await createDirectBooking();
+      } else {
+        await createOnlineBooking();
       }
     }
   }

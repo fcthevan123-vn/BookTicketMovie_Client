@@ -1,12 +1,4 @@
-import {
-  Card,
-  Image,
-  Text,
-  Badge,
-  Rating,
-  Button,
-  Tooltip,
-} from "@mantine/core";
+import { Card, Image, Text, Rating, Button, Tooltip } from "@mantine/core";
 import classes from "./MovieSmallPreview.module.css";
 import { DataTableMoviesProps } from "../Provider/MovieProvider/MovieProvider";
 import moment from "moment";
@@ -43,14 +35,6 @@ export default function MovieSmallPreview({ dataMovie }: Props) {
           ))}
         </Carousel>
       </Card.Section>
-
-      {/* <Badge
-        className={classes.rating}
-        variant="gradient"
-        gradient={{ from: "yellow", to: "red" }}
-      >
-        Phim nổi bật
-      </Badge> */}
 
       <Tooltip label={dataMovie.title} position="top-start">
         <Text className={classes.title} fw={500} component="a" lineClamp={1}>

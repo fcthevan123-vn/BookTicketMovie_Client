@@ -428,7 +428,7 @@ const FormEditMovie = ({ dataMovie, onClose }: FormEditMovieProps) => {
               radius="md"
               w={"50%"}
               type="reset"
-              color="orange"
+              variant="light"
               loading={isLoading}
               onClick={() => onClose()}
             >

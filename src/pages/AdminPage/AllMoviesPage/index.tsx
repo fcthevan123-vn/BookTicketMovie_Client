@@ -150,8 +150,8 @@ function AllMoviesPage() {
           </Text>
         )}
       </div>
-      <div className="flex justify-center items-center w-full px-6 gap-28">
-        <div>
+      <div className="flex justify-between items-center w-full px-6 gap-28">
+        <div className="">
           <Text mb={"4px"} size="sm">
             Trang hiện tại
           </Text>
