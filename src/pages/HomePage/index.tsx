@@ -68,8 +68,8 @@ function HomePage() {
 
   return (
     <div className="">
+      <HeroHome></HeroHome>
       <Container size="xl">
-        <HeroHome></HeroHome>
         <TrendingMovie
           dataMovies={movieData.dataTrendingMovies}
         ></TrendingMovie>

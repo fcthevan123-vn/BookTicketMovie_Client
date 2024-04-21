@@ -1,10 +1,7 @@
-import React from "react";
 import { PickSeatProvider } from "../../components/Provider/PickSeatProvider";
 import PickSeatPage from "./PickSeatPage";
 
-type Props = {};
-
-function ProviderWrapper({}: Props) {
+function ProviderWrapper() {
   return (
     <div>
       <PickSeatProvider>

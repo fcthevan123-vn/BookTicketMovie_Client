@@ -21,7 +21,7 @@ const navigation = {
   ],
   legal: [
     { name: "Lai The Van", href: "#" },
-    { name: "vanb2014805@student.ctu.edu.vn", href: "#" },
+    { name: "0399619422", href: "#" },
     { name: "fcthevan123@gmail.com", href: "#" },
   ],
   social: [

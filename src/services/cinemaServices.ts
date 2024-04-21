@@ -1,5 +1,11 @@
 import axios from "../axios";
 
+type CinemaHaveShows = {
+  city: string;
+  district: string;
+  selectedDate: Date;
+};
+
 const cinemaServices = {
   async createCinema(data: object) {
     const res = await axios.post("/api/v1/cinema/create", data);
@@ -13,6 +19,10 @@ const cinemaServices = {
     const res = await axios.get(
       `api/v1/cinema/get-limit?page=${page}&limit=${limit}`
     );
+    return res.data;
+  },
+  async getCinemaHaveShows(data: CinemaHaveShows) {
+    const res = await axios.post("/api/v1/cinema/cinemas-have-shows", data);
     return res.data;
   },
 };

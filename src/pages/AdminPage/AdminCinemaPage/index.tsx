@@ -60,10 +60,7 @@ function AdminCinemaPage() {
         `district/${codes[0]}`
       );
       const resCity = await apiProvinceVietNam.callApiCity("");
-      // console.log("resCity", resCity);
-      // console.log("resDistrict", resDistrict);
-      // console.log("resWard", resWard);
-      // console.log("codes", codes);
+
       setIsLoading(false);
 
       const allName = {

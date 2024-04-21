@@ -10,8 +10,8 @@
     var(--mantine-color-pink-6)
   );
   height: rem(120px);
-  border-bottom: rem(1px) solid
-    light-dark(var(--mantine-color-gray-2), transparent);
+  /* border-bottom: rem(1px) solid
+    light-dark(var(--mantine-color-gray-2), transparent); */
   /* margin-bottom: rem(120px); */
 }
 

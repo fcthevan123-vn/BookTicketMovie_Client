@@ -35,7 +35,6 @@ function DefaultLayout({ children }: DefaultLayoutProps) {
         breakpoint: "sm",
         collapsed: { desktop: true, mobile: !opened },
       }}
-      padding="md"
       transitionDuration={0}
     >
       <AppShell.Header>

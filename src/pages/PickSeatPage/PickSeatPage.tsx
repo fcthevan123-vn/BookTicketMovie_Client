@@ -36,6 +36,7 @@ import { seatServices } from "../../services";
 import { SeatStatus } from "../../types";
 import PaymentPreview from "../../components/PaymentPreview";
 import { usePickSeatContext } from "../../components/Provider/PickSeatProvider";
+import moment from "moment";
 
 function PickSeatPage() {
   const [opened, { toggle }] = useDisclosure();
@@ -102,7 +103,7 @@ function PickSeatPage() {
           <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
           <div className="flex w-full justify-between px-3">
             <div className="flex gap-4 items-center">
-              <Link to={`/movie/${dataTotal?.movieId}`}>
+              <Link to={`/select-show/${dataTotal?.movieId}`}>
                 <ActionIcon
                   variant="subtle"
                   color="rgba(255, 255, 255, 1)"
@@ -130,7 +131,8 @@ function PickSeatPage() {
                     orientation="vertical"
                   ></Divider>
                   <Text c={"white"} size="md" fw={500}>
-                    {dataTotal?.startTime} - {dataTotal?.endTime}
+                    {moment(dataTotal?.startTime).format("HH:mm")} {" - "}
+                    {moment(dataTotal?.endTime).format("HH:mm")}
                   </Text>
                 </div>
 

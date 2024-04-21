@@ -289,8 +289,8 @@ const ShowTimePage = () => {
                         />
                       </ThemeIcon>
                       <Text fz="sm" fw={700}>
-                        {moment(show.startTime).format("hh:mm")} ~{" "}
-                        {moment(show.endTime).format("hh:mm")}
+                        {moment(show.startTime).format("HH:mm")} ~{" "}
+                        {moment(show.endTime).format("HH:mm")}
                       </Text>
                       |
                       <Text fz="sm">
