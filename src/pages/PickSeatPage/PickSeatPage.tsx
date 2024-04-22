@@ -6,30 +6,14 @@ import {
   Badge,
   Box,
   Burger,
-  Button,
   Divider,
   Group,
-  List,
-  Paper,
-  ScrollArea,
-  Select,
   Text,
   ThemeIcon,
 } from "@mantine/core";
 import LayoutSeat from "../../components/LayoutSeat";
 import classes from "./PickSeatPage.module.css";
-import {
-  IconArrowLeft,
-  IconCheck,
-  IconCircleCheck,
-  IconMail,
-  IconMapPin,
-  IconPhone,
-  IconUser,
-  IconUsers,
-} from "@tabler/icons-react";
-import { useAuthenticate } from "../../hooks";
-import { Icon123 } from "@tabler/icons-react";
+import { IconArrowLeft, IconCheck, IconX } from "@tabler/icons-react";
 import NormalToast from "../../components/AllToast/NormalToast";
 import { Link, useParams } from "react-router-dom";
 import { seatServices } from "../../services";
@@ -41,15 +25,9 @@ import moment from "moment";
 function PickSeatPage() {
   const [opened, { toggle }] = useDisclosure();
   const { id } = useParams();
-  const [, , dataUser] = useAuthenticate();
+  // const [, , dataUser] = useAuthenticate();
 
-  const {
-    seatSelected,
-    dataTotal,
-    setDataTotal,
-    seatNumberControl,
-    setSeatNumberControl,
-  } = usePickSeatContext();
+  const { seatSelected, dataTotal, setDataTotal } = usePickSeatContext();
 
   const [seatPicked, setSeatPicked] = useState<SeatStatus[] | null>(null);
 
@@ -75,19 +53,15 @@ function PickSeatPage() {
 
   useEffect(() => {
     getAllSeats(id as string);
-  }, [getAllSeats]);
+  }, [getAllSeats, id]);
 
   return (
     <AppShell
+      layout="alt"
       header={{ height: 70 }}
       footer={{ height: 80 }}
-      navbar={{
-        width: 300,
-        breakpoint: "sm",
-        collapsed: { mobile: !opened },
-      }}
       aside={{
-        width: 300,
+        width: 400,
         breakpoint: "md",
         collapsed: { desktop: false, mobile: true },
       }}
@@ -152,194 +126,44 @@ function PickSeatPage() {
                 </div>
               </div>
             </div>
-
-            <div>
-              <Select
-                checkIconPosition="right"
-                size="xs"
-                w={100}
-                radius={"md"}
-                label={<p className="text-white">Số ghế</p>}
-                placeholder="Pick value"
-                data={["1", "2", "3", "4", "5"]}
-                onChange={(e) => setSeatNumberControl(e as string)}
-                value={seatNumberControl}
-                allowDeselect={false}
-              />
-            </div>
           </div>
         </Group>
       </AppShell.Header>
 
-      <AppShell.Navbar p="sm">
-        <ScrollArea scrollbarSize={6}>
-          <div className="flex flex-col items-center gap-4 ">
-            <Badge variant="filled" size="lg" radius="md">
-              Thông tin người dùng
-            </Badge>
-
-            <Paper shadow="sm" withBorder p={"sm"} radius={"md"}>
-              <List
-                spacing="md"
-                size="md"
-                center
-                icon={
-                  <ThemeIcon
-                    color="violet"
-                    variant="filled"
-                    size={30}
-                    radius="md"
-                  >
-                    <IconCircleCheck size="1.25rem" />
-                  </ThemeIcon>
-                }
-              >
-                <List.Item
-                  icon={
-                    <ThemeIcon
-                      color="violet"
-                      variant="filled"
-                      size={30}
-                      radius="md"
-                    >
-                      <IconUser size="1.25rem" />
-                    </ThemeIcon>
-                  }
-                >
-                  {dataUser.fullName}
-                </List.Item>
-
-                <List.Item
-                  icon={
-                    <ThemeIcon
-                      color="violet"
-                      variant="filled"
-                      size={30}
-                      radius="md"
-                    >
-                      <IconMail size="1.25rem" />
-                    </ThemeIcon>
-                  }
-                >
-                  {dataUser.email}
-                </List.Item>
-                <List.Item
-                  icon={
-                    <ThemeIcon
-                      color="violet"
-                      variant="filled"
-                      size={30}
-                      radius="md"
-                    >
-                      <IconPhone size="1.25rem" />
-                    </ThemeIcon>
-                  }
-                >
-                  {dataUser.phone}
-                </List.Item>
-                <List.Item
-                  icon={
-                    <ThemeIcon
-                      color="violet"
-                      variant="filled"
-                      size={30}
-                      radius="md"
-                    >
-                      <Icon123 size="1.25rem" />
-                    </ThemeIcon>
-                  }
-                >
-                  {dataUser.age}
-                </List.Item>
-                <List.Item
-                  icon={
-                    <ThemeIcon
-                      color="violet"
-                      variant="filled"
-                      size={30}
-                      radius="md"
-                    >
-                      <IconUsers size="1.25rem" />
-                    </ThemeIcon>
-                  }
-                >
-                  {dataUser.gender}
-                </List.Item>
-                <List.Item
-                  icon={
-                    <ThemeIcon
-                      color="violet"
-                      variant="filled"
-                      size={30}
-                      radius="md"
-                    >
-                      <IconMapPin size="1.25rem" />
-                    </ThemeIcon>
-                  }
-                >
-                  {dataUser.address}
-                </List.Item>
-              </List>
-
-              <div className="mt-5">
-                <Text c={"dimmed"} fs="italic" size="sm">
-                  Hệ thống sẽ dựa vào thông tin người dùng ở trên để tạo hoá đơn
-                  của vé. Nếu bạn không muốn dùng thông tin trên thì có thể nhấn
-                  nút tạo mới ở bên dưới.
-                </Text>
-
-                <Button
-                  variant="filled"
-                  mt={"sm"}
-                  size="compact-sm"
-                  radius="md"
-                  onClick={() =>
-                    NormalToast({
-                      title: "Cập nhật sau",
-                      message: "Chức năng này sẽ được cập nhật sau",
-                      color: "orange",
-                    })
-                  }
-                >
-                  Tạo thông tin mới
-                </Button>
-              </div>
-            </Paper>
-
-            {/* <MovieHallPreview></MovieHallPreview> */}
-          </div>
-        </ScrollArea>
-        {/* <AppShell.Section grow my="sm" component={ScrollArea}> */}
-
-        {/* </AppShell.Section> */}
-      </AppShell.Navbar>
       <AppShell.Main>
         <LayoutSeat
           dataSeatsPicked={seatPicked}
           dataSeats={dataTotal}
         ></LayoutSeat>
       </AppShell.Main>
-      <AppShell.Aside p="sm">
-        <div className="flex justify-center flex-col items-center gap-3">
-          <Badge variant="filled" size="lg" radius="md">
+      <AppShell.Aside>
+        <div className="w-full">
+          <Badge
+            variant="filled"
+            size="lg"
+            w={"100%"}
+            py={"lg"}
+            mb={"md"}
+            radius="0"
+            h={70}
+          >
             Thông tin thanh toán
           </Badge>
 
-          <div>
+          <div className="px-4">
             {seatSelected.length > 0 && <PaymentPreview></PaymentPreview>}
           </div>
         </div>
       </AppShell.Aside>
 
-      <AppShell.Footer p="md">
+      <AppShell.Footer p="sm">
         <div className="flex  justify-center gap-12">
           <div className="flex justify-center items-center gap-6">
             <div className="flex flex-col justify-center items-center gap-1">
               <Box
                 className={classes.box}
                 style={{
-                  background: "var(--mantine-color-gray-1)",
-                  border: "1.5px solid var(--mantine-color-blue-4)",
+                  background: "var(--mantine-color-blue-6)",
                 }}
               ></Box>
               <Text size="xs" c={"dimmed"}>
@@ -351,6 +175,9 @@ function PickSeatPage() {
                 className={classes.box}
                 style={{
                   background: "var(--mantine-color-blue-6)",
+                  border: `2px solid var(--mantine-color-blue-9)`,
+                  boxShadow:
+                    "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
                 }}
               >
                 <div className="flex justify-center items-center h-full">
@@ -362,12 +189,10 @@ function PickSeatPage() {
               </Text>
             </div>
             <div className="flex flex-col justify-center items-center gap-1">
-              <Box
-                className={classes.box}
-                style={{
-                  background: "var(--mantine-color-gray-4)",
-                }}
-              ></Box>
+              <ThemeIcon color="gray.4" h={30} w={30} radius={"8px"}>
+                <IconX style={{ width: "70%", height: "70%" }} />
+              </ThemeIcon>
+
               <Text size="xs" c={"dimmed"}>
                 Không thể chọn
               </Text>
@@ -379,8 +204,7 @@ function PickSeatPage() {
               <Box
                 className={classes.box}
                 style={{
-                  background: "var(--mantine-color-gray-1)",
-                  border: "1.5px solid var(--mantine-color-blue-4)",
+                  background: "var(--mantine-color-blue-6)",
                 }}
               ></Box>
               <Text size="xs" c={"dimmed"}>
@@ -391,8 +215,7 @@ function PickSeatPage() {
               <Box
                 className={classes.box}
                 style={{
-                  background: "var(--mantine-color-gray-1)",
-                  border: "1.5px solid var(--mantine-color-green-4)",
+                  background: "var(--mantine-color-green-6)",
                 }}
               ></Box>
               <Text size="xs" c={"dimmed"}>
@@ -403,8 +226,7 @@ function PickSeatPage() {
               <Box
                 className={classes.box}
                 style={{
-                  background: "var(--mantine-color-gray-1)",
-                  border: "1.5px solid var(--mantine-color-violet-4)",
+                  background: "var(--mantine-color-violet-6)",
                 }}
               ></Box>
               <Text size="xs" c={"dimmed"}>

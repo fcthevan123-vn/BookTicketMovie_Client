@@ -1,4 +1,4 @@
-import { Box, Grid, Paper, SimpleGrid, Text } from "@mantine/core";
+import { Grid, Paper, SimpleGrid, Text } from "@mantine/core";
 import { Fragment, useEffect } from "react";
 import Seat from "./Seat";
 import classes from "./LayoutSeat.module.css";
@@ -16,13 +16,35 @@ function LayoutSeat({ dataSeats, dataSeatsPicked }: Props) {
   const { seatNumberControl, setIsDisabledSeat, seatSelected } =
     usePickSeatContext();
 
+  function generateRowNames(rows: number) {
+    const rowNames = [];
+    const startCharCode = "A".charCodeAt(0);
+
+    for (let i = 0; i < rows; i++) {
+      const rowName = String.fromCharCode(startCharCode + i);
+      rowNames.push(rowName);
+    }
+
+    return rowNames;
+  }
+
+  const rowsName =
+    dataSeats && generateRowNames(dataSeats?.MovieHall.Layout.rows);
+
   // render seat matrix
   if (dataSeats) {
     for (let row = 1; row <= dataSeats.MovieHall.Layout.rows; row++) {
       const rowSeats = dataSeats.MovieHall.Layout.Seats.filter(
         (seat) => seat.rowNumber === row
       );
-      const rowElements = [];
+      const rowElements = [
+        <p
+          key={row - 1}
+          className="flex w-full text-gray-400 justify-center items-center "
+        >
+          {rowsName ? rowsName[row - 1] : ""}
+        </p>,
+      ];
 
       for (
         let seatNumber = 1;
@@ -60,21 +82,6 @@ function LayoutSeat({ dataSeats, dataSeatsPicked }: Props) {
     }
   }
 
-  function generateRowNames(rows: number) {
-    const rowNames = [];
-    const startCharCode = "A".charCodeAt(0);
-
-    for (let i = 0; i < rows; i++) {
-      const rowName = String.fromCharCode(startCharCode + i);
-      rowNames.push(rowName);
-    }
-
-    return rowNames;
-  }
-
-  const rowsName =
-    dataSeats && generateRowNames(dataSeats?.MovieHall.Layout.rows);
-
   useEffect(() => {
     if (seatSelected.length >= parseInt(seatNumberControl)) {
       setIsDisabledSeat(true);
@@ -89,35 +96,22 @@ function LayoutSeat({ dataSeats, dataSeatsPicked }: Props) {
         shadow="xs"
         radius="md"
         withBorder
-        p="xl"
-        style={{
-          width: "700px",
-        }}
+        p="md"
+        w={{ base: "90%", lg: "90%", xl: "80%" }}
       >
-        <div className="mb-5 flex flex-col items-center">
+        <div className="mb-5 flex flex-col items-center ">
           <div className={classes.screen}></div>
-          <Text c={"dimmed"} size="sm">
+          <Text c={"dimmed"} size="xs" mt={"2px"}>
             Màn hình ở phía này
           </Text>
         </div>
         <Grid>
-          <Grid.Col span={1}>
-            {rowsName?.map((name, index) => (
-              <Box
-                key={index}
-                h={"54.5px"}
-                className="flex items-center justify-start"
-              >
-                <Text c={"dimmed"} size="lg">
-                  {name}
-                </Text>
-              </Box>
-            ))}
-          </Grid.Col>
-          <Grid.Col span={11}>
-            <SimpleGrid cols={dataSeats?.MovieHall.Layout.seatsPerRow}>
-              {seatMatrix}
-            </SimpleGrid>
+          <Grid.Col span={12}>
+            {dataSeats?.MovieHall.Layout.seatsPerRow && (
+              <SimpleGrid cols={dataSeats?.MovieHall.Layout.seatsPerRow + 1}>
+                {seatMatrix}
+              </SimpleGrid>
+            )}
           </Grid.Col>
         </Grid>
       </Paper>

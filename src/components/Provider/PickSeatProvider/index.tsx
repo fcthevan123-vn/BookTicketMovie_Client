@@ -52,7 +52,7 @@ export function PickSeatProvider({ children }: { children: React.ReactNode }) {
   const [isDisabledSeat, setIsDisabledSeat] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [dataTotal, setDataTotal] = useState<SeatOverView | null>(null);
-  const [seatNumberControl, setSeatNumberControl] = useState("1");
+  const [seatNumberControl, setSeatNumberControl] = useState("8");
   const [allPrice, setAllPrice] = useState({
     originalPrice: 0,
     typeRoomPrice: 0,

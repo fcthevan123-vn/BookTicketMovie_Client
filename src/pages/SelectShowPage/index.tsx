@@ -35,6 +35,22 @@ type allShowsMovieHallType = {
   movieHall: MovieHall;
 };
 
+type movieDataType = {
+  rating: {
+    totalCount: number;
+    average: number;
+  };
+  movie: MovieTS;
+};
+
+type DataQueryType = {
+  city: string;
+  district: string;
+  selectedDate: Date;
+  cinema: string | null;
+  movieId: string;
+};
+
 function ShowTime({ data }: { data: allShowsMovieHallType }) {
   return (
     <div className="mt-1">
@@ -47,15 +63,13 @@ function ShowTime({ data }: { data: allShowsMovieHallType }) {
           <Link key={index} to={`/pick-seat-by-show/${show.id}`}>
             <div className="font-thin border w-[120px] py-2 px-3 shadow-sm r rounded cursor-pointer transition duration-500 ease-in-out hover:bg-violet-500 hover:text-white flex flex-col items-center">
               <p>{moment(show.startTime).format("HH:mm")}</p>
-              <p className="mt-1 text text-xs  ">12/20 ghế</p>
+              <p className="mt-1 text text-xs  ">
+                {show.availableSeats - show.bookedSeats}/{show.availableSeats}{" "}
+                ghế
+              </p>
             </div>
           </Link>
         ))}
-
-        {/* <div className="font-thin border w-fit py-1 px-8 shadow-sm r rounded cursor-pointer transition duration-500 ease-in-out hover:bg-violet-500 hover:text-white">
-          <p>10 : 20</p>
-          <p className="mt-1 text text-xs  ">12/20 ghế</p>
-        </div> */}
       </div>
     </div>
   );
@@ -101,22 +115,6 @@ function ShowOfCinema({ data }: { data: dataShowType }) {
     </div>
   );
 }
-
-type movieDataType = {
-  rating: {
-    totalCount: number;
-    average: number;
-  };
-  movie: MovieTS;
-};
-
-type DataQueryType = {
-  city: string;
-  district: string;
-  selectedDate: Date;
-  cinema: string | null;
-  movieId: string;
-};
 
 function SelectShowPage() {
   const location = useLocation();

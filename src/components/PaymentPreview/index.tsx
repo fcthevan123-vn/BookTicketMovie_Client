@@ -5,6 +5,7 @@ import {
   Group,
   Paper,
   Radio,
+  ScrollArea,
   Text,
   TextInput,
   Tooltip,
@@ -137,10 +138,13 @@ function PaymentPreview() {
         opened={openModalConfirm}
         close={() => setOpenModalConfirm(false)}
       ></ModalConfirmBook>
-      <Paper shadow="xs" radius="md" withBorder p="xs" w={260}>
-        {seatSelected.map((seat) => (
-          <SeatToPay dataSeat={seat} key={seat.id}></SeatToPay>
-        ))}
+      <Paper shadow="xs" radius="md" withBorder p="xs" w={"100%"}>
+        <ScrollArea.Autosize mah={320} offsetScrollbars scrollbarSize={6}>
+          {seatSelected.map((seat) => (
+            <SeatToPay dataSeat={seat} key={seat.id}></SeatToPay>
+          ))}
+        </ScrollArea.Autosize>
+
         <Divider my="sm" />
         <div className="flex justify-between mb-2">
           <Text size="sm" fw={500}>
