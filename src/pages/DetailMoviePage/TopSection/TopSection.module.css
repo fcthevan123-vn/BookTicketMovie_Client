@@ -9,10 +9,11 @@
 }
 .background {
   padding: 10px;
-  border-radius: var(--mantine-radius-md);
+
+  /* border-radius: var(--mantine-radius-md);
   background-color: var(--mantine-color-gray-1);
   border: 2px solid var(--mantine-color-gray-3);
-  box-shadow: var(--mantine-shadow-md);
+  box-shadow: var(--mantine-shadow-md); */
 }
 
 .carouselIndicator {

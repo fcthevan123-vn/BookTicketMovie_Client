@@ -27,6 +27,7 @@ import {
   IconCookie,
   IconCheck,
 } from "@tabler/icons-react";
+import FooterComponent from "../../components/FooterComponent";
 
 const mockdata = [
   {
@@ -358,6 +359,8 @@ export default function AboutPage() {
           </Grid.Col>
         </Grid>
       </Container>
+
+      <FooterComponent></FooterComponent>
     </div>
   );
 }

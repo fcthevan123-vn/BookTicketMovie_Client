@@ -95,7 +95,6 @@ function FormUser({ isUpdate, data, apiFetch }: Props) {
   });
 
   async function handleSubmit(dataForm: typeof form.values) {
-    console.log("data", dataForm);
     setIsLoading(true);
     let api;
     if (isUpdate) {

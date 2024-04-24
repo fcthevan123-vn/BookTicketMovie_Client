@@ -49,27 +49,42 @@ function DetailMoviePage() {
   }, [getMovieById, id]);
 
   return (
-    <Container my="xl" size={"xl"}>
-      {dataMovie && <TopSecton dataMovie={dataMovie}></TopSecton>}
-
-      <div className="">
-        {dataMovie && <MidSection dataMovie={dataMovie}></MidSection>}
+    <div>
+      <div>
+        <div
+          style={{
+            backgroundImage: `linear-gradient(90deg, rgb(26, 26, 26) 24.97%, rgb(26, 26, 26) 38.3%, rgba(26, 26, 26, 0.04) 97.47%, rgb(26, 26, 26) 100%), url(${dataMovie?.images[0]})`,
+            backgroundPosition: "right center",
+            backgroundRepeat: "no-repeat",
+          }}
+        >
+          <div className="p-8">
+            <Container size={"xl"} className="">
+              {dataMovie && <TopSecton dataMovie={dataMovie}></TopSecton>}
+            </Container>
+          </div>
+        </div>
       </div>
+      <Container py="xl" size={"xl"}>
+        <div className="">
+          {dataMovie && <MidSection dataMovie={dataMovie}></MidSection>}
+        </div>
 
-      <Divider
-        my={40}
-        mx={70}
-        size={"sm"}
-        label="Những phim bạn có thể thích"
-        labelPosition="center"
-      />
+        <Divider
+          my={40}
+          mx={70}
+          size={"sm"}
+          label="Những phim bạn có thể thích"
+          labelPosition="center"
+        />
 
-      <div className="">
-        {dataMovie && relatedMovies && (
-          <RelatedMovie dataMovie={relatedMovies}></RelatedMovie>
-        )}
-      </div>
-    </Container>
+        <div className="">
+          {dataMovie && relatedMovies && (
+            <RelatedMovie dataMovie={relatedMovies}></RelatedMovie>
+          )}
+        </div>
+      </Container>
+    </div>
   );
 }
 

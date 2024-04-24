@@ -553,7 +553,7 @@ export default function ReviewsOfMovie({ dataMovie }: Props) {
         <div className="mt-16 lg:mt-0 lg:col-start-6 lg:col-span-7">
           <h3 className="sr-only">Recent reviews</h3>
 
-          <Tabs defaultValue="gallery">
+          <Tabs defaultValue="gallery" variant="pills" radius={"md"}>
             <Tabs.List grow>
               <Tabs.Tab value="gallery" leftSection={<IconPhoto />}>
                 Tất cả đánh giá

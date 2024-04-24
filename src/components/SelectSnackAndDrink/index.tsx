@@ -31,7 +31,6 @@ export function ImageCheckbox({
   onChange,
   title,
   description,
-  className,
   image,
   ...others
 }: ImageCheckboxProps &

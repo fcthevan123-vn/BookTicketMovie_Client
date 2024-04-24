@@ -6,7 +6,7 @@
   transition: background-color 150ms ease, border-color 150ms ease;
   border-radius: var(--mantine-radius-md);
   padding: var(--mantine-spacing-sm);
-  border: rem(2px) solid
+  border: rem(3px) solid
     light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-8));
   background-color: light-dark(
     var(--mantine-color-white),
@@ -14,7 +14,7 @@
   );
 
   &[data-checked] {
-    border-color: var(--mantine-color-orange-filled);
+    border-color: var(--mantine-color-violet-7);
     background-color: var(--mantine-color-white);
   }
 }

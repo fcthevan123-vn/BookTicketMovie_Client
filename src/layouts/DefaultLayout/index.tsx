@@ -2,7 +2,6 @@ import { useDisclosure, useWindowScroll } from "@mantine/hooks";
 import { ActionIcon, Affix, AppShell, Transition, rem } from "@mantine/core";
 
 import DefaultHeader from "../../components/Headers/DefaultHeader";
-import FooterComponent from "../../components/FooterComponent";
 import { useAuthenticate } from "../../hooks";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
@@ -45,7 +44,6 @@ function DefaultLayout({ children }: DefaultLayoutProps) {
         <div>{children}</div>
       </AppShell.Main>
 
-      <FooterComponent></FooterComponent>
       <Affix position={{ bottom: 20, right: 20 }}>
         <Transition transition="slide-up" mounted={scroll.y > 0}>
           {(transitionStyles) => (

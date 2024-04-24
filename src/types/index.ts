@@ -226,3 +226,8 @@ export interface DiscountTS {
   createdAt?: string;
   updatedAt?: string;
 }
+
+export interface DataSelectOfMovieTS {
+  genre: string[];
+  country: string[];
+}

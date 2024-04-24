@@ -76,7 +76,6 @@ function ShowTime({ data }: { data: allShowsMovieHallType }) {
 }
 
 function ShowOfCinema({ data }: { data: dataShowType }) {
-  console.log("data", data);
   const [nameProvince, setNameProvince] = useState("");
   const getNameProvince = useCallback(async () => {
     try {

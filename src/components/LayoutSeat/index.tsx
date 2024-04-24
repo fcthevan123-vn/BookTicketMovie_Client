@@ -98,6 +98,7 @@ function LayoutSeat({ dataSeats, dataSeatsPicked }: Props) {
         withBorder
         p="md"
         w={{ base: "90%", lg: "90%", xl: "80%" }}
+        className="relative"
       >
         <div className="mb-5 flex flex-col items-center ">
           <div className={classes.screen}></div>

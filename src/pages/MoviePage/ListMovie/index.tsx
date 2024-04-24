@@ -1,4 +1,4 @@
-import {  Grid, SimpleGrid } from "@mantine/core";
+import { Grid, SimpleGrid } from "@mantine/core";
 import { DataTableMoviesProps } from "../../../components/Provider/MovieProvider/MovieProvider";
 import MovieSmallPreview from "../../../components/MovieSmallPreview";
 type Props = {
@@ -7,7 +7,7 @@ type Props = {
 
 function ListMovie({ dataMovies }: Props) {
   return (
-    <div className="mt-8 relative">
+    <div className="mt-4 relative">
       <Grid>
         <Grid.Col span={12}>
           <SimpleGrid cols={4} spacing={"xl"}>

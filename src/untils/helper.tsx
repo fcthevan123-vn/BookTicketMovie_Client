@@ -1,4 +1,6 @@
+import axios from "axios";
 import apiProvinceVietNam from "./apiProvinceVietNam";
+import { ErrToast } from "../components/AllToast/NormalToast";
 
 export function dateAdd(date: Date, interval: string, units: number) {
   if (!(date instanceof Date)) return undefined;
@@ -74,3 +76,66 @@ export async function getAllNameProvince(codes: string[], spaceSymbol: string) {
     console.log(error);
   }
 }
+
+export async function getAllCountry() {
+  try {
+    const res = await axios.get(
+      "https://restcountries.com/v3.1/independent?status=true&fields=name"
+    );
+    const convertData = console.log("res", res);
+
+    console.log(convertData, res);
+  } catch (error) {
+    ErrToast(error as Error, "getAllCountry");
+  }
+}
+
+export const dataSelectOfMovie = {
+  genre: [
+    "Hành động",
+    "Hài kịch",
+    "Kịch tính",
+    "Khoa học viễn tưởng",
+    "Fantasy",
+    "Kinh dị",
+    "Lãng mạn",
+    "Phiêu lưu",
+    "Kịch",
+    "Hoạt hình",
+    "Bí ẩn",
+    "Tội phạm",
+    "Tài liệu",
+    "Miền Tây",
+    "Âm nhạc",
+    "Lịch sử",
+    "Tiểu sử",
+    "Chiến tranh",
+    "Gia đình",
+    "Thể thao",
+    "Siêu anh hùng",
+    "Ngày lễ",
+    "Phim cổ điển đen trắng",
+    "Tuổi teen",
+    "Siêu thực",
+    "Giả tưởng",
+    "Thể loại giả tưởng",
+    "Thử nghiệm",
+    "Không tiếng",
+    "Parody",
+  ],
+  country: [
+    "Việt Nam",
+    "Anh",
+    "Trung Quốc",
+    "Pháp",
+    "Tây Ban Nha",
+    "Bồ Đào Nha",
+    "Ấn Độ",
+    "Nhật Bản",
+    "Hàn Quốc",
+    "Indonesian",
+    "Nga",
+    "Thái Lan",
+    "Mỹ",
+  ],
+};

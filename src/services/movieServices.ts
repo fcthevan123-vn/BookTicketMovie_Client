@@ -193,6 +193,11 @@ const movieServices = {
     const res = await axios.get(`api/v1/movie/get-shows`);
     return res.data;
   },
+
+  async advanceSearch(data: object) {
+    const res = await axios.post(`api/v1/movie/search`, data);
+    return res.data;
+  },
 };
 
 export default movieServices;

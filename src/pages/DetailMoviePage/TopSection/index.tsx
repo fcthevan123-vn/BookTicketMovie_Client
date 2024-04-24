@@ -1,8 +1,7 @@
 import {
   Button,
-  Grid,
   Image,
-  Paper,
+  Modal,
   Rating,
   Stack,
   Text,
@@ -19,6 +18,7 @@ import ModalPickShow from "../../../components/Modals/ModalPickShow";
 import { useAuthenticate } from "../../../hooks";
 import { reviewServices } from "../../../services";
 import { Link } from "react-router-dom";
+import { useDisclosure } from "@mantine/hooks";
 
 type Props = {
   dataMovie: DataTableMoviesProps;
@@ -42,12 +42,13 @@ const initialStarRating = {
   ],
 };
 
-const PRIMARY_COL_HEIGHT = rem(500);
+const PRIMARY_COL_HEIGHT = rem(450);
 
 function TopSecton({ dataMovie }: Props) {
-  const autoplay = useRef(Autoplay({ delay: 5000 }));
+  const autoplay = useRef(Autoplay({ delay: 2000 }));
   const [isOpen, setIsOpen] = useState(false);
   const [isLogged, , dataUser] = useAuthenticate();
+  const [opened, { open, close }] = useDisclosure(false);
 
   const urlParams = new URLSearchParams(window.location.search);
 
@@ -84,26 +85,12 @@ function TopSecton({ dataMovie }: Props) {
     }
   }
 
-  // function getIdInTrailerLink(trailerLink: string) {
-  //   if (trailerLink) {
-  //     const videoID = trailerLink.match(
-  //       /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
-  //     );
-
-  //     if (videoID) {
-  //       return videoID[1];
-  //     }
-  //   }
-  //   // return trailerLink;
-  //   return "B2Jlyq_Tf3Y";
-  // }
-
   useEffect(() => {
     calculateStarRating(dataMovie.id);
     if (openModal) {
       setIsOpen(true);
     }
-  }, [openModal]);
+  }, [dataMovie.id, openModal]);
 
   return (
     <div className={classes.background}>
@@ -114,8 +101,32 @@ function TopSecton({ dataMovie }: Props) {
         close={() => setIsOpen(false)}
       ></ModalPickShow>
 
-      <Grid>
-        <Grid.Col span={8}>
+      {/* modal watch trailer */}
+      <Modal
+        styles={{
+          body: {
+            padding: "0px",
+          },
+        }}
+        opened={opened}
+        onClose={close}
+        withCloseButton={false}
+        size={"80%"}
+        centered
+      >
+        <div className="h-full">
+          <iframe
+            autoFocus={true}
+            height="550px"
+            width={"100%"}
+            src={dataMovie.trailerLink}
+            loading="lazy"
+          ></iframe>
+        </div>
+      </Modal>
+
+      <div className="grid grid-cols-4 gap-5">
+        <div>
           <Carousel
             withIndicators
             height={PRIMARY_COL_HEIGHT}
@@ -126,10 +137,9 @@ function TopSecton({ dataMovie }: Props) {
               controls: classes.carouselControls,
               indicator: classes.carouselIndicator,
             }}
-            onMouseEnter={autoplay.current.stop}
           >
             <>
-              {dataMovie.trailerLink && (
+              {/* {dataMovie.trailerLink && (
                 <Carousel.Slide key={882912}>
                   <iframe
                     autoFocus={false}
@@ -138,114 +148,109 @@ function TopSecton({ dataMovie }: Props) {
                     src={dataMovie.trailerLink}
                   ></iframe>
                 </Carousel.Slide>
-              )}
+              )} */}
 
               {dataMovie.images.map((img, index) => (
                 <Carousel.Slide key={index}>
-                  <Image src={img} h={"100%"} fit="fill" radius={"md"}></Image>
+                  <Image src={img} h={"100%"} fit="cover" radius={"sm"}></Image>
                 </Carousel.Slide>
               ))}
             </>
           </Carousel>
-        </Grid.Col>
+        </div>
 
-        <Grid.Col span={4}>
-          <Grid gutter="md">
-            <Grid.Col>
-              <Paper shadow="xs" radius="md" withBorder p="sm" h={498}>
-                <div className="flex flex-col justify-around h-full">
-                  <div>
-                    <Stack gap={0} px={"xs"}>
-                      <Text tt="uppercase" c="dimmed" fw={700} size="sm">
-                        {dataMovie.genre.join(" - ")}
-                      </Text>
-                      <Text
-                        tt="uppercase"
-                        className={classes.title}
-                        c={"blue"}
-                        my="xs"
-                      >
-                        {dataMovie.title}
-                      </Text>
-                    </Stack>
+        <div className="col-span-2 h-full">
+          <div className="h-full">
+            <div className="flex flex-col justify-between h-full text-white ">
+              <div>
+                <Stack gap={0} px={"xs"}>
+                  <Text tt="uppercase" c="dimmed" fw={700} size="sm">
+                    {dataMovie.genre.join(" - ")}
+                  </Text>
+                  <Text tt="uppercase" className={classes.title} c={""} my="xs">
+                    {dataMovie.title}
+                  </Text>
+                </Stack>
 
-                    <Text size="sm" px={"xs"} mb={"xs"}>
-                      {dataMovie.description}
-                    </Text>
+                <Text size="sm" px={"xs"} mb={"xs"}>
+                  {dataMovie.description}
+                </Text>
 
-                    <div className="flex">
-                      <Rating
-                        value={dataStarRating.average}
-                        readOnly
-                        px={"xs"}
-                        mb={"xs"}
-                      />
-                      <Text size="sm" c="dimmed">
-                        •
-                      </Text>
-                      <Text size="sm" c="dimmed" ml={"xs"}>
-                        {dataStarRating.totalCount} đánh giá
-                      </Text>
-                    </div>
-                  </div>
-
-                  <div className="flex justify-center gap-4">
-                    <Link className="w-1/2" to={`/select-show/${dataMovie.id}`}>
-                      {" "}
-                      <Tooltip
-                        label={getToolTipFromState(
-                          isLogged,
-                          dataUser.isVerifyEmail
-                        )}
-                        disabled={isLogged && dataUser.isVerifyEmail}
-                      >
-                        <Button
-                          variant="gradient"
-                          radius={"md"}
-                          w={"100%"}
-                          ml="xs"
-                          disabled={
-                            !isLogged || !dataUser.isVerifyEmail ? true : false
-                          }
-                          gradient={{ from: "violet", to: "pink.7", deg: -90 }}
-                        >
-                          Đặt vé
-                        </Button>
-                      </Tooltip>
-                    </Link>
-
-                    <Tooltip
-                      label={getToolTipFromState(
-                        isLogged,
-                        dataUser.isVerifyEmail
-                      )}
-                      disabled={isLogged && dataUser.isVerifyEmail}
-                    >
-                      <Button
-                        variant="gradient"
-                        radius={"md"}
-                        w={"50%"}
-                        ml="xs"
-                        onClick={() =>
-                          window.location.replace(
-                            `/movie/${dataMovie.id}#reviews`
-                          )
-                        }
-                        disabled={
-                          !isLogged || !dataUser.isVerifyEmail ? true : false
-                        }
-                        gradient={{ from: "violet", to: "pink.7", deg: 90 }}
-                      >
-                        Xem đánh giá
-                      </Button>
-                    </Tooltip>
-                  </div>
+                <div className="flex">
+                  <Rating
+                    value={dataStarRating.average}
+                    readOnly
+                    px={"xs"}
+                    mb={"xs"}
+                  />
+                  <Text size="sm" c="dimmed">
+                    •
+                  </Text>
+                  <Text size="sm" c="dimmed" ml={"xs"}>
+                    {dataStarRating.totalCount} đánh giá
+                  </Text>
                 </div>
-              </Paper>
-            </Grid.Col>
-          </Grid>
-        </Grid.Col>
-      </Grid>
+              </div>
+
+              <div className="flex">
+                <Link className="" to={`/select-show/${dataMovie.id}`}>
+                  {" "}
+                  <Tooltip
+                    label={getToolTipFromState(
+                      isLogged,
+                      dataUser.isVerifyEmail
+                    )}
+                    disabled={isLogged && dataUser.isVerifyEmail}
+                  >
+                    <Button
+                      variant="gradient"
+                      radius={"md"}
+                      ml="xs"
+                      disabled={
+                        !isLogged || !dataUser.isVerifyEmail ? true : false
+                      }
+                      gradient={{ from: "violet", to: "pink.7", deg: -90 }}
+                    >
+                      Đặt vé
+                    </Button>
+                  </Tooltip>
+                </Link>
+
+                <Button
+                  variant="gradient"
+                  radius={"md"}
+                  ml="xs"
+                  onClick={() => open()}
+                  disabled={!isLogged || !dataUser.isVerifyEmail ? true : false}
+                  gradient={{ from: "violet", to: "pink.7", deg: 90 }}
+                >
+                  Xem trailer
+                </Button>
+
+                <Tooltip
+                  label={getToolTipFromState(isLogged, dataUser.isVerifyEmail)}
+                  disabled={isLogged && dataUser.isVerifyEmail}
+                >
+                  <Button
+                    variant="gradient"
+                    radius={"md"}
+                    ml="xs"
+                    onClick={() =>
+                      window.location.replace(`/movie/${dataMovie.id}#reviews`)
+                    }
+                    disabled={
+                      !isLogged || !dataUser.isVerifyEmail ? true : false
+                    }
+                    gradient={{ from: "violet", to: "pink.7", deg: 90 }}
+                  >
+                    Xem đánh giá
+                  </Button>
+                </Tooltip>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

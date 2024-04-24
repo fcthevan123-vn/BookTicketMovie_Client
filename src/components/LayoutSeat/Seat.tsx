@@ -1,8 +1,9 @@
 import { Chip, Text } from "@mantine/core";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 import { SeatStatus, SeatTS } from "../../types";
 import { usePickSeatContext } from "../Provider/PickSeatProvider";
+import NormalToast from "../AllToast/NormalToast";
 
 type Props = {
   dataSeat: SeatTS;
@@ -11,21 +12,26 @@ type Props = {
 
 function Seat({ dataSeat, dataOrdered }: Props) {
   // console.log("dataSeat", dataSeat);
-  const { isDisabledSeat, seatSelected, setSeatSelected } =
-    usePickSeatContext();
+  const { seatSelected, setSeatSelected } = usePickSeatContext();
 
-  const [preventDisabled, setPreventDisabled] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
 
   const handlePickSeat = useCallback(
     (e: boolean) => {
+      if (seatSelected.length > 7 && e == true) {
+        return NormalToast({
+          title: "Tối đa số ghế",
+          message: "Bạn chỉ được đặt tối đa 8 ghế cho một lần",
+          color: "orange",
+        });
+      }
+      setIsChecked(e);
       if (e) {
         setSeatSelected([...seatSelected, dataSeat]);
       } else {
         const filterSeat = seatSelected.filter(
           (seat) => seat.id !== dataSeat.id
         );
-        setPreventDisabled(false);
         setSeatSelected(filterSeat);
       }
     },
@@ -43,14 +49,6 @@ function Seat({ dataSeat, dataOrdered }: Props) {
   };
 
   const colorSeat = generateColor();
-
-  useEffect(() => {
-    const isSelected = seatSelected.find((seat) => seat.id === dataSeat.id);
-
-    if (isSelected) {
-      setPreventDisabled(true);
-    }
-  }, [dataSeat.id, seatSelected]);
 
   return (
     <div className="flex justify-center items-center m-1">
@@ -93,17 +91,16 @@ function Seat({ dataSeat, dataOrdered }: Props) {
               scale: `${isChecked ? `1.2` : ``}`,
             },
           }}
+          // onClick={() => {
+          //   alert("xtest");
+          // }}
+          checked={isChecked}
           onChange={(e) => {
-            // if (seatSelected.length > 7) {
-            //   console.log("first");
-            //   alert("max 8");
-            // }
-            setIsChecked(e);
             handlePickSeat(e);
           }}
           radius="md"
           variant="filled"
-          disabled={isDisabledSeat && !preventDisabled ? true : false}
+          // disabled={isDisabledSeat && !preventDisabled ? true : false}
         >
           <Text size="xs" c={"white"} ta={"center"}>
             {dataSeat.name}

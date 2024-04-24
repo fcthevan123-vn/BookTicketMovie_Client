@@ -6,6 +6,7 @@ import { DataTableMoviesProps } from "../../components/Provider/MovieProvider/Mo
 import AllEvents from "../../components/Sections/AllEvents";
 import { Container } from "@mantine/core";
 import HeroHome from "../../components/HeroHome";
+import FooterComponent from "../../components/FooterComponent";
 
 function HomePage() {
   const [movieData, setMovieData] = useState<{
@@ -79,6 +80,7 @@ function HomePage() {
         ></StatusMovie>
         <AllEvents></AllEvents>
       </Container>
+      <FooterComponent></FooterComponent>
     </div>
   );
 }
