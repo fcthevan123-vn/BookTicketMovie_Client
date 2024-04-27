@@ -10,11 +10,13 @@ import {
   Select,
   TextInput,
   ThemeIcon,
+  Tooltip,
 } from "@mantine/core";
 
 import {
   IconChevronLeft,
   IconChevronRight,
+  IconHelp,
   IconSearch,
   IconStarFilled,
 } from "@tabler/icons-react";
@@ -23,9 +25,10 @@ import { useCallback, useEffect, useState } from "react";
 import { movieServices } from "../../services";
 import emptyMovie from "../../assets/Image/empty_movie.svg";
 import { DataTableMoviesProps } from "../../components/Provider/MovieProvider/MovieProvider";
-import { useSetState, useToggle } from "@mantine/hooks";
-import { dataSelectOfMovie } from "../../untils/helper";
+import { useDisclosure, useSetState, useToggle } from "@mantine/hooks";
+import { dataSelectOfMovie, selectAgeRequire } from "../../untils/helper";
 import { ErrToast } from "../../components/AllToast/NormalToast";
+import ViewDetailAgeRequire from "../../components/Modals/ViewDetailAgeRequire";
 
 type QueryData = {
   title: string;
@@ -44,20 +47,7 @@ type QueryData = {
 
 const dataFilter = {
   ...dataSelectOfMovie,
-  ageRequired: [
-    {
-      label: "Nhi đồng < 12 tuổi",
-      value: "12",
-    },
-    {
-      label: "Thiếu niên < 18 tuổi",
-      value: "17",
-    },
-    {
-      label: "Người lớn > 17 tuổi",
-      value: "18",
-    },
-  ],
+  ageRequired: selectAgeRequire,
 };
 
 const intinialData = {
@@ -78,6 +68,8 @@ function MoviePage() {
   const [allMovies, setAllMovies] = useState<DataTableMoviesProps[]>();
   const [isOpenSearch, toggle] = useToggle([true, false]);
   const [page, setPage] = useState(1);
+  const [opened, { open, close }] = useDisclosure(false);
+
   const [queryData, setQueryData] = useSetState<QueryData>({
     title: "",
     ageRequire: null,
@@ -191,7 +183,25 @@ function MoviePage() {
             />
 
             <Select
-              label="Độ tuổi yêu cầu"
+              label={
+                <div className="flex items-center">
+                  <p>Độ tuổi yêu cầu</p>
+                  <Tooltip label="Xem chi tiết">
+                    <ActionIcon
+                      onClick={open}
+                      variant="white"
+                      color="gray.7"
+                      radius="md"
+                      aria-label="Settings"
+                    >
+                      <IconHelp
+                        style={{ width: "70%", height: "70%" }}
+                        stroke={1.5}
+                      />
+                    </ActionIcon>
+                  </Tooltip>
+                </div>
+              }
               radius="md"
               clearable
               data={dataFilter.ageRequired}
@@ -245,6 +255,7 @@ function MoviePage() {
             size="compact-sm"
             variant="light"
             onClick={() => {
+              setPage(1);
               setQueryData(intinialData);
               handleFilterMovie(intinialData);
             }}
@@ -299,7 +310,7 @@ function MoviePage() {
             <ListMovie dataMovies={allMovies}></ListMovie>
           ) : (
             <div className="flex gap-6 justify-center flex-col items-center">
-              <p className="font-base italic text-gray-400 text-md">
+              <p className="font-light underline  underline-offset-8 text-gray-400 text-md text-lg italic">
                 Không có phim phù hợp
               </p>
               <img src={emptyMovie} alt="empty movie" className="w-72" />
@@ -330,6 +341,11 @@ function MoviePage() {
           overlayProps={{ radius: "sm", blur: 2 }}
         />
       </div>
+      {/* Modal view detail age require  */}
+      <ViewDetailAgeRequire
+        opened={opened}
+        close={close}
+      ></ViewDetailAgeRequire>
     </div>
   );
 }

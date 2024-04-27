@@ -17,6 +17,7 @@ interface MovieFormValuesProps {
   trailerLink: string;
   imagesDelete?: string | string[];
   id?: string;
+  trailerFile?: File | null;
 }
 
 const movieServices = {
@@ -35,7 +36,10 @@ const movieServices = {
     genre,
     images,
     trailerLink,
+    trailerFile,
   }: MovieFormValuesProps) {
+    console.log("trailerFile", trailerFile);
+
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
@@ -53,6 +57,10 @@ const movieServices = {
       if (image instanceof File) {
         formData.append(`images`, image);
       }
+    }
+
+    if (trailerFile) {
+      formData.append("trailerFile", trailerFile);
     }
 
     for (let i = 0; i < directors.length; i++) {
@@ -117,8 +125,10 @@ const movieServices = {
       images,
       trailerLink,
       imagesDelete,
+      trailerFile,
     }: MovieFormValuesProps,
-    id: string
+    id: string,
+    isUpdateTrailer: string
   ) {
     const formData = new FormData();
     formData.append("title", title);
@@ -144,6 +154,12 @@ const movieServices = {
         formData.append(`images`, image);
       }
     }
+
+    if (trailerFile) {
+      formData.append("trailerFile", trailerFile);
+    }
+
+    formData.append("isUpdateTrailer", isUpdateTrailer);
 
     for (let i = 0; i < directors.length; i++) {
       formData.append("directors[]", directors[i].toString());

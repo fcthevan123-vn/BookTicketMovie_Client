@@ -5,8 +5,11 @@ import {
   MultiSelect,
   Select,
   TagsInput,
+  FileInput,
+  LoadingOverlay,
+  ActionIcon,
 } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { UploadImage } from "../../../components/UploadImage";
 import { DateInput } from "@mantine/dates";
 import moment from "moment";
@@ -20,7 +23,9 @@ import {
   IconFlag,
   IconLanguage,
   IconList,
+  IconX,
 } from "@tabler/icons-react";
+import { selectAgeRequire } from "../../../untils/helper";
 
 const dataGenreMovie = [
   "Hành động",
@@ -77,12 +82,6 @@ const dataSubtitle = [
   label: item,
 }));
 
-// interface dataSelectProps {
-//   value: string;
-//   label: string;
-//   disabled?: boolean;
-// }
-
 interface MovieData {
   id?: string;
   title: string;
@@ -99,6 +98,9 @@ interface MovieData {
   genre: string[];
   images: File[] | { imageName: string; imageUrl: string }[] | undefined;
   imagesDelete?: string | string[];
+  trailerLink: string | null;
+  trailerFile?: File | null;
+  isUpdateTrailer?: string | null;
 }
 
 interface FormEditMovieProps {
@@ -108,7 +110,6 @@ interface FormEditMovieProps {
 
 const FormEditMovie = ({ dataMovie, onClose }: FormEditMovieProps) => {
   const [isLoading, setIsLoading] = useState(false);
-
   const { activePage, getLimitMovies } = useMovie();
 
   const [dataActors, setDataActors] = useState([
@@ -143,6 +144,9 @@ const FormEditMovie = ({ dataMovie, onClose }: FormEditMovieProps) => {
       genre: [""],
       images: [],
       imagesDelete: [],
+      trailerLink: "",
+      trailerFile: null,
+      isUpdateTrailer: "false",
     },
 
     // functions will be used to validate values at corresponding key
@@ -163,8 +167,7 @@ const FormEditMovie = ({ dataMovie, onClose }: FormEditMovieProps) => {
         value.length > 0 && value.length < 20
           ? null
           : "Tên phải lớn hơn 0 và bé hơn 20 người",
-      ageRequire: (value) =>
-        value && parseInt(value) > 0 ? null : "Độ tuổi phải lớn hơn 0 ",
+      ageRequire: (value) => (value ? null : "Độ tuổi không được rỗng "),
       releaseDate: (value, values) => {
         if (moment(value).isSameOrAfter(values.endDate)) {
           return "Ngày phát hành phải nhỏ hơn ngày kết thúc";
@@ -193,15 +196,20 @@ const FormEditMovie = ({ dataMovie, onClose }: FormEditMovieProps) => {
       subtitle: (value) => (value.length <= 0 ? "Chưa nhập phụ đề" : null),
 
       genre: (value) => (value.length <= 0 ? "Chưa nhập thể loại" : null),
+      trailerFile: (value) => (value ? null : "Chưa tải trailer lên"),
     },
     // validateInputOnChange: true,
   });
 
   async function handleSubmit(dataForm: typeof form.values) {
-    // console.log("datamovie", dataMovie);
-    console.log("dataForm: ", dataForm);
     setIsLoading(true);
-    const api = movieServices.editMovie(dataForm, dataMovie.id as string);
+
+    console.log("dataForm", dataForm);
+    const api = movieServices.editMovie(
+      dataForm,
+      dataMovie.id as string,
+      dataForm.isUpdateTrailer as string
+    );
     const res = await loadingApi(api, "Chỉnh sửa phim");
     setIsLoading(false);
     if (res) {
@@ -211,6 +219,46 @@ const FormEditMovie = ({ dataMovie, onClose }: FormEditMovieProps) => {
 
     return res;
   }
+
+  const setValuesForm = useCallback(async (data: MovieData) => {
+    try {
+      setIsLoading(true);
+      form.setFieldValue("language", data.language);
+      form.setFieldValue("country", data.country);
+      form.setFieldValue("subtitle", data.subtitle);
+      form.setFieldValue(
+        "directors",
+        data.directors.map((g) => g)
+      );
+      form.setFieldValue(
+        "actors",
+        data.actors.map((ac) => ac)
+      );
+      form.setFieldValue(
+        "genre",
+        data.genre.map((g) => g)
+      );
+
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 700);
+
+      let fileConverted;
+      if (data.trailerLink) {
+        const response = await fetch(data.trailerLink);
+        const blob = await response.blob();
+        const file = new File(
+          [blob],
+          `${data.title.toLowerCase()}-video-trailer`
+        );
+        fileConverted = file;
+      }
+
+      form.setFieldValue("trailerFile", fileConverted);
+    } catch (error) {
+      console.log("error", error);
+    }
+  }, []);
 
   useEffect(() => {
     if (dataMovie) {
@@ -232,28 +280,19 @@ const FormEditMovie = ({ dataMovie, onClose }: FormEditMovieProps) => {
 
   useEffect(() => {
     if (dataMovie) {
-      form.setFieldValue("language", dataMovie.language);
-      form.setFieldValue("country", dataMovie.country);
-      form.setFieldValue("subtitle", dataMovie.subtitle);
-      form.setFieldValue(
-        "directors",
-        dataMovie.directors.map((g) => g)
-      );
-      form.setFieldValue(
-        "actors",
-        dataMovie.actors.map((ac) => ac)
-      );
-      form.setFieldValue(
-        "genre",
-        dataMovie.genre.map((g) => g)
-      );
+      setValuesForm(dataMovie);
     }
-  }, [dataMovie]);
+  }, [dataMovie, setValuesForm]);
 
   return (
     <MovieFormProvider form={form}>
-      <div className="h-full">
-        {/* {console.log("form img delete", form.values.imagesDelete)} */}
+      <div className="h-full relative">
+        <LoadingOverlay
+          visible={isLoading}
+          zIndex={1000}
+          overlayProps={{ radius: "sm", blur: 2 }}
+        />
+
         <form onSubmit={form.onSubmit(() => handleSubmit(form.values))}>
           <div className="flex justify-center p-5 gap-8">
             <div className="w-1/2 ">
@@ -306,13 +345,22 @@ const FormEditMovie = ({ dataMovie, onClose }: FormEditMovieProps) => {
                     }}
                   />
 
-                  <TextInput
+                  {/* <TextInput
                     placeholder="Độ tuổi yêu cầu"
                     label="Độ tuổi yêu cầu"
                     radius="md"
                     withAsterisk
                     type="number"
                     {...form.getInputProps("ageRequire")}
+                  /> */}
+
+                  <Select
+                    placeholder="Độ tuổi yêu cầu"
+                    label="Độ tuổi yêu cầu"
+                    radius="md"
+                    {...form.getInputProps("ageRequire")}
+                    data={selectAgeRequire}
+                    withAsterisk
                   />
 
                   <DateInput
@@ -333,6 +381,32 @@ const FormEditMovie = ({ dataMovie, onClose }: FormEditMovieProps) => {
                     clearable
                     radius="md"
                     {...form.getInputProps("endDate")}
+                  />
+
+                  <FileInput
+                    radius="md"
+                    label="Trailer"
+                    withAsterisk
+                    clearable
+                    accept="video/*"
+                    placeholder="Tải trailer lên"
+                    {...form.getInputProps("trailerFile")}
+                    rightSection={
+                      <ActionIcon
+                        variant="white"
+                        color="gray"
+                        aria-label="Settings"
+                        onClick={() => {
+                          form.setFieldValue("isUpdateTrailer", "true");
+                          form.setFieldValue("trailerFile", null);
+                        }}
+                      >
+                        <IconX
+                          style={{ width: "60%", height: "60%" }}
+                          stroke={2.5}
+                        />
+                      </ActionIcon>
+                    }
                   />
 
                   <TextInput
@@ -411,7 +485,7 @@ const FormEditMovie = ({ dataMovie, onClose }: FormEditMovieProps) => {
                 <div className="w-full">
                   <UploadImage
                     setIsResetImg={() => undefined}
-                    images={dataMovie.images}
+                    images={dataMovie.images as File[]}
                   ></UploadImage>
                   {form.errors.images ? (
                     <p className="error-form-auth">{form.errors.images}</p>

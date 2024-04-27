@@ -245,19 +245,6 @@ function SelectShowPage() {
     [setDataSelect]
   );
 
-  // const getAllShows = useCallback((data: typeof dataQuery) => {
-  //   try {
-  //     const res =
-  //       await showServices.getSeatStatusOfShowsByMovieIdAndAllRoomType(
-  //         data.movieId,
-  //         date,
-  //         locationCode
-  //       );
-  //   } catch (error) {
-  //     ErrToast(error as Error, "getAllShows");
-  //   }
-  // }, []);
-
   useEffect(() => {
     getMovie();
   }, [getMovie]);
@@ -273,10 +260,6 @@ function SelectShowPage() {
   useEffect(() => {
     getAllCinema(dataQuery);
   }, [dataQuery, getAllCinema]);
-
-  // useEffect(() => {
-  //   getAllShows(dataQuery);
-  // }, [dataQuery, getAllShows]);
 
   return (
     <div className="">
@@ -385,7 +368,9 @@ function SelectShowPage() {
                     <span className="text-gray-200/75 font-semibold">
                       Độ tuổi yêu cầu:
                     </span>{" "}
-                    {movieData?.movie.ageRequire} tuổi
+                    <Badge color="teal" radius="sm">
+                      {movieData?.movie.ageRequire}
+                    </Badge>
                   </p>
                 </div>
               </div>
@@ -530,8 +515,8 @@ function SelectShowPage() {
               ))}
             </>
           ) : (
-            <div className="border w-3/4 rounded-lg px-4 py-10 shadow ">
-              <p className="text-2xl text-center text-gray-400 font-extralight font-mono">
+            <div className="border-2 w-3/4 rounded-lg px-4 py-10 shadow-md border-gray-300">
+              <p className="text-xl text-center text-gray-400 font-extralight">
                 Không tìm thấy suất chiếu
               </p>
             </div>

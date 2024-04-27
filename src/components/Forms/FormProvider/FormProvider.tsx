@@ -16,6 +16,8 @@ interface MovieFormValues {
   genre: string[];
   images: File[] | string[];
   imagesDelete?: string | string[];
+  trailerFile?: File | null;
+  isUpdateTrailer?: string;
 }
 
 export const [MovieFormProvider, useMovieFormContext, useMovieForm] =

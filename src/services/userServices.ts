@@ -78,6 +78,11 @@ const userServices = {
     );
     return res.data;
   },
+
+  async getUserByType(type: string) {
+    const res = await axios.get(`api/v1/user/search?type=${type}`);
+    return res.data;
+  },
 };
 
 export default userServices;

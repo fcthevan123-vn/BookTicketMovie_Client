@@ -20,6 +20,8 @@ interface RowData {
   price: number;
   createdAt?: string;
   updatedAt?: string;
+  trailerLink: string | null;
+  trailerFile?: File | null;
 }
 
 type Props = {

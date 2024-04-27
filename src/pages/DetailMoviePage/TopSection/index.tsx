@@ -1,4 +1,6 @@
 import {
+  ActionIcon,
+  Badge,
   Button,
   Image,
   Modal,
@@ -19,6 +21,8 @@ import { useAuthenticate } from "../../../hooks";
 import { reviewServices } from "../../../services";
 import { Link } from "react-router-dom";
 import { useDisclosure } from "@mantine/hooks";
+import { selectAgeRequire } from "../../../untils/helper";
+import { IconHelp } from "@tabler/icons-react";
 
 type Props = {
   dataMovie: DataTableMoviesProps;
@@ -85,6 +89,11 @@ function TopSecton({ dataMovie }: Props) {
     }
   }
 
+  function generateAgeRequired(ageRequire: string) {
+    const result = selectAgeRequire.filter((age) => age.label == ageRequire);
+    return result[0].detail;
+  }
+
   useEffect(() => {
     calculateStarRating(dataMovie.id);
     if (openModal) {
@@ -139,17 +148,6 @@ function TopSecton({ dataMovie }: Props) {
             }}
           >
             <>
-              {/* {dataMovie.trailerLink && (
-                <Carousel.Slide key={882912}>
-                  <iframe
-                    autoFocus={false}
-                    height="100%"
-                    width={"100%"}
-                    src={dataMovie.trailerLink}
-                  ></iframe>
-                </Carousel.Slide>
-              )} */}
-
               {dataMovie.images.map((img, index) => (
                 <Carousel.Slide key={index}>
                   <Image src={img} h={"100%"} fit="cover" radius={"sm"}></Image>
@@ -189,6 +187,30 @@ function TopSecton({ dataMovie }: Props) {
                   <Text size="sm" c="dimmed" ml={"xs"}>
                     {dataStarRating.totalCount} đánh giá
                   </Text>
+                </div>
+
+                <div className="flex ms-3 items-center">
+                  <p className="text-sm text-gray-300">Độ tuổi yêu cầu:</p>
+                  <Badge color="teal" radius="sm" size="lg" ms={"sm"}>
+                    {dataMovie.ageRequire}
+                  </Badge>
+                  <Tooltip
+                    color="teal.8"
+                    withArrow
+                    label={generateAgeRequired(dataMovie.ageRequire)}
+                  >
+                    <ActionIcon
+                      variant="transparent"
+                      color="white"
+                      aria-label="Settings"
+                      className="ms-1"
+                    >
+                      <IconHelp
+                        style={{ width: "70%", height: "70%" }}
+                        stroke={1.5}
+                      />
+                    </ActionIcon>
+                  </Tooltip>
                 </div>
               </div>
 

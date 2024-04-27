@@ -1,6 +1,6 @@
 import axios from "axios";
 import apiProvinceVietNam from "./apiProvinceVietNam";
-import { ErrToast } from "../components/AllToast/NormalToast";
+import NormalToast, { ErrToast } from "../components/AllToast/NormalToast";
 
 export function dateAdd(date: Date, interval: string, units: number) {
   if (!(date instanceof Date)) return undefined;
@@ -77,6 +77,46 @@ export async function getAllNameProvince(codes: string[], spaceSymbol: string) {
   }
 }
 
+export async function getAllCity() {
+  try {
+    const res = await apiProvinceVietNam.callApiCity("");
+
+    const convertData = res.results.map(
+      (item: { province_id: string; province_name: string }) => {
+        return { value: item.province_id, label: item.province_name };
+      }
+    );
+
+    return convertData;
+  } catch (error) {
+    NormalToast({
+      title: "Lỗi lấy api tỉnh thành",
+      message: "Đã có lỗi xảy ra trong quá trình gọi api lấy tỉnh thành",
+      color: "red",
+    });
+  }
+}
+
+export async function getDistrictByCity(city: string) {
+  try {
+    const res = await apiProvinceVietNam.callApiCity(`district/${city}`);
+
+    const convertData = res.results.map(
+      (item: { district_id: string; district_name: string }) => {
+        return { value: item.district_id, label: item.district_name };
+      }
+    );
+
+    return convertData;
+  } catch (error) {
+    console.log(error);
+    NormalToast({
+      title: "Lỗi lấy api tỉnh thành",
+      message: "Đã có lỗi xảy ra trong quá trình gọi api lấy tỉnh thành",
+      color: "red",
+    });
+  }
+}
 export async function getAllCountry() {
   try {
     const res = await axios.get(
@@ -139,3 +179,44 @@ export const dataSelectOfMovie = {
     "Mỹ",
   ],
 };
+
+export const selectAgeRequire = [
+  {
+    label: "T18",
+    value: "T18",
+    detail: "Phim được phổ biến đến người xem từ đủ 18 tuổi trở lên (18+).",
+  },
+  {
+    label: "T16",
+    value: "T16",
+    detail: "Phim được phổ biến đến người xem từ đủ 16 tuổi trở lên (16+).",
+  },
+  {
+    label: "T13",
+    value: "T13",
+    detail: "Phim được phổ biến đến người xem từ đủ 13 tuổi trở lên (13+).",
+  },
+  {
+    label: "K",
+    value: "K",
+    detail:
+      "Phim được phổ biến đến người xem dưới 13 tuổi và có người giám hộ đi kèm.",
+  },
+  {
+    label: "P",
+    value: "P",
+    detail: "Phim được phép phổ biến đến người xem ở mọi độ tuổi.",
+  },
+];
+
+export async function convertImgLinkToFile(imgLink: string, name: string) {
+  try {
+    const response = await fetch(imgLink);
+
+    const blob = await response.blob();
+    const file = new File([blob], name);
+    return file;
+  } catch (error) {
+    console.log("error", error);
+  }
+}

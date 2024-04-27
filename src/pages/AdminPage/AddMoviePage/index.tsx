@@ -5,6 +5,7 @@ import {
   MultiSelect,
   TagsInput,
   Select,
+  FileInput,
 } from "@mantine/core";
 import { useMemo, useState } from "react";
 import { UploadImage } from "../../../components/UploadImage";
@@ -25,6 +26,7 @@ import {
   IconList,
 } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
+import { selectAgeRequire } from "../../../untils/helper";
 
 const AddMoviePage = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -120,6 +122,7 @@ const AddMoviePage = () => {
       genre: [],
       trailerLink: "",
       images: [],
+      trailerFile: null,
     },
 
     validate: {
@@ -140,7 +143,7 @@ const AddMoviePage = () => {
           ? null
           : "Tên phải lớn hơn 0 và bé hơn 20 người",
       ageRequire: (value) =>
-        value && parseInt(value) > 0 ? null : "Độ tuổi phải lớn hơn 0 ",
+        value ? null : "Độ tuổi yêu cầu không được trống",
       releaseDate: (value, values) => {
         if (moment(value).isSameOrAfter(values.endDate)) {
           return "Ngày phát hành phải nhỏ hơn ngày kết thúc";
@@ -170,18 +173,27 @@ const AddMoviePage = () => {
 
       genre: (value) => (value.length <= 0 ? "Chưa nhập thể loại" : null),
 
-      trailerLink: (value) =>
-        value?.length <= 0 ? "Chưa nhập link trailer" : null,
+      // trailerLink: (value) =>
+      //   value?.length <= 0 ? "Chưa nhập link trailer" : null,
+
+      trailerFile: (value) => (value ? null : "Chưa tải trailer lên"),
 
       images: (value) =>
         value.length > 1 && value.length <= 6
           ? null
           : "Phải có nhiều hơn 1 và ít hơn 6 hình ảnh",
     },
-    // validateInputOnChange: true,
+
+    validateInputOnChange: true,
   });
 
   async function handleSubmit(dataForm: typeof form.values) {
+    if (dataForm.trailerFile && dataForm.trailerFile?.size > 100000000) {
+      alert(
+        "Trailer file quá lớn, vui lòng chọn trailer file nhỏ hơn 100MB để có thể tiếp tục"
+      );
+      return false;
+    }
     setIsLoading(true);
     const api = movieServices.createMovie(dataForm);
     const res = await loadingApi(api, "Tạo phim mới");
@@ -198,11 +210,6 @@ const AddMoviePage = () => {
   return (
     <div className="h-full">
       <MovieFormProvider form={form}>
-        {/* {console.log(
-          "test",
-          moment("19:03", "hh:mm").isSameOrBefore(moment("16:03", "hh:mm"))
-        )} */}
-
         <form onSubmit={form.onSubmit(() => handleSubmit(form.values))}>
           <p className="text-xl font-medium text-sky-500 ms-6 mt-6">
             Thêm phim mới
@@ -259,13 +266,14 @@ const AddMoviePage = () => {
                     }}
                   />
 
-                  <TextInput
+                  <Select
                     placeholder="Độ tuổi yêu cầu"
                     label="Độ tuổi yêu cầu"
                     radius="md"
-                    withAsterisk
-                    type="number"
                     {...form.getInputProps("ageRequire")}
+                    data={selectAgeRequire}
+                    withAsterisk
+                    // type="number"
                   />
 
                   <DateInput
@@ -288,12 +296,22 @@ const AddMoviePage = () => {
                     {...form.getInputProps("endDate")}
                   />
 
-                  <TextInput
-                    placeholder="Nhập link trailer ở đây"
-                    label="Link trailer"
+                  {/* <TextInput
+                    placeholder="Tải trailer lên"
+                    label="Trailer"
                     radius="md"
                     withAsterisk
                     {...form.getInputProps("trailerLink")}
+                  /> */}
+
+                  <FileInput
+                    radius="md"
+                    label="Trailer"
+                    withAsterisk
+                    clearable
+                    accept="video/*"
+                    placeholder="Tải trailer lên"
+                    {...form.getInputProps("trailerFile")}
                   />
 
                   <TextInput

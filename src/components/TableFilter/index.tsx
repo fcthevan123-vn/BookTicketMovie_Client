@@ -50,18 +50,7 @@ function TableFilter({ headers }: Props) {
   const headersRender =
     headers &&
     headers.map((header, index) => (
-      <Table.Th key={index}>
-        {header.isSortable ? (
-          <FilterHeaderTable
-            labelDropdown={header.dataFilterLabel}
-            label={header.label}
-            dataOptions={header.dataFilter ? header.dataFilter : ""}
-            fieldFilter={header.value}
-          ></FilterHeaderTable>
-        ) : (
-          header.label
-        )}
-      </Table.Th>
+      <Table.Th key={index}>{header.label}</Table.Th>
     ));
 
   return (

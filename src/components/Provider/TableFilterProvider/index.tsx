@@ -111,7 +111,7 @@ export function TableFilterProvider<T>({
       {console.log("data", dataGloBal)} */}
 
       <div>
-        <SearchBar></SearchBar>
+        {/* <SearchBar></SearchBar> */}
 
         <div>{children}</div>
         <div className="flex justify-between items-center w-full mt-3 gap-28">

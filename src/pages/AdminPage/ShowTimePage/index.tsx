@@ -381,11 +381,11 @@ const ShowTimePage = () => {
 
   return (
     <div>
-      {/* <div className="flex justify-end mb-3">
-        <Button size="xs" radius={"md"} onClick={openModalAdd}>
+      <div className="flex justify-end mb-3">
+        <Button size="compact-sm" radius={"md"}>
           Thêm suất chiếu
         </Button>
-      </div> */}
+      </div>
       <TableFilter headers={headers}></TableFilter>
     </div>
   );

@@ -4,7 +4,6 @@ import {
   Modal,
   Button,
   Divider,
-  Alert,
   Select,
   Badge,
   Tabs,
@@ -13,7 +12,6 @@ import {
 } from "@mantine/core";
 import {
   IconEdit,
-  IconInfoCircle,
   IconMessageCircle,
   IconPhoto,
   IconStarFilled,
@@ -649,19 +647,11 @@ export default function ReviewsOfMovie({ dataMovie }: Props) {
                       </div>
                     ))
                   ) : (
-                    <div className="flex items-center justify-center">
-                      <Alert
-                        variant="light"
-                        color="blue"
-                        radius={"lg"}
-                        title="Thông báo nhỏ"
-                        icon={<IconInfoCircle></IconInfoCircle>}
-                      >
-                        Phim này hiện chưa có đánh giá nào. Chúng tôi đang mong
-                        đợi đánh giá của bạn. <br></br> <br></br>Hãy xem phim và
-                        đưa ra đánh giá để mọi người cùng biết nhé.
-                      </Alert>
-                    </div>
+                    <p className="mt-8 shadow-md rounded-lg  font-thin italic border-2 text-center border-violet-300 text-gray-500 p-5">
+                      Phim này hiện chưa có đánh giá nào. Chúng tôi đang mong
+                      đợi đánh giá của bạn. <br></br> <br></br>Hãy xem phim và
+                      đưa ra đánh giá để mọi người cùng biết nhé.
+                    </p>
                   )}
                   {allReview && allReview.length > 0 && (
                     <div>
@@ -762,16 +752,12 @@ export default function ReviewsOfMovie({ dataMovie }: Props) {
                       </div>
                     ))
                   ) : (
-                    <div className="flex items-center justify-center">
-                      <Alert
-                        variant="light"
-                        color="blue"
-                        radius={"lg"}
-                        title="Thông báo nhỏ"
-                        icon={<IconInfoCircle></IconInfoCircle>}
-                      >
-                        Hiện tại bạn chưa đánh giá cho phim này.
-                      </Alert>
+                    <div className="">
+                      <p className="mt-8 shadow-md rounded-lg font-thin italic text-center text-gray-500 p-5 border-2 border-violet-300">
+                        Bạn chưa đánh giá cho bộ phim này. <br></br> <br></br>
+                        Hãy xem phim và đưa ra đánh giá để mọi người cùng biết
+                        nhé.
+                      </p>
                     </div>
                   )}
                 </div>

@@ -116,13 +116,19 @@ export type Show = {
 };
 
 export type Cinema = {
-  id: string;
+  id?: string;
   name: string;
-  location: string[];
+  location?: string[];
   detailLocation: string;
-  createdAt: string;
-  updatedAt: string;
-  MovieHalls: MovieHall[];
+  userId: string;
+  User?: UserTS;
+  status: string;
+  hotline: string;
+  image?: string;
+  imageFile?: File | null;
+  createdAt?: string;
+  updatedAt?: string;
+  MovieHalls?: MovieHall[];
 };
 
 export type Data = {
