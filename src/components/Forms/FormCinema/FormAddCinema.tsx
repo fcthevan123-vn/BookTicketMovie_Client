@@ -7,47 +7,55 @@ import {
 } from "@mantine/core";
 import { hasLength, isNotEmpty, useForm } from "@mantine/form";
 import { useCallback, useEffect, useState } from "react";
-import apiProvinceVietNam from "../../../untils/apiProvinceVietNam";
-import NormalToast, { ErrToast } from "../../AllToast/NormalToast";
+import { ErrToast } from "../../AllToast/NormalToast";
 import { cinemaServices, userServices } from "../../../services";
 import { loadingApi } from "../../../untils/loadingApi";
 import { modals } from "@mantine/modals";
 import { Cinema } from "../../../types";
 import { PreviewImages } from "../../PreviewImage";
-import { convertImgLinkToFile } from "../../../untils/helper";
+import {
+  convertImgLinkToFile,
+  getAllCity,
+  getDistrictFromCity,
+  getWardFromDistrict,
+} from "../../../untils/helper";
+import { useSetState } from "@mantine/hooks";
 
 type Props = {
+  isUpdate: boolean;
   getAllCinema: () => void;
   cinemaData: Cinema | null;
 };
 
-function FormAddCinema({ getAllCinema, cinemaData }: Props) {
-  const [dataProvince, setDataProvince] = useState({
-    city: [
-      {
-        value: "",
-        label: "",
-      },
-    ],
-    district: [
-      {
-        value: "",
-        label: "",
-      },
-    ],
-    ward: [
-      {
-        value: "",
-        label: "",
-      },
-    ],
+type SelectDataType = {
+  city:
+    | undefined
+    | {
+        value: string;
+        label: string;
+      }[];
+  district:
+    | undefined
+    | {
+        value: string;
+        label: string;
+      }[];
+  ward:
+    | undefined
+    | {
+        value: string;
+        label: string;
+      }[];
+};
+
+function FormAddCinema({ isUpdate, getAllCinema, cinemaData }: Props) {
+  const [selectData, setSelectData] = useSetState<SelectDataType>({
+    city: undefined,
+    district: undefined,
+    ward: undefined,
   });
 
-  const [valueCity, setValueCity] = useState<null | string>(null);
-  const [valueDistrict, setValueDistrict] = useState<null | string>(null);
   const [isLoading, setIsLoading] = useState(true);
-
-  const [valueWard, setValueWard] = useState<null | string>(null);
 
   const [dataStaff, setDataStaff] = useState([]);
 
@@ -62,91 +70,61 @@ function FormAddCinema({ getAllCinema, cinemaData }: Props) {
     }
   }, []);
 
-  async function callApiCity() {
+  const callApiCity = useCallback(async () => {
     try {
       setIsLoading(true);
-      const res = await apiProvinceVietNam.callApiCity("");
-
-      const convertData = res.results.map(
-        (item: { province_id: string; province_name: string }) => {
-          return { value: item.province_id, label: item.province_name };
-        }
-      );
-      const cityData = { ward: [], district: [], city: convertData };
-      setDataProvince(cityData);
-      setIsLoading(false);
-    } catch (error) {
-      setIsLoading(false);
-
-      NormalToast({
-        title: "Lỗi lấy api tỉnh thành",
-        message: "Đã có lỗi xảy ra trong quá trình gọi api lấy tỉnh thành",
-        color: "red",
+      const result = await getAllCity();
+      setSelectData({
+        city: result,
       });
-    }
-  }
-
-  async function callApiDistrict(city: string) {
-    setIsLoading(true);
-
-    // setValueDistrict(null);
-    // setValueWard(null);
-    setValueCity(city);
-    try {
-      const res = await apiProvinceVietNam.callApiCity(`district/${city}`);
-
-      const convertData = res.results.map(
-        (item: { district_id: string; district_name: string }) => {
-          return { value: item.district_id, label: item.district_name };
-        }
-      );
-
-      const districtData = { ...dataProvince, district: convertData };
-      setDataProvince(districtData);
-      setIsLoading(false);
     } catch (error) {
+      ErrToast(error as Error, "callApiCity");
+    } finally {
       setIsLoading(false);
-
-      NormalToast({
-        title: "Lỗi lấy api tỉnh thành",
-        message: "Đã có lỗi xảy ra trong quá trình gọi api lấy tỉnh thành",
-        color: "red",
-      });
     }
-  }
+  }, []);
 
-  async function callApiWard(district: string) {
+  const callApiDistrict = useCallback(async (city: string) => {
     try {
       setIsLoading(true);
-
-      const res = await apiProvinceVietNam.callApiCity(`ward/${district}`);
-      const convertData = res.results.map(
-        (item: { ward_id: string; ward_name: string }) => {
-          return { value: item.ward_id, label: item.ward_name };
-        }
-      );
-
-      const wardData = { ...dataProvince, ward: convertData };
-      setDataProvince(wardData);
-      setIsLoading(false);
-    } catch (error) {
-      setIsLoading(false);
-      NormalToast({
-        title: "Lỗi lấy api tỉnh thành",
-        message: "Đã có lỗi xảy ra trong quá trình gọi api lấy phường/xã",
-        color: "red",
+      const result = await getDistrictFromCity(city);
+      setSelectData({
+        district: result,
       });
+    } catch (error) {
+      ErrToast(error as Error, "callApiDistrict");
+    } finally {
+      setIsLoading(false);
     }
-  }
+  }, []);
+
+  const callApiWard = useCallback(async (ward: string) => {
+    try {
+      console.log("ward", ward);
+      setIsLoading(true);
+      const result = await getWardFromDistrict(ward);
+      setSelectData({
+        ward: result,
+      });
+    } catch (error) {
+      ErrToast(error as Error, "callApiWard");
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   const form = useForm<Cinema>({
     initialValues: {
+      id: "",
       name: "",
       detailLocation: "",
       userId: "",
       hotline: "",
       imageFile: null,
       status: "open",
+      city: null,
+      district: null,
+      ward: null,
     },
     validate: {
       name: hasLength({ min: 2, max: 20 }, "Tên phải có từ 2 - 20 ký tự"),
@@ -158,13 +136,16 @@ function FormAddCinema({ getAllCinema, cinemaData }: Props) {
       hotline: isNotEmpty("Hotline không được trống"),
       imageFile: isNotEmpty("Hình ảnh không được trống"),
       status: isNotEmpty("Trạng thái không được trống"),
+      city: isNotEmpty("Thành phố/ Tỉnh không được trống"),
+      district: isNotEmpty("Quận/ Huyện không được trống"),
+      ward: isNotEmpty("Phường/ Xã không được trống"),
     },
   });
 
   async function handleSubmit(value: typeof form.values) {
     setIsLoading(true);
 
-    const location = [valueCity, valueDistrict, valueWard];
+    const location = [value.city, value.district, value.ward];
     const data = {
       name: value.name,
       detailLocation: value.detailLocation,
@@ -173,10 +154,21 @@ function FormAddCinema({ getAllCinema, cinemaData }: Props) {
       hotline: value.hotline,
       status: value.status,
       imageFile: value.imageFile,
+      id: value.id,
     };
 
-    const api = cinemaServices.createCinema(data);
-    const res = await loadingApi(api, "Chỉnh sửa phim");
+    let api;
+
+    if (isUpdate) {
+      api = cinemaServices.updateCinema(data);
+    } else {
+      api = cinemaServices.createCinema(data);
+    }
+
+    const res = await loadingApi(
+      api,
+      `${isUpdate ? "Chỉnh sửa rạp" : "Thêm rạp mới"}`
+    );
 
     if (res) {
       getAllCinema();
@@ -187,32 +179,36 @@ function FormAddCinema({ getAllCinema, cinemaData }: Props) {
     return res;
   }
 
-  const handleSetValueForm = useCallback(async (data: Cinema) => {
-    try {
-      setIsLoading(true);
-      if (data.location) {
-        setValueCity(data.location[0]);
-        setValueDistrict(data.location[1]);
-        setValueWard(data.location[2]);
+  const handleSetValueForm = useCallback(
+    async (data: Cinema) => {
+      try {
+        setIsLoading(true);
+
+        const fileImg = await convertImgLinkToFile(
+          data.image as string,
+          `${data.name}-image.png`
+        );
+        if (data.location) {
+          form.setValues({
+            name: data.name,
+            hotline: data.hotline,
+            detailLocation: data.detailLocation,
+            userId: data.userId,
+            imageFile: fileImg,
+            city: data.location[0],
+            district: data.location[1],
+            ward: data.location[2],
+            id: data.id,
+          });
+        }
+      } catch (error) {
+        ErrToast(error as Error, "handleSetValueForm");
+      } finally {
+        setIsLoading(false);
       }
-
-      const fileImg = await convertImgLinkToFile(
-        data.image as string,
-        `${data.name}-image.png`
-      );
-      form.setValues({
-        name: data.name,
-        hotline: data.hotline,
-        detailLocation: data.detailLocation,
-        userId: data.userId,
-        imageFile: fileImg,
-      });
-
-      setIsLoading(false);
-    } catch (error) {
-      ErrToast(error as Error, "handleSetValueForm");
-    }
-  }, []);
+    },
+    [form]
+  );
 
   useEffect(() => {
     getStaff();
@@ -220,18 +216,22 @@ function FormAddCinema({ getAllCinema, cinemaData }: Props) {
 
   useEffect(() => {
     callApiCity();
-  }, []);
+  }, [callApiCity]);
 
   useEffect(() => {
-    if (cinemaData?.location) {
-      callApiCity();
-      callApiDistrict(cinemaData.location[0]);
-      callApiWard(cinemaData.location[1]);
+    if (form.values.city) {
+      callApiDistrict(form.values.city);
     }
-  }, []);
+  }, [callApiDistrict, form.values.city]);
 
   useEffect(() => {
-    if (cinemaData?.location) {
+    if (form.values.district) {
+      callApiWard(form.values.district);
+    }
+  }, [callApiWard, form.values.district]);
+
+  useEffect(() => {
+    if (cinemaData) {
       setIsLoading(true);
       handleSetValueForm(cinemaData);
     }
@@ -259,14 +259,19 @@ function FormAddCinema({ getAllCinema, cinemaData }: Props) {
             allowDeselect={false}
             radius={"md"}
             searchable
-            label="Tỉnh thành"
-            placeholder="Chọn tỉnh thành"
+            label="Thành phố/ Tỉnh"
+            placeholder="Chọn thành phố/ tỉnh"
             withAsterisk
-            value={valueCity}
+            disabled={isLoading}
+            data={selectData.city}
+            {...form.getInputProps("city")}
             onChange={(e) => {
-              callApiDistrict(e as string);
+              form.setValues({
+                city: e,
+                district: null,
+                ward: null,
+              });
             }}
-            data={dataProvince.city}
           />
           <Select
             allowDeselect={false}
@@ -274,14 +279,15 @@ function FormAddCinema({ getAllCinema, cinemaData }: Props) {
             searchable
             withAsterisk
             label="Quận/ Huyện"
+            disabled={isLoading}
             placeholder="Chọn quận/ huyện"
-            data={dataProvince.district}
-            value={valueDistrict}
+            data={selectData.district}
+            {...form.getInputProps("district")}
             onChange={(e) => {
-              setValueWard(null);
-              setValueDistrict(e as string);
-
-              callApiWard(e as string);
+              form.setValues({
+                district: e,
+                ward: null,
+              });
             }}
           />
           <Select
@@ -290,12 +296,10 @@ function FormAddCinema({ getAllCinema, cinemaData }: Props) {
             searchable
             withAsterisk
             label="Phường xã"
+            disabled={isLoading}
             placeholder="Chọn phường/ xã"
-            data={dataProvince.ward}
-            value={valueWard}
-            onChange={(e) => {
-              setValueWard(e as string);
-            }}
+            data={selectData.ward}
+            {...form.getInputProps("ward")}
           />
 
           <TextInput

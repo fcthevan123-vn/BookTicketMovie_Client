@@ -1,37 +1,39 @@
 import { useEffect, useMemo, useState } from "react";
-import { Group, Code, Text } from "@mantine/core";
 
 import classes from "./EmployeeNav.module.css";
-import {
-  AiOutlineEye,
-  AiOutlineLineChart,
-  AiOutlineProfile,
-} from "react-icons/ai";
-import { BsPostcard } from "react-icons/bs";
-import { useAuthenticate } from "../../../hooks";
+import { AiOutlineProfile } from "react-icons/ai";
 import { Link } from "react-router-dom";
-import { IconTicket } from "@tabler/icons-react";
+import { IconChalkboard, IconNewSection } from "@tabler/icons-react";
 
 export function EmployeeNav() {
   const [active, setActive] = useState("Billing");
-  const [, , dataUser] = useAuthenticate();
 
   const dataNavbar = useMemo(
     () => [
       {
-        link: `/employee/${dataUser?.id}/dashboard`,
+        link: `/employee/dashboard`,
         label: "Tổng quan",
         urlInclude: "dashboard",
         icon: AiOutlineProfile,
       },
       {
-        link: `/employee/${dataUser?.id}/manage-booking`,
+        link: `/employee/manage-booking`,
         label: "Quản lý vé",
         urlInclude: "manage-booking",
         icon: AiOutlineProfile,
       },
+      {
+        label: "Phòng chiếu phim",
+        icon: IconChalkboard,
+        link: `/employee/movie-hall`,
+      },
+      {
+        label: "Kiểu phòng",
+        icon: IconNewSection,
+        link: `/employee/room-type`,
+      },
     ],
-    [dataUser]
+    []
   );
 
   const links = dataNavbar.map((item) => (
@@ -52,25 +54,15 @@ export function EmployeeNav() {
 
   useEffect(() => {
     dataNavbar.map((path) => {
-      if (location.pathname.includes(path.urlInclude)) {
+      if (location.pathname.includes(path.urlInclude as string)) {
         setActive(path.label);
       }
     });
-  }, [dataNavbar, location.pathname]);
+  }, [dataNavbar]);
 
   return (
     <nav className={classes.navbar}>
-      <div className={classes.navbarMain}>
-        <Group className={classes.header} justify="space-between">
-          <Text size="sm" c={"white"} fs={"italic"} td={"underline"}>
-            Nhân viên: {dataUser.fullName}
-          </Text>
-          <Code fw={700} className={classes.version}>
-            v1.0.0
-          </Code>
-        </Group>
-        {links}
-      </div>
+      <div className={classes.navbarMain}>{links}</div>
     </nav>
   );
 }

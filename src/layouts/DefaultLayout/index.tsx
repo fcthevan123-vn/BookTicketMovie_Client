@@ -22,7 +22,7 @@ function DefaultLayout({ children }: DefaultLayoutProps) {
       navigate("/admin/dashboard");
     }
     if (dataUser.type == "employee") {
-      navigate(`/employee/${dataUser.id}/dashboard`);
+      navigate(`/employee/dashboard`);
     }
   }, [dataUser, navigate]);
 

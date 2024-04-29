@@ -26,6 +26,8 @@ export type layoutType = {
 export type RoomType = {
   id: string;
   priceMultiplier: string;
+  priceNormal: number[];
+  priceHoliday: number[];
   name: string;
   createdAt: string;
   updatedAt: string;
@@ -90,6 +92,7 @@ export type MovieHall = {
   number: number;
   name: string;
   roomTypeId: string;
+  status: string;
   cinemaId: string;
   layoutId: string;
   createdAt: string;
@@ -120,12 +123,17 @@ export type Cinema = {
   name: string;
   location?: string[];
   detailLocation: string;
+  RoomTypes?: RoomType[];
+  Layouts?: Layout[];
   userId: string;
   User?: UserTS;
   status: string;
   hotline: string;
   image?: string;
   imageFile?: File | null;
+  city?: string | null;
+  district?: string | null;
+  ward?: string | null;
   createdAt?: string;
   updatedAt?: string;
   MovieHalls?: MovieHall[];
@@ -179,6 +187,7 @@ export type UserTS = {
   id: string;
   fullName: string;
   email: string;
+  Cinema?: Cinema;
   isVerifyEmail: boolean;
   phone: string;
   address: string;

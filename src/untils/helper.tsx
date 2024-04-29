@@ -1,6 +1,5 @@
-import axios from "axios";
 import apiProvinceVietNam from "./apiProvinceVietNam";
-import NormalToast, { ErrToast } from "../components/AllToast/NormalToast";
+import NormalToast from "../components/AllToast/NormalToast";
 
 export function dateAdd(date: Date, interval: string, units: number) {
   if (!(date instanceof Date)) return undefined;
@@ -97,7 +96,7 @@ export async function getAllCity() {
   }
 }
 
-export async function getDistrictByCity(city: string) {
+export async function getDistrictFromCity(city: string) {
   try {
     const res = await apiProvinceVietNam.callApiCity(`district/${city}`);
 
@@ -109,7 +108,6 @@ export async function getDistrictByCity(city: string) {
 
     return convertData;
   } catch (error) {
-    console.log(error);
     NormalToast({
       title: "Lỗi lấy api tỉnh thành",
       message: "Đã có lỗi xảy ra trong quá trình gọi api lấy tỉnh thành",
@@ -117,16 +115,23 @@ export async function getDistrictByCity(city: string) {
     });
   }
 }
-export async function getAllCountry() {
-  try {
-    const res = await axios.get(
-      "https://restcountries.com/v3.1/independent?status=true&fields=name"
-    );
-    const convertData = console.log("res", res);
 
-    console.log(convertData, res);
+export async function getWardFromDistrict(district: string) {
+  try {
+    const res = await apiProvinceVietNam.callApiCity(`ward/${district}`);
+    const convertData = res.results.map(
+      (item: { ward_id: string; ward_name: string }) => {
+        return { value: item.ward_id, label: item.ward_name };
+      }
+    );
+
+    return convertData;
   } catch (error) {
-    ErrToast(error as Error, "getAllCountry");
+    NormalToast({
+      title: "Lỗi lấy api tỉnh thành",
+      message: "Đã có lỗi xảy ra trong quá trình gọi api lấy phường/xã",
+      color: "red",
+    });
   }
 }
 

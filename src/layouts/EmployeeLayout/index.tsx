@@ -1,6 +1,5 @@
 import { useDisclosure } from "@mantine/hooks";
-import { AppShell, Burger, Group } from "@mantine/core";
-import Logo from "../../components/Logo";
+import { AppShell, Badge, Burger, Text } from "@mantine/core";
 import { IconHome, IconLogout } from "@tabler/icons-react";
 import classes from "./EmployeeLayout.module.css";
 import { modals } from "@mantine/modals";
@@ -10,6 +9,7 @@ import { userSlice } from "../../redux/reducers";
 import { authenticateServices } from "../../services";
 import { loadingApi } from "../../untils/loadingApi";
 import { EmployeeNav } from "../../components/Navbars/EmployeeNav";
+import { useAuthenticate } from "../../hooks";
 
 type EmployeeLayoutProps = {
   children: React.ReactNode;
@@ -20,6 +20,7 @@ function EmployeeLayout({ children }: EmployeeLayoutProps) {
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [, , dataUser] = useAuthenticate();
 
   const handleLogout = async () => {
     const api = await authenticateServices.handleLogout();
@@ -57,7 +58,7 @@ function EmployeeLayout({ children }: EmployeeLayoutProps) {
     <AppShell
       header={{ height: 60 }}
       navbar={{
-        width: 300,
+        width: 250,
         breakpoint: "sm",
         collapsed: { mobile: !mobileOpened, desktop: !desktopOpened },
       }}
@@ -66,34 +67,43 @@ function EmployeeLayout({ children }: EmployeeLayoutProps) {
       <AppShell.Header
         styles={{
           header: {
-            backgroundColor: "var(--mantine-color-blue-6)",
+            backgroundColor: "var(--mantine-color-violet-6)",
             borderBottom: "0px",
             transition: "0ms",
           },
         }}
       >
-        <Group h="100%" px="md">
-          <Burger
-            color="white"
-            opened={mobileOpened}
-            onClick={toggleMobile}
-            hiddenFrom="sm"
-            size="sm"
-          />
-          <Burger
-            color="white"
-            opened={desktopOpened}
-            onClick={toggleDesktop}
-            visibleFrom="sm"
-            size="sm"
-          />
-          <Logo size="md" radius="md"></Logo>
-        </Group>
+        <div className="flex items-center h-full mx-5  gap-2">
+          <div>
+            <Burger
+              color="white"
+              opened={mobileOpened}
+              onClick={toggleMobile}
+              hiddenFrom="sm"
+              size="sm"
+            />
+            <Burger
+              color="white"
+              opened={desktopOpened}
+              onClick={toggleDesktop}
+              visibleFrom="sm"
+              size="sm"
+            />
+          </div>
+          <div className={classes.header + " border-l ps-3"}>
+            <Text fw={700} size="sm" c={"white"}>
+              Nhân viên: {dataUser.fullName}
+            </Text>
+            <Badge radius={"sm"} tt="capitalize" color="pink">
+              Galaxy Nguyễn Văn Quá
+            </Badge>
+          </div>
+        </div>
       </AppShell.Header>
       <AppShell.Navbar
         styles={{
           navbar: {
-            borderRight: "1px solid var(--mantine-color-blue-3)",
+            borderRight: "1px solid var(--mantine-color-violet-3)",
             boxShadow: "var(--mantine-shadow-xl)",
           },
         }}
@@ -103,7 +113,7 @@ function EmployeeLayout({ children }: EmployeeLayoutProps) {
         </AppShell.Section>
         <AppShell.Section
           style={{
-            backgroundColor: "var(--mantine-color-blue-6)",
+            backgroundColor: "var(--mantine-color-violet-6)",
           }}
           p="md"
         >

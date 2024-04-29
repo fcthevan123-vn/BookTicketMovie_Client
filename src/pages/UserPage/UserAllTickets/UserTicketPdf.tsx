@@ -7,6 +7,7 @@ import {
   StyleSheet,
 } from "@react-pdf/renderer";
 import { BookingTypeTS, SeatStatus, UserTS } from "../../../types";
+import moment from "moment";
 
 // Register font
 Font.register({
@@ -30,7 +31,8 @@ const UserTicketPdf = ({ ticketData, userData }: Props) => (
       <View style={styles.section}>
         <Text style={styles.title}>Chi tiết vé:</Text>
         <Text style={styles.text}>
-          Giờ chiếu: {ticketData.Show.startTime} - {ticketData.Show.endTime}
+          Giờ chiếu: {moment(ticketData.Show.startTime).format("LLL")} -{" "}
+          {moment(ticketData.Show.endTime).format("LLL")}
         </Text>
         <Text style={styles.text}>Ngày chiếu: {ticketData.Show.date}</Text>
         <span style={{ marginBottom: "10px" }}></span>

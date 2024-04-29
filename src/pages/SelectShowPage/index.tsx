@@ -79,7 +79,10 @@ function ShowOfCinema({ data }: { data: dataShowType }) {
   const [nameProvince, setNameProvince] = useState("");
   const getNameProvince = useCallback(async () => {
     try {
-      const res = await getAllNameProvince(data.cinema.location, ", ");
+      const res = await getAllNameProvince(
+        data.cinema.location as string[],
+        ", "
+      );
 
       setNameProvince(res as string);
     } catch (error) {

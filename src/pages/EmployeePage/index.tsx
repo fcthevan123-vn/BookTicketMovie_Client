@@ -1,8 +1,9 @@
 import { useLocation } from "react-router-dom";
 import { Fragment } from "react";
 import ManageBookingPage from "./ManageBookingPage";
-import { MovieProvider } from "../../components/Provider/MovieProvider/MovieProvider";
 import { TableFilterProvider } from "../../components/Provider/TableFilterProvider";
+import ManageMovieHall from "./ManageMovieHall";
+import RoomTypePage from "./RoomType";
 
 const allPath = [
   {
@@ -22,6 +23,14 @@ const allPath = [
         <ManageBookingPage></ManageBookingPage>
       </TableFilterProvider>
     ),
+  },
+  {
+    urlInclude: "movie-hall",
+    jsx: <ManageMovieHall></ManageMovieHall>,
+  },
+  {
+    urlInclude: "room-type",
+    jsx: <RoomTypePage></RoomTypePage>,
   },
 ];
 

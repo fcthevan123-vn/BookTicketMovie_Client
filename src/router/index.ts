@@ -249,14 +249,27 @@ const router: IRouter[] = [
 
   // employee
   {
-    path: "/employee/:id/dashboard",
+    path: "/employee/dashboard",
     isProtected: true,
     layout: EmployeeLayout,
     element: EmployeePage,
   },
 
   {
-    path: "/employee/:id/manage-booking",
+    path: "/employee/manage-booking",
+    isProtected: true,
+    layout: EmployeeLayout,
+    element: EmployeePage,
+  },
+  {
+    path: "/employee/movie-hall",
+    isProtected: true,
+    layout: EmployeeLayout,
+    element: EmployeePage,
+  },
+
+  {
+    path: "/employee/room-type",
     isProtected: true,
     layout: EmployeeLayout,
     element: EmployeePage,

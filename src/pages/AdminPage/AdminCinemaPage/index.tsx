@@ -19,7 +19,7 @@ import { IconPencil, IconSearch, IconTrash } from "@tabler/icons-react";
 import {
   getAllCity,
   getAllNameProvince,
-  getDistrictByCity,
+  getDistrictFromCity,
 } from "../../../untils/helper";
 import { useSetState } from "@mantine/hooks";
 import { ErrToast } from "../../../components/AllToast/NormalToast";
@@ -71,6 +71,7 @@ function AdminCinemaPage() {
       size: "lg",
       children: (
         <FormAddCinema
+          isUpdate={false}
           cinemaData={null}
           getAllCinema={getLimitCinemas}
         ></FormAddCinema>
@@ -90,6 +91,7 @@ function AdminCinemaPage() {
       size: "lg",
       children: (
         <FormAddCinema
+          isUpdate={true}
           cinemaData={data}
           getAllCinema={getLimitCinemas}
         ></FormAddCinema>
@@ -140,7 +142,7 @@ function AdminCinemaPage() {
   const getDistrict = useCallback(
     async (city: string) => {
       try {
-        const data = await getDistrictByCity(city);
+        const data = await getDistrictFromCity(city);
         setSelectData({
           district: data,
         });
@@ -326,6 +328,7 @@ function AdminCinemaPage() {
             label="Quận/ Huyện"
             radius={"md"}
             clearable
+            searchable
             placeholder="Chọn quận/ huyện"
             onChange={(e) => {
               setQueryData({
