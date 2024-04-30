@@ -29,6 +29,7 @@ export type RoomType = {
   priceNormal: number[];
   priceHoliday: number[];
   name: string;
+  status?: string;
   createdAt: string;
   updatedAt: string;
 };
@@ -60,6 +61,8 @@ export type SeatType = {
   id: string;
   name: string;
   price: number;
+  cinemaId: string;
+  color: string;
   createdAt: string;
   updatedAt: string;
 };
@@ -82,9 +85,11 @@ export type Layout = {
   name: string;
   rows: number;
   seatsPerRow: number;
+  cinemaId: string;
+  status?: string;
   createdAt: string;
   updatedAt: string;
-  Seats: SeatTS[];
+  Seats?: SeatTS[];
 };
 
 export type MovieHall = {
@@ -161,7 +166,7 @@ export type SeatOverView = {
 };
 
 export type MovieTS = {
-  id: string;
+  id?: string;
   title: string;
   description: string;
   directors: string[];
@@ -174,13 +179,14 @@ export type MovieTS = {
   subtitle: string;
   releaseDate: string;
   endDate: string;
-  images: string[];
+  images?: string[];
   genre: string[];
   duration: number;
-  ageRequire: number;
-  countBooked: number;
-  createdAt: string;
-  updatedAt: string;
+  trailerLink?: string;
+  ageRequire: string;
+  countBooked?: number;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 export type UserTS = {

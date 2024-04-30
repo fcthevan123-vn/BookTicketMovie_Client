@@ -4,6 +4,8 @@ import ManageBookingPage from "./ManageBookingPage";
 import { TableFilterProvider } from "../../components/Provider/TableFilterProvider";
 import ManageMovieHall from "./ManageMovieHall";
 import RoomTypePage from "./RoomType";
+import ManageLayout from "./ManageLayout/ManageLayout";
+import AllSeatType from "./AllSeatType/AllSeatType";
 
 const allPath = [
   {
@@ -31,6 +33,14 @@ const allPath = [
   {
     urlInclude: "room-type",
     jsx: <RoomTypePage></RoomTypePage>,
+  },
+  {
+    urlInclude: "layout",
+    jsx: <ManageLayout></ManageLayout>,
+  },
+  {
+    urlInclude: "seat",
+    jsx: <AllSeatType></AllSeatType>,
   },
 ];
 

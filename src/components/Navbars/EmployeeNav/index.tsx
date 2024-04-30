@@ -3,7 +3,12 @@ import { useEffect, useMemo, useState } from "react";
 import classes from "./EmployeeNav.module.css";
 import { AiOutlineProfile } from "react-icons/ai";
 import { Link } from "react-router-dom";
-import { IconChalkboard, IconNewSection } from "@tabler/icons-react";
+import {
+  IconArmchair,
+  IconChalkboard,
+  IconLayoutDashboard,
+  IconNewSection,
+} from "@tabler/icons-react";
 
 export function EmployeeNav() {
   const [active, setActive] = useState("Billing");
@@ -31,6 +36,16 @@ export function EmployeeNav() {
         label: "Kiểu phòng",
         icon: IconNewSection,
         link: `/employee/room-type`,
+      },
+      {
+        label: "Bố trí ghế",
+        icon: IconLayoutDashboard,
+        link: `/employee/layout`,
+      },
+      {
+        label: "Các loại ghế",
+        icon: IconArmchair,
+        link: `/employee/seat`,
       },
     ],
     []

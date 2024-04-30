@@ -9,6 +9,13 @@ const layoutServices = {
     const res = await axios.get("/api/v1/layout/get-all");
     return res.data;
   },
+  async getLayoutByStaff(staffId: string) {
+    console.log("staffId", staffId);
+    const res = await axios.get(
+      `/api/v1/layout/layout-by-staff?staffId=${staffId}`
+    );
+    return res.data;
+  },
 };
 
 export default layoutServices;

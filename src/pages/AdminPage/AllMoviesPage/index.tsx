@@ -1,181 +1,236 @@
-import { useState, useEffect, useCallback, useRef } from "react";
-import { TableAllMovies } from "../../../components/Tables/TableAllMovies";
-import { Pagination, Select, Text, TextInput } from "@mantine/core";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { ActionIcon, Text } from "@mantine/core";
 import { movieServices } from "../../../services";
-import { IconSearch, IconX } from "@tabler/icons-react";
-import { useDebouncedValue, useElementSize } from "@mantine/hooks";
-import { useMountEffect } from "../../../hooks";
-import { useMovie } from "../../../components/Provider/MovieProvider/MovieProvider";
-
-type DataTableProps = {
-  images: { imageName: string; imageUrl: string }[];
-  ageRequire: string;
-  duration: string;
-  subtitle: string;
-  releaseDate: string;
-  endDate: string;
-  id: string;
-  title: string;
-  description: string;
-  price: number;
-  actors: string[];
-  country: string;
-  directors: string[];
-  genre: string[];
-  language: string;
-};
-
-const UseFocus = () => {
-  const htmlElRef = useRef<HTMLInputElement | null>(null);
-  const setFocus = () => {
-    htmlElRef.current && htmlElRef.current.focus();
-  };
-
-  return [htmlElRef, setFocus];
-};
+import { IconAdjustments, IconEdit } from "@tabler/icons-react";
+import { MovieTS } from "../../../types";
+import { ErrToast } from "../../../components/AllToast/NormalToast";
+import {
+  MRT_GlobalFilterTextInput,
+  MRT_ToggleFiltersButton,
+  MantineReactTable,
+  useMantineReactTable,
+  type MRT_ColumnDef,
+} from "mantine-react-table";
+import { useElementSize } from "@mantine/hooks";
+import { modals } from "@mantine/modals";
+import FormEditMovie from "../../../components/Forms/FormEditMovie";
+import { loadingApi } from "../../../untils/loadingApi";
+import moment from "moment";
 
 function AllMoviesPage() {
-  const [valueSearch, setValueSearch] = useState("");
-  const [debouncedSearch] = useDebouncedValue(valueSearch, 500);
-  const [searchInputRef, setSearchInputRef] = UseFocus();
+  const [tableData, setTableData] = useState<MovieTS[]>();
+  const [isLoading, setIsLoading] = useState(false);
+  const { ref, width } = useElementSize();
 
-  const { ref, width, height } = useElementSize();
+  async function handleDeleteMovie(id: string) {
+    setIsLoading(true);
+    const api = movieServices.deleteMovie({ id });
+    const res = await loadingApi(api, "Xoá phim");
+    if (res === true) {
+      getAllMovie();
+    }
+    setIsLoading(false);
+    return res;
+  }
 
-  const {
-    setLimitRow,
-    isLoading,
-    data,
-    activePage,
-    setActivePage,
-    totalPagination,
-    setTotalPagination,
-    getLimitMovies,
-    setData,
-    setIsLoading,
-  } = useMovie();
+  const modalDeleteMovie = (id: string) =>
+    modals.openConfirmModal({
+      title: (
+        <Text c={"red"} fw={"bold"}>
+          Xoá phim
+        </Text>
+      ),
+      children: <Text size="sm">Bạn có chắc chắn xoá phim này vĩnh viễn?</Text>,
+      centered: true,
+      confirmProps: {
+        color: "red",
+        radius: "md",
+        size: "xs",
+        loading: isLoading,
+      },
+      cancelProps: {
+        radius: "md",
+        size: "xs",
+      },
+      lockScroll: false,
+      radius: "lg",
+      labels: {
+        confirm: "Đồng ý",
+        cancel: "Huỷ",
+      },
+      onConfirm: () => handleDeleteMovie(id),
+    });
 
-  useMountEffect(() => setSearchInputRef);
+  const modalEditMovie = (data: MovieTS) =>
+    modals.open({
+      title: (
+        <Text c={"violet"} size="lg" fw={700}>
+          Chỉnh sửa phim
+        </Text>
+      ),
+      children: (
+        <FormEditMovie
+          getAllMovie={() => getAllMovie()}
+          onClose={() => modals.closeAll()}
+          dataMovie={data}
+        ></FormEditMovie>
+      ),
+      fullScreen: true,
+      lockScroll: true,
+    });
 
-  const searchMoviesByTitle = useCallback(
-    async (title: string, page: number) => {
+  const getAllMovie = useCallback(async () => {
+    try {
       setIsLoading(true);
-      try {
-        const res = await movieServices.searchMoviesByTitle({
-          title,
-          page,
-          limit: 10,
-        });
-        if (res.statusCode === 0) {
-          const dataConvert = res.data.map(
-            (movie: DataTableProps, index: number) => {
-              return {
-                stt: index + 1 + (activePage - 1) * 10,
-                ...movie,
-              };
-            }
-          );
-          const totalResults = res.rows;
-          const totalPages = Math.ceil(totalResults / 10);
-          const safeTotalResults = Math.max(totalPages, 1); // Tính tổng số trang
-          setTotalPagination(safeTotalResults);
-          setData(dataConvert);
-          setIsLoading(false);
-        } else {
-          setTotalPagination(1);
-          setData([]);
-          setIsLoading(false);
-        }
-      } catch (error) {
-        return error;
-      }
-    },
-    [activePage, setData, setIsLoading, setTotalPagination]
+
+      const res = await movieServices.getAllMovies({ isCount: false });
+      setTableData(res.data);
+    } catch (error) {
+      ErrToast(error as Error, "getAllMovie");
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  const columns = useMemo<MRT_ColumnDef<MovieTS>[]>(
+    () => [
+      {
+        accessorKey: "title",
+        header: "Tên phim",
+      },
+      {
+        id: "directors",
+        accessorFn: (row) => row.directors.join(" - "),
+        header: "Đạo diễn",
+        size: 50,
+      },
+
+      {
+        // accessorKey: "genre",
+        accessorFn: (row) => row.genre.join(" - "),
+        id: "genre",
+        header: "Thể loại",
+      },
+      {
+        accessorFn: (row) => `${moment(row.releaseDate).format("DD/MM/YYYY")}`,
+        id: "releaseDate",
+        header: "Ngày phát hành",
+      },
+
+      {
+        accessorFn: (row) => `${moment(row.endDate).format("DD/MM/YYYY")}`,
+        id: "endDate",
+        header: "Ngày kết thúc",
+      },
+
+      {
+        id: "language",
+        accessorFn: (row) => `${row.language} ${row.subtitle} ${row.country}`,
+        header: "Thông tin",
+
+        Cell: ({ row }) => (
+          <div className="flex flex-col">
+            <span>Ngôn ngữ: {row.original.language}</span>
+            <span>Phụ đề: {row.original.subtitle}</span>
+            <span>Quốc gia: {row.original.country}</span>
+          </div>
+        ),
+      },
+
+      {
+        accessorKey: "duration",
+        header: "Thời lượng",
+        size: 50,
+      },
+      {
+        accessorKey: "ageRequire",
+        header: "Độ tuổi",
+        size: 50,
+      },
+    ],
+    []
   );
 
+  const table = useMantineReactTable({
+    columns,
+    data: tableData ? tableData : [],
+    enableColumnPinning: true,
+    mantineSearchTextInputProps: {
+      placeholder: "Tìm kiếm",
+      radius: "md",
+    },
+    initialState: {
+      columnPinning: {
+        right: ["mrt-row-actions"],
+      },
+      showGlobalFilter: true,
+    },
+    enableRowActions: true,
+    positionActionsColumn: "last",
+    state: {
+      isLoading: isLoading,
+    },
+    mantinePaperProps: {
+      radius: "md",
+    },
+    positionGlobalFilter: "left",
+    renderTopToolbar: ({ table }) => {
+      return (
+        <div className="flex justify-between p-3">
+          <div className="flex items-center">
+            <MRT_GlobalFilterTextInput table={table} />
+            <MRT_ToggleFiltersButton table={table} />
+          </div>
+        </div>
+      );
+    },
+    renderRowActions: ({ row }) => (
+      <div className="flex gap-2">
+        <ActionIcon
+          variant="filled"
+          aria-label="Settings"
+          radius={"md"}
+          size={"lg"}
+          onClick={() => {
+            modalEditMovie(row.original);
+          }}
+        >
+          <IconEdit style={{ width: "70%", height: "70%" }} stroke={1.5} />
+        </ActionIcon>
+        <ActionIcon
+          color="red"
+          aria-label="Settings"
+          radius={"md"}
+          size={"lg"}
+          onClick={() => {
+            modalDeleteMovie(row.original.id as string);
+          }}
+        >
+          <IconAdjustments
+            style={{ width: "70%", height: "70%" }}
+            stroke={1.5}
+          />
+        </ActionIcon>
+      </div>
+    ),
+  });
+
   useEffect(() => {
-    if (debouncedSearch.length > 0) {
-      // Nếu đang ở trang lớn hơn tổng số trang hiện có, hãy điều chỉnh activePage
-      if (activePage > totalPagination) {
-        searchMoviesByTitle(debouncedSearch, totalPagination);
-      } else {
-        searchMoviesByTitle(debouncedSearch, activePage);
-      }
-    } else {
-      getLimitMovies(activePage);
-    }
-  }, [
-    activePage,
-    debouncedSearch,
-    getLimitMovies,
-    searchMoviesByTitle,
-    totalPagination,
-  ]);
+    getAllMovie();
+  }, [getAllMovie]);
 
   return (
     <div
       className="flex flex-col py-5 gap-2 justify-center items-center"
       ref={ref}
     >
-      <TextInput
-        ref={searchInputRef}
-        rightSection={
-          <IconX
-            size="1rem"
-            className="text-gray-400 cursor-pointer"
-            onClick={() => setValueSearch("")}
-          ></IconX>
-        }
-        type="text"
-        w={"50%"}
-        placeholder="Tìm tên phim"
-        radius="lg"
-        disabled={isLoading}
-        value={valueSearch}
-        onChange={(event) => setValueSearch(event.currentTarget.value)}
-        leftSection={<IconSearch size="0.9rem" stroke={1.5} />}
-      />
       <div
-        className="p-5"
+        className="p-2"
         style={{
           maxWidth: width,
         }}
       >
-        {data.length > 0 ? (
-          <>
-            <TableAllMovies data={data} isLoading={isLoading}></TableAllMovies>
-          </>
-        ) : (
-          <Text>
-            <span>Không có phim nào được tìm thấy...</span>
-          </Text>
-        )}
-      </div>
-      <div className="flex justify-between items-center w-full px-6 gap-28">
-        <div className="">
-          <Text mb={"4px"} size="sm">
-            Trang hiện tại
-          </Text>
-          <Pagination
-            disabled={isLoading}
-            radius="md"
-            value={activePage}
-            withEdges
-            onChange={setActivePage}
-            total={totalPagination}
-          />
-        </div>
-        <div className="flex-none">
-          <Text mb={"4px"} size="sm">
-            Số dòng
-          </Text>
-          <Select
-            data={["5", "10", "20", "30", "50"]}
-            defaultValue="10"
-            allowDeselect={false}
-            radius={"md"}
-            onChange={(e) => setLimitRow(e as unknown as number)}
-          />
-        </div>
+        {tableData && <MantineReactTable table={table} />}
       </div>
     </div>
   );

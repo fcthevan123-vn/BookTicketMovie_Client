@@ -6,21 +6,23 @@ import {
   NumberFormatter,
   Select,
   SimpleGrid,
-  TableData,
   Text,
   TextInput,
 } from "@mantine/core";
-import TableDefault from "../../../components/Tables/TableDefault";
 import { useAuthenticate } from "../../../hooks";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { movieHallServices } from "../../../services";
 import { ErrToast } from "../../../components/AllToast/NormalToast";
 import { MovieHall, UserTS } from "../../../types";
-import { useDisclosure, useSetState } from "@mantine/hooks";
-import { IconPlayerPause } from "@tabler/icons-react";
+import { useDisclosure } from "@mantine/hooks";
 import { IconEdit } from "@tabler/icons-react";
 import { hasLength, isNotEmpty, useForm } from "@mantine/form";
 import { loadingApi } from "../../../untils/loadingApi";
+import {
+  MRT_ColumnDef,
+  MantineReactTable,
+  useMantineReactTable,
+} from "mantine-react-table";
 
 type FormAddMovieHallProps = {
   opened: boolean;
@@ -124,7 +126,7 @@ function FormAddMovieHall({
         status: dataUpdate.status,
       });
     }
-  }, [isUpdate]);
+  }, [dataUpdate, isUpdate]);
 
   return (
     <Modal
@@ -213,11 +215,6 @@ function ManageMovieHall() {
   const [isLoading, setIsLoading] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
   const [dataUpdate, setDataUpdate] = useState<MovieHall>();
-  const [dataTable, setDataTable] = useSetState<TableData>({
-    caption: undefined,
-    head: undefined,
-    body: undefined,
-  });
 
   const getAllMovieHall = useCallback(async (staffId: string) => {
     try {
@@ -234,21 +231,29 @@ function ManageMovieHall() {
     }
   }, []);
 
-  const generateDataTable = useCallback(
-    (dataRes: UserTS) => {
-      const rows = dataRes.Cinema?.MovieHalls?.map((mh) => {
-        const generateStatus =
-          mh.status === "open" ? (
-            <Badge color="violet" variant="light" size="sm" radius="sm">
-              Hoạt động
-            </Badge>
-          ) : (
-            <Badge color="red" variant="light" size="sm" radius="sm">
-              Đã đóng của
-            </Badge>
-          );
-
-        const generatePrice = (
+  const columns = useMemo<MRT_ColumnDef<MovieHall>[]>(
+    () => [
+      {
+        accessorKey: "name",
+        header: "Tên",
+      },
+      {
+        accessorKey: "RoomType.name",
+        header: "Kiểu phòng",
+      },
+      {
+        // accessorKey: "priceNormal",
+        id: "price",
+        header: "Giá vé",
+        size: 400,
+        accessorFn: (row) =>
+          row.RoomType
+            ? `
+        ${row.RoomType.priceNormal.join(",")} ${row.RoomType.priceHoliday.join(
+                ","
+              )}`
+            : "",
+        Cell: ({ row }) => (
           <div className="grid grid-cols-3">
             <div className="mt-5">
               <p className="">Trẻ em: </p>
@@ -257,20 +262,21 @@ function ManageMovieHall() {
             </div>
             <div className="flex flex-col">
               <p className="font-semibold">Ngày thường</p>
-              {mh.RoomType.priceNormal.map((price, index) => (
-                <p key={index}>
-                  <NumberFormatter
-                    thousandSeparator="."
-                    decimalSeparator=","
-                    value={price}
-                  />
-                  {" VND"}
-                </p>
-              ))}
+              {row.original.RoomType &&
+                row.original.RoomType.priceNormal.map((price, index) => (
+                  <p key={index}>
+                    <NumberFormatter
+                      thousandSeparator="."
+                      decimalSeparator=","
+                      value={price}
+                    />
+                    {" VND"}
+                  </p>
+                ))}
             </div>
             <div className="flex flex-col">
               <p className="font-semibold">Cuối tuần, ngày lễ</p>
-              {mh.RoomType.priceHoliday.map((price, index) => (
+              {row.original.RoomType.priceHoliday.map((price, index) => (
                 <p key={index}>
                   <NumberFormatter
                     thousandSeparator="."
@@ -282,58 +288,69 @@ function ManageMovieHall() {
               ))}
             </div>
           </div>
-        );
-
-        return [
-          mh.name,
-          mh.RoomType.name,
-          generatePrice,
-          mh.Layout.name,
-          generateStatus,
-          <div className="flex gap-3">
-            <ActionIcon
-              radius={"sm"}
-              size={"md"}
-              variant="light"
-              color="violet"
-              onClick={() => {
-                setDataUpdate(mh);
-                setIsUpdate(true);
-                open();
-              }}
-              aria-label="Settings"
-            >
-              <IconEdit style={{ width: "75%", height: "75%" }} stroke={1.5} />
-            </ActionIcon>
-            <ActionIcon
-              radius={"sm"}
-              size={"md"}
-              variant="light"
-              color="red"
-              aria-label="Settings"
-            >
-              <IconPlayerPause
-                style={{ width: "75%", height: "75%" }}
-                stroke={1.5}
-              />
-            </ActionIcon>
-          </div>,
-        ];
-      });
-
-      setDataTable({
-        head: ["Tên", "Kiểu phòng", "Giá vé", "Kiểu bố trí", "Trạng thái", "#"],
-        body: rows,
-      });
-    },
-    [dataUpdate, open, setDataTable]
+        ),
+      },
+      {
+        accessorKey: "Layout.name",
+        header: "Kiểu bố trí",
+      },
+      {
+        id: "status",
+        accessorFn: (row) =>
+          row.status == "open" ? "Hoạt động" : "Đã đóng cửa",
+        header: "Trạng thái",
+        Cell: ({ row }) =>
+          row.original.status === "open" ? (
+            <Badge color="violet" variant="light" size="md" radius="sm">
+              Hoạt động
+            </Badge>
+          ) : (
+            <Badge color="red" variant="light" size="md" radius="sm">
+              Đã đóng của
+            </Badge>
+          ),
+      },
+    ],
+    []
   );
 
-  useEffect(() => {
-    if (data) {
-      generateDataTable(data);
-    }
-  }, [data, generateDataTable]);
+  const table = useMantineReactTable({
+    columns,
+    data: data ? (data?.Cinema?.MovieHalls as MovieHall[]) : [],
+    enableColumnPinning: true,
+    mantineSearchTextInputProps: {
+      placeholder: "Tìm kiếm",
+      radius: "md",
+    },
+    initialState: {
+      showGlobalFilter: true,
+    },
+    enableRowActions: true,
+    positionActionsColumn: "last",
+    state: {
+      isLoading: isLoading,
+    },
+    mantinePaperProps: {
+      radius: "md",
+    },
+    renderRowActions: ({ row }) => (
+      <div className="flex gap-2">
+        <ActionIcon
+          variant="light"
+          aria-label="Settings"
+          radius={"md"}
+          size={"lg"}
+          onClick={() => {
+            setDataUpdate(row.original);
+            setIsUpdate(true);
+            open();
+          }}
+        >
+          <IconEdit style={{ width: "70%", height: "70%" }} stroke={1.5} />
+        </ActionIcon>
+      </div>
+    ),
+  });
 
   useEffect(() => {
     getAllMovieHall(dataUser.id);
@@ -363,11 +380,7 @@ function ManageMovieHall() {
           Thêm phòng mới
         </Button>
       </div>
-      <TableDefault
-        loading={isLoading}
-        data={dataTable}
-        minWidth={800}
-      ></TableDefault>
+      <MantineReactTable table={table} />
     </div>
   );
 }

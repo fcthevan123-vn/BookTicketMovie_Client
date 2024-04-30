@@ -1,24 +1,27 @@
 import {
   ActionIcon,
+  Badge,
   Button,
   NumberFormatter,
-  TableData,
   Text,
 } from "@mantine/core";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAuthenticate } from "../../../hooks";
 import { roomTypeServices } from "../../../services";
 import { ErrToast } from "../../../components/AllToast/NormalToast";
 import { RoomType, UserTS } from "../../../types";
-import { IconEdit } from "@tabler/icons-react";
-import TableDefault from "../../../components/Tables/TableDefault";
+import { IconEdit, IconPlayerPause } from "@tabler/icons-react";
 import { modals } from "@mantine/modals";
 import { FormRoomType } from "./FormRoomType";
+import {
+  MRT_ColumnDef,
+  MantineReactTable,
+  useMantineReactTable,
+} from "mantine-react-table";
 
 function RoomTypePage() {
   const [, , dataUser] = useAuthenticate();
   const [data, setData] = useState<UserTS>();
-  const [tableData, setTableData] = useState<TableData>();
   const [isLoading, setIsLoading] = useState(true);
 
   const getRoomType = useCallback(async (staffId: string) => {
@@ -77,10 +80,22 @@ function RoomTypePage() {
     [dataUser.id, getRoomType]
   );
 
-  const generateDataTable = useCallback(
-    (dataRes: UserTS) => {
-      const rows = dataRes.Cinema?.RoomTypes?.map((roomType) => {
-        const generateNormalPrice = (
+  const columns = useMemo<MRT_ColumnDef<RoomType>[]>(
+    () => [
+      {
+        accessorKey: "name",
+        header: "Tên",
+      },
+      {
+        id: "priceNormal",
+        header: "Giá vé ngày thường",
+        size: 400,
+        accessorFn: (row) =>
+          row.priceNormal
+            ? `
+        ${row.priceNormal.join(",")} ${row.priceHoliday.join(",")}`
+            : "",
+        Cell: ({ row }) => (
           <div className="grid grid-cols-3">
             <div className="">
               <p className="">Trẻ em: </p>
@@ -88,7 +103,7 @@ function RoomTypePage() {
               <p className="">Người cao tuổi: </p>
             </div>
             <div className="col-span-2 flex flex-col ">
-              {roomType.priceNormal.map((price, index) => (
+              {row.original.priceNormal.map((price, index) => (
                 <p key={index}>
                   <NumberFormatter
                     thousandSeparator="."
@@ -100,44 +115,111 @@ function RoomTypePage() {
               ))}
             </div>
           </div>
-        );
-
-        return [
-          roomType.name,
-          generateNormalPrice,
-          generateNormalPrice,
-          <div className="flex gap-3">
-            <ActionIcon
-              radius={"sm"}
-              size={"md"}
-              variant="light"
-              color="violet"
-              aria-label="Settings"
-              onClick={() => modalUpdateRoomType(dataRes, roomType)}
-            >
-              <IconEdit style={{ width: "75%", height: "75%" }} stroke={1.5} />
-            </ActionIcon>
-          </div>,
-        ];
-      });
-
-      setTableData({
-        head: ["Tên", "Giá vé ngày thường", "Giá vé cuối tuần/ ngày lễ", "#"],
-        body: rows,
-      });
-    },
-    [modalUpdateRoomType]
+        ),
+      },
+      {
+        id: "priceHoliday",
+        header: "Giá vé cuối tuần/ Ngày lễ",
+        size: 400,
+        accessorFn: (row) =>
+          row.priceHoliday
+            ? `
+        ${row.priceHoliday.join(",")} ${row.priceHoliday.join(",")}`
+            : "",
+        Cell: ({ row }) => (
+          <div className="grid grid-cols-3">
+            <div className="">
+              <p className="">Trẻ em: </p>
+              <p className="">Người lớn: </p>
+              <p className="">Người cao tuổi: </p>
+            </div>
+            <div className="col-span-2 flex flex-col ">
+              {row.original.priceHoliday.map((price, index) => (
+                <p key={index}>
+                  <NumberFormatter
+                    thousandSeparator="."
+                    decimalSeparator=","
+                    value={price}
+                  />
+                  {" VND"}
+                </p>
+              ))}
+            </div>
+          </div>
+        ),
+      },
+      {
+        id: "status",
+        accessorFn: (row) =>
+          row.status == "open" ? "Khả dụng" : "Không khả dụng",
+        header: "Trạng thái",
+        Cell: ({ row }) =>
+          row.original.status === "open" ? (
+            <Badge color="violet" variant="light" size="md" radius="sm">
+              Khả dụng
+            </Badge>
+          ) : (
+            <Badge color="red" variant="light" size="md" radius="sm">
+              Không khả dụng
+            </Badge>
+          ),
+      },
+    ],
+    []
   );
+
+  const table = useMantineReactTable({
+    columns,
+    data: data ? (data?.Cinema?.RoomTypes as RoomType[]) : [],
+    enableColumnPinning: true,
+    mantineSearchTextInputProps: {
+      placeholder: "Tìm kiếm",
+      radius: "md",
+    },
+    initialState: {
+      showGlobalFilter: true,
+    },
+    enableRowActions: true,
+    positionActionsColumn: "last",
+    state: {
+      isLoading: isLoading,
+    },
+    mantinePaperProps: {
+      radius: "md",
+    },
+    renderRowActions: ({ row }) => (
+      <div className="flex gap-2">
+        <ActionIcon
+          variant="light"
+          aria-label="Settings"
+          radius={"md"}
+          size={"lg"}
+          onClick={() => modalUpdateRoomType(data as UserTS, row.original)}
+        >
+          <IconEdit style={{ width: "70%", height: "70%" }} stroke={1.5} />
+        </ActionIcon>
+
+        <ActionIcon
+          variant="light"
+          aria-label="Settings"
+          radius={"md"}
+          size={"lg"}
+          color="red"
+          // onClick={() => modalUpdateRoomType(data as UserTS, row.original)}
+        >
+          <IconPlayerPause
+            style={{ width: "70%", height: "70%" }}
+            stroke={1.5}
+          />
+        </ActionIcon>
+      </div>
+    ),
+  });
 
   useEffect(() => {
     getRoomType(dataUser.id);
   }, [dataUser.id, getRoomType]);
 
-  useEffect(() => {
-    if (data) {
-      generateDataTable(data);
-    }
-  }, [data, generateDataTable]);
   return (
     <div className="px-3">
       <div className="mb-3 flex justify-end">
@@ -151,13 +233,7 @@ function RoomTypePage() {
           </Button>
         )}
       </div>
-      {tableData && (
-        <TableDefault
-          loading={isLoading}
-          data={tableData}
-          minWidth={800}
-        ></TableDefault>
-      )}
+      <MantineReactTable table={table} />
     </div>
   );
 }

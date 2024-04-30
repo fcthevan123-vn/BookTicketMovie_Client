@@ -24,6 +24,7 @@ import { modals } from "@mantine/modals";
 import { movieServices } from "../../../services";
 import { loadingApi } from "../../../untils/loadingApi";
 import { useMovie } from "../../Provider/MovieProvider/MovieProvider";
+import { MovieTS } from "../../../types";
 
 interface RowData {
   stt?: number;
@@ -46,7 +47,7 @@ interface RowData {
 }
 
 interface TableAllMoviesProps {
-  data: RowData[];
+  data: MovieTS[];
   isLoading: boolean;
 }
 
@@ -254,13 +255,13 @@ export function TableAllMovies({ data, isLoading }: TableAllMoviesProps) {
   return (
     <>
       <ScrollArea type="auto" className={classes.scrollArea}>
-        {movieToView && (
+        {/* {movieToView && (
           <ModalDetailMovie
             opened={openModal}
             onClose={() => setOpenModal(false)}
             dataMovie={movieToView}
           ></ModalDetailMovie>
-        )}
+        )} */}
 
         <LoadingOverlay visible={isLoading} overlayProps={{ blur: 3 }} />
         <div className="border border-gray-200 rounded-xl overflow-hidden">

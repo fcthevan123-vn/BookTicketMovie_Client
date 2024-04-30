@@ -17,6 +17,8 @@ import "@mantine/carousel/styles.css";
 import "@mantine/charts/styles.css";
 import "@mantine/tiptap/styles.css";
 import "@mantine/charts/styles.css";
+import "mantine-react-table/styles.css"; //import MRT styles
+
 import moment from "moment";
 import "moment/dist/locale/vi";
 

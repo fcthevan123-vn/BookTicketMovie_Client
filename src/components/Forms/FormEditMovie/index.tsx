@@ -16,7 +16,6 @@ import moment from "moment";
 import { MovieFormProvider, useMovieForm } from "../FormProvider/FormProvider";
 import { movieServices } from "../../../services";
 import { loadingApi } from "../../../untils/loadingApi";
-import { useMovie } from "../../Provider/MovieProvider/MovieProvider";
 import classes from "./FormEditMovie.module.css";
 import {
   IconBadgeCc,
@@ -26,6 +25,7 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { selectAgeRequire } from "../../../untils/helper";
+import { MovieTS } from "../../../types";
 
 const dataGenreMovie = [
   "Hành động",
@@ -82,36 +82,19 @@ const dataSubtitle = [
   label: item,
 }));
 
-interface MovieData {
-  id?: string;
-  title: string;
-  description: string;
-  directors: string[];
-  actors: string[];
-  ageRequire: string;
-  releaseDate: Date | string;
-  endDate: Date | string;
-  duration: string;
-  language: string;
-  country: string;
-  subtitle: string;
-  genre: string[];
-  images: File[] | { imageName: string; imageUrl: string }[] | undefined;
-  imagesDelete?: string | string[];
-  trailerLink: string | null;
-  trailerFile?: File | null;
-  isUpdateTrailer?: string | null;
-}
-
 interface FormEditMovieProps {
-  dataMovie: MovieData;
+  dataMovie: MovieTS;
   onClose: () => void;
+  getAllMovie: () => Promise<void>;
 }
 
-const FormEditMovie = ({ dataMovie, onClose }: FormEditMovieProps) => {
+const FormEditMovie = ({
+  dataMovie,
+  onClose,
+  getAllMovie,
+}: FormEditMovieProps) => {
   const [isLoading, setIsLoading] = useState(false);
-  const { activePage, getLimitMovies } = useMovie();
-
+  const [isLoadingTrailer, setIsLoadingTrailer] = useState(false);
   const [dataActors, setDataActors] = useState([
     {
       value: "no",
@@ -188,9 +171,7 @@ const FormEditMovie = ({ dataMovie, onClose }: FormEditMovieProps) => {
       },
 
       duration: (value) =>
-        value && parseInt(value) > 20
-          ? null
-          : "Thời lượng phim phải lớn hơn 20 phút",
+        value > 20 ? null : "Thời lượng phim phải lớn hơn 20 phút",
       language: (value) => (value.length > 0 ? null : "Chưa chọn ngôn ngữ"),
       country: (value) => (value.length > 0 ? null : "Chưa chọn quốc gia"),
       subtitle: (value) => (value.length <= 0 ? "Chưa nhập phụ đề" : null),
@@ -213,16 +194,17 @@ const FormEditMovie = ({ dataMovie, onClose }: FormEditMovieProps) => {
     const res = await loadingApi(api, "Chỉnh sửa phim");
     setIsLoading(false);
     if (res) {
-      getLimitMovies(activePage);
       onClose();
+      await getAllMovie();
     }
 
     return res;
   }
 
-  const setValuesForm = useCallback(async (data: MovieData) => {
+  const setValuesForm = useCallback(async (data: MovieTS) => {
     try {
       setIsLoading(true);
+      setIsLoadingTrailer(true);
       form.setFieldValue("language", data.language);
       form.setFieldValue("country", data.country);
       form.setFieldValue("subtitle", data.subtitle);
@@ -241,10 +223,11 @@ const FormEditMovie = ({ dataMovie, onClose }: FormEditMovieProps) => {
 
       setTimeout(() => {
         setIsLoading(false);
-      }, 700);
+      }, 800);
 
       let fileConverted;
       if (data.trailerLink) {
+        form.setFieldValue("trailerLink", data.trailerLink);
         const response = await fetch(data.trailerLink);
         const blob = await response.blob();
         const file = new File(
@@ -255,6 +238,8 @@ const FormEditMovie = ({ dataMovie, onClose }: FormEditMovieProps) => {
       }
 
       form.setFieldValue("trailerFile", fileConverted);
+
+      setIsLoadingTrailer(false);
     } catch (error) {
       console.log("error", error);
     }
@@ -384,6 +369,7 @@ const FormEditMovie = ({ dataMovie, onClose }: FormEditMovieProps) => {
                   />
 
                   <FileInput
+                    disabled={isLoadingTrailer}
                     radius="md"
                     label="Trailer"
                     withAsterisk
@@ -391,6 +377,10 @@ const FormEditMovie = ({ dataMovie, onClose }: FormEditMovieProps) => {
                     accept="video/*"
                     placeholder="Tải trailer lên"
                     {...form.getInputProps("trailerFile")}
+                    onChange={(e) => {
+                      form.setFieldValue("isUpdateTrailer", "true");
+                      form.setFieldValue("trailerFile", e);
+                    }}
                     rightSection={
                       <ActionIcon
                         variant="white"
@@ -485,7 +475,7 @@ const FormEditMovie = ({ dataMovie, onClose }: FormEditMovieProps) => {
                 <div className="w-full">
                   <UploadImage
                     setIsResetImg={() => undefined}
-                    images={dataMovie.images as File[]}
+                    images={dataMovie.images as unknown as File[]}
                   ></UploadImage>
                   {form.errors.images ? (
                     <p className="error-form-auth">{form.errors.images}</p>

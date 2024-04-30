@@ -8,7 +8,7 @@ interface MovieFormValues {
   ageRequire: string;
   releaseDate: Date | string;
   endDate: Date | string;
-  duration: string;
+  duration: number;
   language: string;
   country: string;
   subtitle: string;

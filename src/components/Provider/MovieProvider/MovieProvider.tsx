@@ -1,5 +1,6 @@
 import React, { createContext, useCallback, useContext, useState } from "react";
 import { movieServices } from "../../../services";
+import { MovieTS } from "../../../types";
 
 export type DataTableMoviesProps = {
   images: string[];
@@ -23,7 +24,7 @@ export type DataTableMoviesProps = {
 type MovieContextType = {
   isLoading: boolean;
   getLimitMovies: (atPage: number) => Promise<void>;
-  data: DataTableMoviesProps[];
+  data: MovieTS[];
   totalPagination: number;
   activePage: number;
   limitRow: number;

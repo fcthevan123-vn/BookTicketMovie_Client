@@ -274,6 +274,19 @@ const router: IRouter[] = [
     layout: EmployeeLayout,
     element: EmployeePage,
   },
+  {
+    path: "/employee/layout",
+    isProtected: true,
+    layout: EmployeeLayout,
+    element: EmployeePage,
+  },
+
+  {
+    path: "/employee/seat",
+    isProtected: true,
+    layout: EmployeeLayout,
+    element: EmployeePage,
+  },
 ];
 
 export default router;
