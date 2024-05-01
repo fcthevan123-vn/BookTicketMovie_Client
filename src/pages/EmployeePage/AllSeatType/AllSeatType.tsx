@@ -43,6 +43,31 @@ export default function AllSeatType() {
       ),
     });
 
+  const openUpdateSeatType = (
+    dataSeatType: SeatType[],
+    staffId: string,
+    dataUpdate: SeatType
+  ) =>
+    modals.open({
+      title: (
+        <Text c="violet" fw={700}>
+          Chỉnh sửa loại ghế
+        </Text>
+      ),
+      radius: "md",
+      size: "xl",
+      children: (
+        <>
+          <FormSeatType
+            getSeatType={() => getAllSeatType(staffId)}
+            data={dataSeatType}
+            staffId={dataUser.id}
+            dataUpdate={dataUpdate}
+          ></FormSeatType>
+        </>
+      ),
+    });
+
   const getAllSeatType = useCallback(async (staffId: string) => {
     try {
       const res = await seatServices.getAllSeatType(staffId);
@@ -108,6 +133,13 @@ export default function AllSeatType() {
           aria-label="Settings"
           radius={"md"}
           size={"lg"}
+          onClick={() =>
+            openUpdateSeatType(
+              tableData as SeatType[],
+              dataUser.id,
+              row.original
+            )
+          }
         >
           <IconEdit style={{ width: "70%", height: "70%" }} stroke={1.5} />
         </ActionIcon>

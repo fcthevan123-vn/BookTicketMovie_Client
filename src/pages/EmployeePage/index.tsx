@@ -6,6 +6,7 @@ import ManageMovieHall from "./ManageMovieHall";
 import RoomTypePage from "./RoomType";
 import ManageLayout from "./ManageLayout/ManageLayout";
 import AllSeatType from "./AllSeatType/AllSeatType";
+import ManageShow from "./ManageShow/ManageShow";
 
 const allPath = [
   {
@@ -41,6 +42,10 @@ const allPath = [
   {
     urlInclude: "seat",
     jsx: <AllSeatType></AllSeatType>,
+  },
+  {
+    urlInclude: "all-show",
+    jsx: <ManageShow></ManageShow>,
   },
 ];
 

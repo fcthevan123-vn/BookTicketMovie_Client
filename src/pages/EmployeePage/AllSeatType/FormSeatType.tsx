@@ -7,7 +7,7 @@ import {
   TextInput,
 } from "@mantine/core";
 import { IconArmchair } from "@tabler/icons-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { SeatType } from "../../../types";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { ErrToast } from "../../../components/AllToast/NormalToast";
@@ -17,6 +17,7 @@ import { modals } from "@mantine/modals";
 
 type Props = {
   data: SeatType[];
+  dataUpdate?: SeatType;
   staffId: string;
   getSeatType: () => Promise<void>;
 };
@@ -78,13 +79,13 @@ const colorData = [
   },
 ];
 
-function FormSeatType({ data, staffId, getSeatType }: Props) {
+function FormSeatType({ data, staffId, getSeatType, dataUpdate }: Props) {
   const [colorValue, setColorValue] = useState<string>();
   const [isError, setIsError] = useState<boolean>(false);
   const form = useForm({
     initialValues: {
       name: "",
-      price: null,
+      price: 1,
     },
     validate: {
       name: isNotEmpty("Tên không được để trống"),
@@ -102,20 +103,38 @@ function FormSeatType({ data, staffId, getSeatType }: Props) {
       } else {
         setIsError(false);
       }
-      const dataPass = {
-        ...data,
-        color: color,
-        staffId: staffId,
-      };
+      let dataPass;
+      let api;
+      let title;
 
-      const api = seatServices.createSeatType(dataPass);
+      if (dataUpdate) {
+        title = "Chỉnh sửa loại ghế";
+        dataPass = {
+          ...data,
+          color: color,
+          cinemaId: dataUpdate.cinemaId,
+          id: dataUpdate.id,
+        };
+        api = seatServices.updateSeatType(dataPass);
+      } else {
+        title = "Thêm loại ghế";
 
-      const res = await loadingApi(api, "Thêm loại ghế");
+        dataPass = {
+          ...data,
+          color: color,
+          staffId: staffId,
+        };
+        api = seatServices.createSeatType(dataPass);
+      }
+
+      const res = await loadingApi(api, title);
 
       if (res) {
         await getSeatType();
         modals.closeAll();
       }
+
+      return true;
     } catch (error) {
       ErrToast(error as Error, "handleSubmit");
     }
@@ -127,6 +146,10 @@ function FormSeatType({ data, staffId, getSeatType }: Props) {
     const filterColor = colorDataValues.filter(
       (color) => !data.some((item) => item.color === color)
     );
+
+    if (dataUpdate) {
+      filterColor.unshift(dataUpdate.color);
+    }
 
     return (
       <Group>
@@ -151,6 +174,17 @@ function FormSeatType({ data, staffId, getSeatType }: Props) {
       </Group>
     );
   }, [data]);
+
+  useEffect(() => {
+    if (dataUpdate) {
+      console.log("dataUpdate.color", dataUpdate.color);
+      setColorValue(dataUpdate.color);
+      form.setValues({
+        name: dataUpdate.name,
+        price: dataUpdate.price,
+      });
+    }
+  }, [dataUpdate]);
 
   return (
     <div>

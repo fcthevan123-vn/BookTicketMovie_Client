@@ -8,6 +8,8 @@ import {
   IconChalkboard,
   IconLayoutDashboard,
   IconNewSection,
+  IconSlideshow,
+  IconTicket,
 } from "@tabler/icons-react";
 
 export function EmployeeNav() {
@@ -22,29 +24,39 @@ export function EmployeeNav() {
         icon: AiOutlineProfile,
       },
       {
+        link: `/employee/all-show`,
+        label: "Suất chiếu",
+        urlInclude: "all-show",
+        icon: IconSlideshow,
+      },
+      {
         link: `/employee/manage-booking`,
         label: "Quản lý vé",
         urlInclude: "manage-booking",
-        icon: AiOutlineProfile,
+        icon: IconTicket,
       },
       {
         label: "Phòng chiếu phim",
         icon: IconChalkboard,
+        urlInclude: "movie-hall",
         link: `/employee/movie-hall`,
       },
       {
         label: "Kiểu phòng",
         icon: IconNewSection,
+        urlInclude: "room-type",
         link: `/employee/room-type`,
       },
       {
         label: "Bố trí ghế",
+        urlInclude: "layout",
         icon: IconLayoutDashboard,
         link: `/employee/layout`,
       },
       {
         label: "Các loại ghế",
         icon: IconArmchair,
+        urlInclude: "seat",
         link: `/employee/seat`,
       },
     ],

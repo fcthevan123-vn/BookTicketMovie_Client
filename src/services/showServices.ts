@@ -22,6 +22,12 @@ const showServices = {
     const res = await axios.post(`/api/v1/show/create`, data);
     return res.data;
   },
+  async getShowByCinema(staffId: string) {
+    const res = await axios.get(
+      `/api/v1/show/show-by-cinema?staffId=${staffId}`
+    );
+    return res.data;
+  },
 };
 
 export default showServices;

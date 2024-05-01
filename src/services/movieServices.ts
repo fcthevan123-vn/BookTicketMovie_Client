@@ -205,8 +205,8 @@ const movieServices = {
     return res.data;
   },
 
-  async getAllShowByMovie() {
-    const res = await axios.get(`api/v1/movie/get-shows`);
+  async getAllShowByMovie(staffId?: string) {
+    const res = await axios.get(`api/v1/movie/get-shows?staffId=${staffId}`);
     return res.data;
   },
 

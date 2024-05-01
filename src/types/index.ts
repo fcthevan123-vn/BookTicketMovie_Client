@@ -116,7 +116,7 @@ export type Show = {
   endTime: Date;
   createdAt: string;
   updatedAt: string;
-  MovieHall: MovieHall;
+  MovieHall?: MovieHall;
   Movie?: MovieTS;
   totalSeats: number;
   bookedSeats: number;

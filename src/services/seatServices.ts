@@ -17,6 +17,11 @@ const seatServices = {
     const res = await axios.post(`/api/v1/seat/create-seatType`, data);
     return res.data;
   },
+
+  async updateSeatType(data: object) {
+    const res = await axios.post(`/api/v1/seat/update-seatType`, data);
+    return res.data;
+  },
 };
 
 export default seatServices;
