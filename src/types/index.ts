@@ -133,6 +133,7 @@ export type Cinema = {
   userId: string;
   User?: UserTS;
   status: string;
+  locationName: string;
   hotline: string;
   image?: string;
   imageFile?: File | null;
@@ -147,6 +148,15 @@ export type Cinema = {
 export type Data = {
   cinema: Cinema;
   allShows: Show[];
+};
+
+export type MenuFoodTS = {
+  id?: string;
+  name: string;
+  image: string;
+  status: string;
+  price: number;
+  imageFile?: File | null;
 };
 
 export type SeatOverView = {

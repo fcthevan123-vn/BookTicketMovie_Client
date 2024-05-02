@@ -1,4 +1,4 @@
-import { Divider, RingProgress, ThemeIcon } from "@mantine/core";
+import { Divider, RingProgress, ThemeIcon, Transition } from "@mantine/core";
 import { useCallback, useEffect, useState } from "react";
 import {
   Bar,
@@ -23,6 +23,7 @@ const DashboardPage = () => {
   });
   const [dataBarChart, setDataBarChart] = useState();
   const [dataAreaChart, SetDataAreaChart] = useState();
+  const [isMounted, setIsMounted] = useState(false);
 
   const getStatisticUserRegister = useCallback(async () => {
     try {
@@ -74,109 +75,125 @@ const DashboardPage = () => {
     getStatisticUserRegister();
   }, [getStatisticBooking, getStatisticUser, getStatisticUserRegister]);
 
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   return (
-    <div>
-      <div>
-        {/* {console.log("dataAreaChart", dataAreaChart)} */}
-        <p className="my-4 font-medium text-lg italic">
-          Thống kê doanh thu của hệ thống
-        </p>
-        <div className="flex justify-center ">
-          {dataAreaChart && (
-            <AreaChart
-              h={400}
-              data={dataAreaChart}
-              dataKey="name"
-              xAxisLabel="Thời gian"
-              yAxisLabel="Tổng tiền đã chi (VND)"
-              series={[{ name: "Doanh thu", color: "indigo.6" }]}
-              curveType="linear"
-              yAxisProps={{ width: 90 }}
-              fillOpacity={0.6}
-              gridAxis="xy"
-            />
-          )}
-        </div>
-      </div>
-      <Divider my="xl" size={"sm"} mx={"md"} />
-
-      <div>
-        <p className="my-4 font-medium text-lg italic">
-          Thống kê số lượng người dùng đăng ký trong 5 tuần gần nhất
-        </p>
-        <div className="flex justify-center ">
-          <BarChart
-            width={1150}
-            height={400}
-            data={dataBarChart}
-            margin={{
-              top: 5,
-              right: 30,
-              left: 20,
-              bottom: 5,
-            }}
-            barSize={20}
-          >
-            <XAxis
-              dataKey="name"
-              scale="point"
-              padding={{ left: 10, right: 10 }}
-            />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <CartesianGrid strokeDasharray="3 3" />
-            <Bar
-              dataKey="Người dùng"
-              fill="#FF8080"
-              background={{ fill: "#eee" }}
-            />
-          </BarChart>
-        </div>
-      </div>
-
-      <Divider my="xl" size={"sm"} mx={"md"} />
-
-      <div>
-        <p className="my-4 font-medium text-lg italic ">
-          Thống kê giới tính của người dùng
-        </p>
-        <div className="flex justify-center ">
-          <RingProgress
-            size={280}
-            label={
-              <div className="flex justify-center flex-col gap-5">
-                <div className="flex justify-center items-center gap-2">
-                  <ThemeIcon radius={"md"}>
-                    <IconMan style={{ width: "70%", height: "70%" }} />
-                  </ThemeIcon>
-                  <p className="font-bold">Nam</p>
-                  <p className="text-xs text-gray-600">
-                    {dataUser.countMale} | {dataUser.percentMale}%
-                  </p>
-                </div>
-
-                <div className="flex  justify-center items-center gap-2">
-                  <ThemeIcon color="#FF8080" radius={"md"}>
-                    <IconWoman style={{ width: "70%", height: "70%" }} />
-                  </ThemeIcon>
-                  <p className="font-bold">Nữ</p>
-                  <p className="text-xs text-gray-600">
-                    {dataUser.countFemale} | {dataUser.percentFemale}%
-                  </p>
-                </div>
+    <Transition
+      mounted={isMounted}
+      transition="fade-down"
+      duration={400}
+      timingFunction="ease"
+    >
+      {(styles) => (
+        <div style={styles}>
+          {" "}
+          <div>
+            <div>
+              {/* {console.log("dataAreaChart", dataAreaChart)} */}
+              <p className="my-4 font-medium text-lg italic">
+                Thống kê doanh thu của hệ thống
+              </p>
+              <div className="flex justify-center ">
+                {dataAreaChart && (
+                  <AreaChart
+                    h={400}
+                    data={dataAreaChart}
+                    dataKey="name"
+                    xAxisLabel="Thời gian"
+                    yAxisLabel="Tổng tiền đã chi (VND)"
+                    series={[{ name: "Doanh thu", color: "indigo.6" }]}
+                    curveType="linear"
+                    yAxisProps={{ width: 90 }}
+                    fillOpacity={0.6}
+                    gridAxis="xy"
+                  />
+                )}
               </div>
-            }
-            thickness={16}
-            roundCaps
-            sections={[
-              { value: dataUser.percentMale, color: "blue" },
-              { value: dataUser.percentFemale, color: "#FF8080" },
-            ]}
-          />
+            </div>
+            <Divider my="xl" size={"sm"} mx={"md"} />
+
+            <div>
+              <p className="my-4 font-medium text-lg italic">
+                Thống kê số lượng người dùng đăng ký trong 5 tuần gần nhất
+              </p>
+              <div className="flex justify-center ">
+                <BarChart
+                  width={1150}
+                  height={400}
+                  data={dataBarChart}
+                  margin={{
+                    top: 5,
+                    right: 30,
+                    left: 20,
+                    bottom: 5,
+                  }}
+                  barSize={20}
+                >
+                  <XAxis
+                    dataKey="name"
+                    scale="point"
+                    padding={{ left: 10, right: 10 }}
+                  />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <Bar
+                    dataKey="Người dùng"
+                    fill="#FF8080"
+                    background={{ fill: "#eee" }}
+                  />
+                </BarChart>
+              </div>
+            </div>
+
+            <Divider my="xl" size={"sm"} mx={"md"} />
+
+            <div>
+              <p className="my-4 font-medium text-lg italic ">
+                Thống kê giới tính của người dùng
+              </p>
+              <div className="flex justify-center ">
+                <RingProgress
+                  size={280}
+                  label={
+                    <div className="flex justify-center flex-col gap-5">
+                      <div className="flex justify-center items-center gap-2">
+                        <ThemeIcon radius={"md"}>
+                          <IconMan style={{ width: "70%", height: "70%" }} />
+                        </ThemeIcon>
+                        <p className="font-bold">Nam</p>
+                        <p className="text-xs text-gray-600">
+                          {dataUser.countMale} | {dataUser.percentMale}%
+                        </p>
+                      </div>
+
+                      <div className="flex  justify-center items-center gap-2">
+                        <ThemeIcon color="#FF8080" radius={"md"}>
+                          <IconWoman style={{ width: "70%", height: "70%" }} />
+                        </ThemeIcon>
+                        <p className="font-bold">Nữ</p>
+                        <p className="text-xs text-gray-600">
+                          {dataUser.countFemale} | {dataUser.percentFemale}%
+                        </p>
+                      </div>
+                    </div>
+                  }
+                  thickness={16}
+                  roundCaps
+                  sections={[
+                    { value: dataUser.percentMale, color: "blue" },
+                    { value: dataUser.percentFemale, color: "#FF8080" },
+                  ]}
+                />
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      )}
+    </Transition>
   );
 };
 

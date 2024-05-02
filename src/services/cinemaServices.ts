@@ -20,6 +20,8 @@ const cinemaServices = {
     formData.append("userId", data.userId);
     formData.append("hotline", data.hotline);
     formData.append("status", data.status);
+    formData.append("locationName", data.locationName);
+
     if (data.imageFile) {
       formData.append("image", data.imageFile);
     }
@@ -39,6 +41,7 @@ const cinemaServices = {
         formData.append("location[]", data.location[i]);
       }
     }
+    formData.append("locationName", data.locationName);
     formData.append("userId", data.userId);
     formData.append("hotline", data.hotline);
     formData.append("status", data.status);

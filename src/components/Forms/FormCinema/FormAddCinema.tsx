@@ -3,6 +3,7 @@ import {
   FileInput,
   Select,
   SimpleGrid,
+  Text,
   TextInput,
 } from "@mantine/core";
 import { hasLength, isNotEmpty, useForm } from "@mantine/form";
@@ -14,17 +15,18 @@ import { modals } from "@mantine/modals";
 import { Cinema } from "../../../types";
 import { PreviewImages } from "../../PreviewImage";
 import {
-  convertImgLinkToFile,
   getAllCity,
+  getAllNameProvince,
   getDistrictFromCity,
   getWardFromDistrict,
 } from "../../../untils/helper";
 import { useSetState } from "@mantine/hooks";
+import ConfirmAction from "../../ConfirmAction/ConfirmAction";
 
 type Props = {
   isUpdate: boolean;
   getAllCinema: () => void;
-  cinemaData: Cinema | null;
+  cinemaData?: Cinema;
 };
 
 type SelectDataType = {
@@ -55,6 +57,7 @@ function FormAddCinema({ isUpdate, getAllCinema, cinemaData }: Props) {
     ward: undefined,
   });
 
+  const [isDisabled, setDisabled] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   const [dataStaff, setDataStaff] = useState([]);
@@ -117,10 +120,12 @@ function FormAddCinema({ isUpdate, getAllCinema, cinemaData }: Props) {
     initialValues: {
       id: "",
       name: "",
+      locationName: "",
       detailLocation: "",
       userId: "",
       hotline: "",
       imageFile: null,
+      image: "",
       status: "open",
       city: null,
       district: null,
@@ -134,7 +139,7 @@ function FormAddCinema({ isUpdate, getAllCinema, cinemaData }: Props) {
       ),
       userId: isNotEmpty("Nhân viên không được trống"),
       hotline: isNotEmpty("Hotline không được trống"),
-      imageFile: isNotEmpty("Hình ảnh không được trống"),
+
       status: isNotEmpty("Trạng thái không được trống"),
       city: isNotEmpty("Thành phố/ Tỉnh không được trống"),
       district: isNotEmpty("Quận/ Huyện không được trống"),
@@ -143,19 +148,31 @@ function FormAddCinema({ isUpdate, getAllCinema, cinemaData }: Props) {
   });
 
   async function handleSubmit(value: typeof form.values) {
+    if (!cinemaData && !value.imageFile) {
+      return form.setErrors({
+        imageFile: "Hình ảnh không được trống",
+      });
+    }
     setIsLoading(true);
 
     const location = [value.city, value.district, value.ward];
+
+    const locationName = await getAllNameProvince(location as string[], " - ");
+
     const data = {
       name: value.name,
       detailLocation: value.detailLocation,
       location: location as string[],
+      locationName: locationName as string,
       userId: value.userId,
       hotline: value.hotline,
       status: value.status,
       imageFile: value.imageFile,
+      image: value.image,
       id: value.id,
     };
+
+    console.log("data", data);
 
     let api;
 
@@ -184,17 +201,13 @@ function FormAddCinema({ isUpdate, getAllCinema, cinemaData }: Props) {
       try {
         setIsLoading(true);
 
-        const fileImg = await convertImgLinkToFile(
-          data.image as string,
-          `${data.name}-image.png`
-        );
         if (data.location) {
           form.setValues({
             name: data.name,
             hotline: data.hotline,
+            image: data.image,
             detailLocation: data.detailLocation,
             userId: data.userId,
-            imageFile: fileImg,
             city: data.location[0],
             district: data.location[1],
             ward: data.location[2],
@@ -357,9 +370,31 @@ function FormAddCinema({ isUpdate, getAllCinema, cinemaData }: Props) {
               height={100}
             ></PreviewImages>
           )}
+
+          {!form.values.imageFile && cinemaData && (
+            <PreviewImages
+              img={cinemaData.image as string}
+              width={"auto"}
+              height={140}
+            ></PreviewImages>
+          )}
         </SimpleGrid>
+        {cinemaData && (
+          <>
+            <Text size="sm" mt={"sm"} fw={500} ta={"left"} c={"red"}>
+              Chỉnh sửa rạp phim sẽ ảnh hưởng rất lớn đến nhiều dữ liệu, hãy cân
+              nhắc và cẩn thận trước khi thực hiện!
+            </Text>
+
+            <ConfirmAction
+              setDisable={setDisabled}
+              textCheck="Tôi đã xác nhận"
+            ></ConfirmAction>
+          </>
+        )}
         <Button
           loading={isLoading}
+          disabled={isDisabled}
           type="submit"
           size="xs"
           radius={"md"}

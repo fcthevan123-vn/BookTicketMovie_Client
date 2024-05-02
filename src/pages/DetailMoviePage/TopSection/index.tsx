@@ -16,7 +16,6 @@ import classes from "./TopSection.module.css";
 import Autoplay from "embla-carousel-autoplay";
 
 import { useEffect, useRef, useState } from "react";
-import ModalPickShow from "../../../components/Modals/ModalPickShow";
 import { useAuthenticate } from "../../../hooks";
 import { reviewServices } from "../../../services";
 import { Link } from "react-router-dom";
@@ -103,13 +102,6 @@ function TopSecton({ dataMovie }: Props) {
 
   return (
     <div className={classes.background}>
-      {/* modal */}
-      <ModalPickShow
-        dataMovie={dataMovie}
-        opened={isOpen}
-        close={() => setIsOpen(false)}
-      ></ModalPickShow>
-
       {/* modal watch trailer */}
       <Modal
         styles={{

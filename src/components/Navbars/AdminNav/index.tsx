@@ -1,10 +1,7 @@
 import {
-  IconBorderAll,
-  IconChalkboard,
-  IconClockHour1,
+  IconBowl,
   IconGauge,
   IconGift,
-  IconListCheck,
   IconMovie,
   IconSubtask,
 } from "@tabler/icons-react";
@@ -12,6 +9,7 @@ import {
 import classes from "./AdminNav.module.css";
 import { LinksGroup } from "../../LinksGroup";
 import { IconTheater } from "@tabler/icons-react";
+import { useMemo } from "react";
 
 const allLinks = [
   {
@@ -29,33 +27,17 @@ const allLinks = [
     ],
   },
   {
-    label: "Quản lý giờ chiếu",
-    icon: IconClockHour1,
-    link: `/admin/show-time`,
-  },
-  {
     label: "Rạp phim",
     icon: IconTheater,
     link: "/admin/cinema/overview",
   },
+  // {
+  //   label: "Quản lý đặt vé",
+  //   icon: IconListCheck,
+  //   link: `/admin/manage-booking`,
+  // },
   {
-    label: "Phòng chiếu phim",
-    icon: IconChalkboard,
-    link: `/admin/movie-hall/overview`,
-  },
-  {
-    label: "Kiểu bố trí",
-    icon: IconBorderAll,
-    link: `/admin/layout/overview`,
-  },
-
-  {
-    label: "Quản lý đặt vé",
-    icon: IconListCheck,
-    link: `/admin/manage-booking`,
-  },
-  {
-    label: "Quản lý sự kiện",
+    label: "Sự kiện",
     icon: IconGift,
     links: [
       { label: "Sự kiện", link: "/admin/event" },
@@ -63,16 +45,22 @@ const allLinks = [
     ],
   },
   {
-    label: "Quản lý tài khoản",
+    label: "Đồ ăn & Nước",
+    icon: IconBowl,
+    link: `/admin/food`,
+  },
+  {
+    label: "Tài khoản",
     icon: IconSubtask,
     link: `/admin/manage-account`,
   },
 ];
 
 function AdminNav() {
-  const links = allLinks.map((item) => (
-    <LinksGroup {...item} key={item.label} />
-  ));
+  const links = useMemo(
+    () => allLinks.map((item) => <LinksGroup {...item} key={item.label} />),
+    []
+  );
 
   return (
     <nav className={classes.navbar}>

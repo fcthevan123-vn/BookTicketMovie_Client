@@ -286,13 +286,15 @@ function SelectShowPage() {
           <div className="absolute bg-gradient-to-r from-pink-500 to-teal-300 w-full z-20 ">
             <div className="grid grid-cols-4 gap-8 pt-6 pb-20 backdrop-blur-sm bg-black/25 xl:px-52 px-16 ">
               <div className="xl:col-span-1 col-span-2 flex justify-center">
-                <Image
-                  radius="md"
-                  h={320}
-                  w={280}
-                  fit="cover"
-                  src={movieData?.movie.images[0]}
-                />
+                {movieData?.movie.images && (
+                  <Image
+                    radius="md"
+                    h={320}
+                    w={280}
+                    fit="cover"
+                    src={movieData?.movie?.images[0]}
+                  />
+                )}
               </div>
 
               <div className="xl:col-span-3 col-span-2 flex flex-col gap-1 text-white">

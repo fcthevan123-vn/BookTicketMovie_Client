@@ -203,6 +203,13 @@ const router: IRouter[] = [
     element: AdminPage,
   },
   {
+    path: "/admin/food",
+    isProtected: true,
+    isAdmin: true,
+    layout: AdminLayout,
+    element: AdminPage,
+  },
+  {
     path: "/admin/manage-discount",
     isProtected: true,
     isAdmin: true,

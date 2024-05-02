@@ -1,65 +1,21 @@
-import {
-  ActionIcon,
-  Badge,
-  Button,
-  Group,
-  Image,
-  Select,
-  Text,
-  TextInput,
-  rem,
-} from "@mantine/core";
+import { ActionIcon, Badge, Button, Text, rem } from "@mantine/core";
 import { modals } from "@mantine/modals";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import FormAddCinema from "../../../components/Forms/FormCinema/FormAddCinema";
-import { useTableCustom } from "../../../components/Provider/TableFilterProvider";
+
 import { cinemaServices } from "../../../services";
-import TableFilter from "../../../components/TableFilter";
-import { IconPencil, IconSearch, IconTrash } from "@tabler/icons-react";
-import {
-  getAllCity,
-  getAllNameProvince,
-  getDistrictFromCity,
-} from "../../../untils/helper";
-import { useSetState } from "@mantine/hooks";
-import { ErrToast } from "../../../components/AllToast/NormalToast";
+import { IconPencil, IconTrash } from "@tabler/icons-react";
+
 import { Cinema } from "../../../types";
-
-// type cinemaProps = {
-//   name: string;
-//   location: string[];
-//   detailLocation: string;
-//   User?: UserTS;
-//   status: string;
-// };
-
-// type cinemaRows = {
-//   name: React.ReactNode;
-//   location: React.ReactNode;
-//   detailLocation: React.ReactNode;
-// };
-
-// type Props = {};
+import {
+  MRT_ColumnDef,
+  MantineReactTable,
+  useMantineReactTable,
+} from "mantine-react-table";
+import { PreviewImages } from "../../../components/PreviewImage";
 
 function AdminCinemaPage() {
   const [data, setData] = useState<Cinema[]>();
-  const [queryData, setQueryData] = useSetState({
-    city: null,
-    district: null,
-    name: "",
-  });
-  const [selectData, setSelectData] = useSetState({
-    city: [],
-    district: [],
-  });
-
-  const {
-    setRows,
-    headers,
-    setHeaders,
-
-    setIsLoading,
-  } = useTableCustom();
 
   const openModalAdd = () => {
     modals.open({
@@ -72,7 +28,6 @@ function AdminCinemaPage() {
       children: (
         <FormAddCinema
           isUpdate={false}
-          cinemaData={null}
           getAllCinema={getLimitCinemas}
         ></FormAddCinema>
       ),
@@ -101,201 +56,146 @@ function AdminCinemaPage() {
     });
   };
 
-  const filterCinema = useCallback(
-    async (data: typeof queryData) => {
-      setIsLoading(true);
-      try {
-        const res = await cinemaServices.searchCinema(data);
-        if (res.statusCode == 0) {
-          setData(res.data);
-        }
-        setIsLoading(false);
-      } catch (error) {
-        console.log(error);
-      }
-    },
-    [setIsLoading]
-  );
-
-  async function getProvince(codes: string[]) {
-    setIsLoading(true);
-    try {
-      const result = await getAllNameProvince(codes, " - ");
-      setIsLoading(false);
-      return result;
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  const getCity = useCallback(async () => {
-    try {
-      const data = await getAllCity();
-      setSelectData({
-        city: data,
-      });
-    } catch (error) {
-      ErrToast(error as Error, "getCity");
-    }
-  }, [setSelectData]);
-
-  const getDistrict = useCallback(
-    async (city: string) => {
-      try {
-        const data = await getDistrictFromCity(city);
-        setSelectData({
-          district: data,
-        });
-      } catch (error) {
-        ErrToast(error as Error, "getCity");
-      }
-    },
-    [setSelectData]
-  );
-
-  useEffect(() => {
-    getCity();
-  }, [getCity]);
-
-  useEffect(() => {
-    if (queryData.city) {
-      getDistrict(queryData.city);
-    }
-  }, [getDistrict, queryData.city]);
-
-  useEffect(() => {
-    filterCinema(queryData);
-  }, [filterCinema, queryData]);
-
-  // render table
-  useEffect(() => {
-    if (data) {
-      const fetchData = async () => {
-        const rowRender = await Promise.all(
-          data.map(async (row) => {
-            try {
-              const generateStatus =
-                row.status == "open" ? "Hoạt động" : "Đã đóng cửa";
-              const provinceName = await getProvince(row.location as string[]);
-              return {
-                name: <p className="">{row.name}</p>,
-                detail: (
-                  <div>
-                    <Text fz="sm">{row.detailLocation}</Text>
-                    <Text fz="sm">{provinceName}</Text>
-                    <Text fz="sm">{row.hotline}</Text>
-                  </div>
-                ),
-                image: (
-                  <div>
-                    <Image radius="md" w={150} src={`${row.image}`} />
-                  </div>
-                ),
-                staff: (
-                  <div className="flex flex-col gap-1">
-                    <p className="font-semibold">{row.User?.fullName}</p>
-                    <p className="text-xs">{row.User?.email}</p>
-                    <p className=" text-xs">{row.User?.phone}</p>
-                  </div>
-                ),
-                status: (
-                  <Badge
-                    color={`${row.status == "open" ? "violet" : "red"}`}
-                    variant="light"
-                    size="md"
-                    radius="md"
-                  >
-                    {generateStatus}
-                  </Badge>
-                ),
-                action: (
-                  <Group gap={5} justify="center">
-                    <ActionIcon
-                      onClick={() => openModalUpdate(row)}
-                      variant="light"
-                      radius={"md"}
-                    >
-                      <IconPencil
-                        style={{ width: rem(16), height: rem(16) }}
-                        stroke={1.5}
-                      />
-                    </ActionIcon>
-                    <ActionIcon variant="light" color="red" radius={"md"}>
-                      <IconTrash
-                        style={{ width: rem(16), height: rem(16) }}
-                        stroke={1.5}
-                      />
-                    </ActionIcon>
-                  </Group>
-                ),
-              };
-            } catch (error) {
-              console.log(error);
-              return null;
-            }
-          })
-        );
-
-        setRows(rowRender);
-
-        setHeaders([
-          {
-            label: "Tên rạp phim",
-            value: "name",
-            isSortable: true,
-          },
-          {
-            label: "Thông tin cụ thể",
-            value: "detail",
-            isSortable: false,
-          },
-
-          {
-            label: "Hình ảnh",
-            value: "image",
-            isSortable: false,
-          },
-
-          {
-            label: "Nhân viên quản lý",
-            value: "staff",
-            isSortable: false,
-          },
-          {
-            label: "Trạng thái",
-            value: "status",
-            isSortable: false,
-          },
-          {
-            label: "#",
-            value: "action",
-            isSortable: false,
-          },
-        ]);
-      };
-
-      fetchData();
-    }
-  }, [data]);
-
   const getLimitCinemas = useCallback(async () => {
-    setIsLoading(true);
     try {
       const res = await cinemaServices.getLimitCinemas(1, 100);
 
-      setIsLoading(false);
       if (res.statusCode === 0) {
-        // setData(res.data);
-
         setData(res.data);
-        // const totalRows = Math.ceil(res.rows / 100);
-
-        // setTotalPagination(totalRows);
       }
     } catch (error) {
       console.log(error);
     }
-  }, [setIsLoading]);
+  }, []);
+
+  const columns = useMemo<MRT_ColumnDef<Cinema>[]>(
+    () => [
+      {
+        header: "Tên rạp phim",
+        accessorKey: "name",
+      },
+      {
+        id: "info",
+        header: "Thông tin cụ thể",
+        accessorFn: (row) => {
+          if (row) {
+            return `${row.detailLocation} ${row.locationName} ${row.hotline}`;
+          }
+        },
+        enableResizing: false,
+        Cell: ({ row }) => {
+          return (
+            <div>
+              <Text fw={500} size="sm" c={"violet"} tt={"capitalize"}>
+                {row?.original?.detailLocation}
+              </Text>
+              <Text size="xs" c={"dimmed"} tt={"capitalize"}>
+                {row.original.locationName}
+              </Text>
+              <Text size="xs" c={"dimmed"} tt={"capitalize"}>
+                {row?.original?.hotline}
+              </Text>
+            </div>
+          );
+        },
+
+        size: 300,
+      },
+      {
+        header: "Hình ảnh",
+        id: "image",
+        enableColumnFilter: false,
+        Cell: ({ row }) => (
+          <PreviewImages
+            img={row.original.image as string}
+            height={100}
+            width={200}
+          ></PreviewImages>
+        ),
+      },
+      {
+        header: "Nhân viên quản lý",
+        id: "staff",
+        accessorFn: (row) => {
+          if (row) {
+            return `${row.User?.fullName} ${row.User?.email} ${row.User?.phone}`;
+          }
+        },
+        Cell: ({ row }) => (
+          <div>
+            <Text fw={500} size="sm" tt={"capitalize"}>
+              {row?.original?.User?.fullName}
+            </Text>
+            <Text size="xs" c={"dimmed"} tt={"capitalize"}>
+              {row?.original?.User?.email}
+            </Text>
+            <Text size="xs" c={"dimmed"} tt={"capitalize"}>
+              {row?.original?.User?.phone}
+            </Text>
+          </div>
+        ),
+      },
+      {
+        id: "status",
+        accessorFn: (row) =>
+          row.status == "open" ? "Hoạt động" : "Đã đóng cửa",
+        header: "Trạng thái",
+        Cell: ({ row }) =>
+          row.original.status === "open" ? (
+            <Badge color="violet" variant="light" size="md" radius="sm">
+              Hoạt động
+            </Badge>
+          ) : (
+            <Badge color="red" variant="light" size="md" radius="sm">
+              Đã đóng của
+            </Badge>
+          ),
+      },
+    ],
+    []
+  );
+
+  const table = useMantineReactTable({
+    columns,
+    data: data ? data : [],
+    enableGrouping: true,
+    enableColumnDragging: false,
+    enableStickyHeader: true,
+    positionToolbarAlertBanner: "none",
+    enableRowActions: true,
+    initialState: {
+      showGlobalFilter: true,
+    },
+    positionActionsColumn: "last",
+    mantineTableContainerProps: { style: { maxHeight: 600 } },
+    mantinePaperProps: {
+      radius: "md",
+    },
+    renderTopToolbarCustomActions: () => (
+      <div>
+        <Button size="xs" radius={"sm"} className="m-1" onClick={openModalAdd}>
+          Thêm rạp phim
+        </Button>
+      </div>
+    ),
+    renderRowActions: ({ row }) => (
+      <div className="flex gap-2">
+        <ActionIcon
+          onClick={() => openModalUpdate(row.original)}
+          variant="light"
+          radius={"md"}
+        >
+          <IconPencil
+            style={{ width: rem(16), height: rem(16) }}
+            stroke={1.5}
+          />
+        </ActionIcon>
+        <ActionIcon variant="light" color="red" radius={"md"}>
+          <IconTrash style={{ width: rem(16), height: rem(16) }} stroke={1.5} />
+        </ActionIcon>
+      </div>
+    ),
+  });
 
   useEffect(() => {
     getLimitCinemas();
@@ -303,62 +203,9 @@ function AdminCinemaPage() {
 
   return (
     <div>
-      <div className="flex justify-between my-5">
-        <div className="flex gap-6">
-          <Select
-            size="xs"
-            label="Thành phố/ Tỉnh"
-            data={selectData.city}
-            onChange={(e) => {
-              setQueryData({
-                district: null as unknown as undefined,
-                city: e as unknown as undefined,
-              });
-            }}
-            value={queryData.city}
-            radius={"md"}
-            clearable
-            searchable
-            nothingFoundMessage="Không tìm thấy dữ liệu"
-            placeholder="Chọn thành phố/ tỉnh"
-          />
+      {/* <TableFilter headers={headers}></TableFilter> */}
 
-          <Select
-            size="xs"
-            label="Quận/ Huyện"
-            radius={"md"}
-            clearable
-            searchable
-            placeholder="Chọn quận/ huyện"
-            onChange={(e) => {
-              setQueryData({
-                district: e as unknown as undefined,
-              });
-            }}
-            value={queryData.district}
-            data={selectData.district}
-            nothingFoundMessage="Không tìm thấy dữ liệu"
-          />
-
-          <TextInput
-            size="xs"
-            label="Tìm kiếm"
-            radius={"md"}
-            value={queryData.name}
-            onChange={(e) => setQueryData({ name: e.target.value })}
-            placeholder="Tìm kiếm tên rạp"
-            rightSection={<IconSearch size={18}></IconSearch>}
-          />
-        </div>
-
-        <div className="flex items-end">
-          <Button size="xs" radius={"md"} onClick={openModalAdd}>
-            Thêm rạp phim mới
-          </Button>
-        </div>
-      </div>
-
-      <TableFilter headers={headers}></TableFilter>
+      <MantineReactTable table={table} />
     </div>
   );
 }

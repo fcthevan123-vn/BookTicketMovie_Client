@@ -38,18 +38,6 @@ function Seat({ dataSeat, dataOrdered }: Props) {
     [dataSeat, seatSelected, setSeatSelected]
   );
 
-  const generateColor = () => {
-    if (dataSeat.SeatType.name === "Ghế VIP") {
-      return "green";
-    } else if (dataSeat.SeatType.name === "Ghế Sweet") {
-      return "violet";
-    } else {
-      return "blue";
-    }
-  };
-
-  const colorSeat = generateColor();
-
   return (
     <div className="flex justify-center items-center m-1">
       {dataOrdered && dataOrdered.isBooked === true ? (
@@ -77,18 +65,16 @@ function Seat({ dataSeat, dataOrdered }: Props) {
               height: "50px",
               background: `${
                 isChecked
-                  ? `var(--mantine-color-${colorSeat}-4)`
-                  : `var(--mantine-color-${colorSeat}-6)`
+                  ? `var(--mantine-color-violet-6)`
+                  : `var(--mantine-color-${dataSeat.SeatType.color}-6)`
               }`,
-              border: `${
-                isChecked ? `2px solid var(--mantine-color-${colorSeat}-9)` : ""
-              }`,
+              border: `${isChecked ? `4px solid rgb(241 241 241 / 81%)` : ""}`,
               boxShadow: `${
                 isChecked
                   ? "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset"
                   : ""
               }`,
-              scale: `${isChecked ? `1.2` : ``}`,
+              scale: `${isChecked ? `1.1` : ``}`,
             },
           }}
           // onClick={() => {

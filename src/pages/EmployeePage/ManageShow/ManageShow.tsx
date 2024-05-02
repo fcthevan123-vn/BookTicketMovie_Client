@@ -218,7 +218,7 @@ function ManageShow() {
           Thêm suất chiếu mới
         </Button>
       </div> */}
-      <div className="relative">
+      <div>
         <MantineReactTable table={table} />
       </div>
     </div>

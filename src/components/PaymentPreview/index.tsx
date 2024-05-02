@@ -238,21 +238,17 @@ function PaymentPreview() {
         <Radio.Group
           size="sm"
           name="paymentMethod"
-          label="Chọn phương thức thanh toán"
+          label="Phương thức thanh toán"
           withAsterisk
           value={paymentMethod}
           onChange={(e) => setPaymentMethod(e)}
         >
           <Group mt="xs">
-            <Radio value="direct" label="Trực tiếp" />
-            <Radio value="online" label="Online" />
+            {/* <Radio value="direct" label="Trực tiếp" /> */}
+            <Radio value="online" label="Online - VN Pay" />
           </Group>
         </Radio.Group>
-        {paymentMethod == "online" && (
-          <span className="text-xs italic font-semibold text-gray-500 ">
-            Thanh toán online sẽ không cần phải đợi nhân viên xác nhận vé.
-          </span>
-        )}
+
         <div className="mt-4 flex justify-center">
           <Button
             onClick={() => setOpenModalConfirm(true)}

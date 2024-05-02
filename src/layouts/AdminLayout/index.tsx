@@ -30,6 +30,7 @@ function AdminLayout({ children }: AdminLayoutProps) {
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  // const [isMounted, setIsMounted] = useState(false);
 
   const handleLogout = async () => {
     const api = await authenticateServices.handleLogout();
@@ -38,7 +39,6 @@ function AdminLayout({ children }: AdminLayoutProps) {
       navigate("/register");
       dispatch(userSlice.actions.toggleLogin({}));
     }
-
     return res;
   };
 
@@ -67,7 +67,7 @@ function AdminLayout({ children }: AdminLayoutProps) {
     <AppShell
       header={{ height: 60 }}
       navbar={{
-        width: 300,
+        width: 250,
         breakpoint: "sm",
         collapsed: { mobile: !mobileOpened, desktop: !desktopOpened },
       }}
@@ -144,6 +144,7 @@ function AdminLayout({ children }: AdminLayoutProps) {
           </div>
         </AppShell.Section>
       </AppShell.Navbar>
+
       <AppShell.Main>{children}</AppShell.Main>
     </AppShell>
   );

@@ -174,8 +174,8 @@ function PickSeatPage() {
               <Box
                 className={classes.box}
                 style={{
-                  background: "var(--mantine-color-blue-6)",
-                  border: `2px solid var(--mantine-color-blue-9)`,
+                  background: "var(--mantine-color-violet-6)",
+                  border: `2px solid rgb(241 241 241 / 81%)`,
                   boxShadow:
                     "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
                 }}

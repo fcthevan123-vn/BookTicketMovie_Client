@@ -1,5 +1,5 @@
-import { Grid, Paper, SimpleGrid, Text } from "@mantine/core";
-import { Fragment, useEffect } from "react";
+import { Grid, Paper, SimpleGrid, Text, Transition } from "@mantine/core";
+import { Fragment, useEffect, useState } from "react";
 import Seat from "./Seat";
 import classes from "./LayoutSeat.module.css";
 import { SeatOverView, SeatStatus } from "../../types";
@@ -15,6 +15,7 @@ function LayoutSeat({ dataSeats, dataSeatsPicked }: Props) {
 
   const { seatNumberControl, setIsDisabledSeat, seatSelected } =
     usePickSeatContext();
+  const [isMount, setIsMount] = useState(false);
 
   function generateRowNames(rows: number) {
     const rowNames = [];
@@ -34,7 +35,7 @@ function LayoutSeat({ dataSeats, dataSeatsPicked }: Props) {
   // render seat matrix
   if (dataSeats) {
     for (let row = 1; row <= dataSeats.MovieHall.Layout.rows; row++) {
-      const rowSeats = dataSeats.MovieHall.Layout.Seats.filter(
+      const rowSeats = dataSeats?.MovieHall?.Layout?.Seats?.filter(
         (seat) => seat.rowNumber === row
       );
       const rowElements = [
@@ -51,7 +52,7 @@ function LayoutSeat({ dataSeats, dataSeatsPicked }: Props) {
         seatNumber <= dataSeats.MovieHall.Layout.seatsPerRow;
         seatNumber++
       ) {
-        const seat = rowSeats.find((seat) => seat.seatNumber === seatNumber);
+        const seat = rowSeats?.find((seat) => seat.seatNumber === seatNumber);
         const seatOrdered = dataSeatsPicked?.find(
           (seat) =>
             seat.isBooked === true &&
@@ -90,6 +91,10 @@ function LayoutSeat({ dataSeats, dataSeatsPicked }: Props) {
     }
   }, [seatNumberControl, seatSelected.length, setIsDisabledSeat]);
 
+  useEffect(() => {
+    setIsMount(true);
+  }, []);
+
   return (
     <div className="flex flex-col justify-center items-center h-full">
       <Paper
@@ -108,11 +113,24 @@ function LayoutSeat({ dataSeats, dataSeatsPicked }: Props) {
         </div>
         <Grid>
           <Grid.Col span={12}>
-            {dataSeats?.MovieHall.Layout.seatsPerRow && (
-              <SimpleGrid cols={dataSeats?.MovieHall.Layout.seatsPerRow + 1}>
-                {seatMatrix}
-              </SimpleGrid>
-            )}
+            <Transition
+              mounted={isMount}
+              transition="pop"
+              duration={500}
+              timingFunction="ease"
+            >
+              {(styles) => (
+                <div style={styles}>
+                  {dataSeats?.MovieHall.Layout.seatsPerRow && (
+                    <SimpleGrid
+                      cols={dataSeats?.MovieHall.Layout.seatsPerRow + 1}
+                    >
+                      {seatMatrix}
+                    </SimpleGrid>
+                  )}
+                </div>
+              )}
+            </Transition>{" "}
           </Grid.Col>
         </Grid>
       </Paper>

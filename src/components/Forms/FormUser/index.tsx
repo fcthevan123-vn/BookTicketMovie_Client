@@ -27,29 +27,18 @@ import { IconUserCircle } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { userServices } from "../../../services";
 import { loadingApi } from "../../../untils/loadingApi";
-
-type userProps = {
-  fullName: string;
-  type: string;
-  email: string;
-  phone: string;
-  sex: string;
-  address: string;
-  id?: string;
-  password?: string;
-  age: number;
-};
+import { UserTS } from "../../../types";
 
 type Props = {
   isUpdate: boolean;
-  data?: userProps | undefined;
+  data?: UserTS | undefined;
   apiFetch?: () => void;
 };
 
 function FormUser({ isUpdate, data, apiFetch }: Props) {
   const [isLoading, setIsLoading] = useState(false);
 
-  const form = useForm<userProps>({
+  const form = useForm<UserTS>({
     initialValues: {
       ...(isUpdate ? { id: data && data.id } : ""),
       fullName: "",

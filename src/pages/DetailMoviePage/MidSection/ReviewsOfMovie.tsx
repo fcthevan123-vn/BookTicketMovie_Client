@@ -228,7 +228,7 @@ export default function ReviewsOfMovie({ dataMovie }: Props) {
   }, [dataMovie.id, dataUser.id]);
 
   return (
-    <div className="bg-white">
+    <div className="">
       {/* modal review */}
       <Modal
         opened={opened}

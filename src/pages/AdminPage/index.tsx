@@ -8,44 +8,19 @@ import { MovieProvider } from "../../components/Provider/MovieProvider/MovieProv
 import ManageAccountPage from "./ManageAccountPage";
 import { TableFilterProvider } from "../../components/Provider/TableFilterProvider";
 import AdminCinemaPage from "./AdminCinemaPage";
-import AddNewCinemaPage from "./AdminCinemaPage/AddNewCinemaPage";
 import AdminMovieHallPage from "./AdminMovieHallPage";
 import AdminLayoutPage from "./AdminLayoutPage";
 import ManageBookingPage from "./ManageBookingPage";
 import ShowTimePage from "./ShowTimePage";
 import ManageEventPage from "./ManageEventPage";
 import ManageDiscountPage from "./ManageDiscountPage";
-
-// Type
-type userRows = {
-  fullName: React.ReactNode;
-  type: React.ReactNode;
-  email: React.ReactNode;
-  phone: React.ReactNode;
-  sex: React.ReactNode;
-  address: React.ReactNode;
-  id?: React.ReactNode;
-  age: React.ReactNode;
-};
+import ManageFoodPage from "./ManageFoodPage/ManageFoodPage";
 
 type cinemaRows = {
   name: React.ReactNode;
   location: React.ReactNode;
   detailLocation: React.ReactNode;
 };
-
-const intinialUserData = [
-  {
-    fullName: "",
-    type: "",
-    email: "",
-    phone: "",
-    sex: "",
-    address: "",
-    id: "",
-    age: "",
-  },
-];
 
 const allPath = [
   {
@@ -54,11 +29,7 @@ const allPath = [
       { title: "Admin", href: "#" },
       { title: "Dashboard", href: "#" },
     ],
-    jsx: (
-      <div>
-        <DashboardPage></DashboardPage>
-      </div>
-    ),
+    jsx: <DashboardPage></DashboardPage>,
   },
   {
     urlInclude: "addamovie",
@@ -69,15 +40,7 @@ const allPath = [
     ],
     jsx: <AddMoviePage></AddMoviePage>,
   },
-  {
-    urlInclude: "addacinema",
-    breadcrumbs: [
-      { title: "Admin", href: "/admin/dashboard" },
-      { title: "Cinema", href: "/admin/cinema/overview" },
-      { title: "Add-a-cinema", href: "#" },
-    ],
-    jsx: <AddNewCinemaPage></AddNewCinemaPage>,
-  },
+
   {
     urlInclude: "cinema/overview",
     breadcrumbs: [
@@ -121,11 +84,7 @@ const allPath = [
       { title: "Admin", href: "/admin/dashboard" },
       { title: "Manage Account", href: "#" },
     ],
-    jsx: (
-      <TableFilterProvider<userRows> initialData={intinialUserData}>
-        <ManageAccountPage></ManageAccountPage>
-      </TableFilterProvider>
-    ),
+    jsx: <ManageAccountPage></ManageAccountPage>,
   },
 
   {
@@ -189,6 +148,14 @@ const allPath = [
       </TableFilterProvider>
     ),
   },
+  {
+    urlInclude: "food",
+    breadcrumbs: [
+      { title: "Admin", href: "/admin/food" },
+      { title: "Food & Drink", href: "#" },
+    ],
+    jsx: <ManageFoodPage></ManageFoodPage>,
+  },
 ];
 
 const AdminPage = () => {
@@ -208,13 +175,11 @@ const AdminPage = () => {
               </Link>
             ))}
           </Breadcrumbs>
-          <div className="px-6">{path.jsx}</div>
+          <div className="p-3">{path.jsx}</div>
         </Fragment>
       );
     }
   });
-
-  // return <div className={classes.root}>{element}</div>;
   return <div>{element}</div>;
 };
 

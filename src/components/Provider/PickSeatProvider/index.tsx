@@ -63,7 +63,7 @@ export function PickSeatProvider({ children }: { children: React.ReactNode }) {
     percentDiscount: 0,
     nameDiscount: "",
   });
-  const [paymentMethod, setPaymentMethod] = useState("direct");
+  const [paymentMethod, setPaymentMethod] = useState("online");
 
   const applyDiscount = useCallback(() => {
     if (discount.nameDiscount.length > 0) {
