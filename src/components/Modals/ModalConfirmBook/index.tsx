@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   Code,
   Divider,
@@ -18,7 +19,6 @@ import {
 import { useState } from "react";
 import { useAuthenticate } from "../../../hooks";
 import TicketPreview from "../../TicketPreview";
-import { SelectNackAndDrink } from "../../SelectSnackAndDrink";
 import { usePickSeatContext } from "../../Provider/PickSeatProvider";
 import bookingServices from "../../../services/bookingServices";
 import { loadingApi } from "../../../untils/loadingApi";
@@ -123,14 +123,14 @@ function ModalConfirmBook({ opened, close }: Props) {
       opened={opened}
       centered
       radius={"lg"}
-      size={"xl"}
+      size={"70%"}
       onClose={close}
       overlayProps={{
         backgroundOpacity: 0.55,
         blur: 3,
       }}
       title={
-        <Text c={"blue"} fw={600} size="lg">
+        <Text c={"violet"} fw={600} size="lg">
           Xác nhận thanh toán | Phương thức:
           {paymentMethod == "direct" ? " Trực tiếp" : " Online qua VN Pay"}
         </Text>
@@ -151,7 +151,7 @@ function ModalConfirmBook({ opened, close }: Props) {
                 shadow="xs"
                 radius="md"
                 p="md"
-                w={600}
+                w={700}
                 // h={400}
                 // className="bg-gradient-to-r from-violet-500 to-blue-500"
                 // style={{ background: "var(--mantine-color-blue-6)" }}
@@ -192,8 +192,27 @@ function ModalConfirmBook({ opened, close }: Props) {
                     </Text>
                   </Group>
                 </div>
-              </Paper>
 
+                <Alert
+                  mt={"md"}
+                  variant="light"
+                  color="orange"
+                  radius={"md"}
+                  title="Cảnh báo về độ tuổi"
+                >
+                  <p className="text-sm">
+                    1. Quý Khách Hàng xem phim được phân loại T13, T16, T18 vui
+                    lòng mang theo giấy tờ tùy thân có ảnh nhận diện và ngày
+                    tháng năm sinh để đảm bảo việc tuân thủ theo quy định.{" "}
+                  </p>
+                  <p className="text-sm  mt-2">
+                    2. Ban Quản Lý Cụm Rạp Chiếu Phim Show Booking có quyền kiểm
+                    tra và từ chối Quý Khách Hàng nếu không tuân thủ đúng quy
+                    định về độ tuổi.
+                  </p>
+                </Alert>
+              </Paper>
+              {/* 
               <div
                 className="w-full"
                 style={{
@@ -201,14 +220,18 @@ function ModalConfirmBook({ opened, close }: Props) {
                 }}
               >
                 <SelectNackAndDrink></SelectNackAndDrink>
-              </div>
+              </div> */}
             </div>
           </div>
         </Stepper.Step>
 
-        <Stepper.Step label="Bước 2" description="Kiểm tra vé xem phim">
+        <Stepper.Step label="Bước 2" description="Kiểm tra thông tin vé">
           <TicketPreview></TicketPreview>
         </Stepper.Step>
+
+        {/* <Stepper.Step label="Bước 3" description="Kiểm tra vé xem phim">
+          <TicketPreview></TicketPreview>
+        </Stepper.Step> */}
 
         <Stepper.Completed>
           <div className="flex justify-center items-center">
@@ -256,12 +279,6 @@ function ModalConfirmBook({ opened, close }: Props) {
                     xong thì hệ thống sẽ tự chuyển trang để bạn có thể xem vé
                     của mình
                   </Text>
-
-                  {/* <div>
-                    <Button variant="light" size="xs">
-                      Button
-                    </Button>
-                  </div> */}
                 </div>
               </Paper>
             </div>

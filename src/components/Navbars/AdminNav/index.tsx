@@ -1,5 +1,6 @@
 import {
   IconBowl,
+  IconFloatLeft,
   IconGauge,
   IconGift,
   IconMovie,
@@ -53,6 +54,11 @@ const allLinks = [
     label: "Tài khoản",
     icon: IconSubtask,
     link: `/admin/manage-account`,
+  },
+  {
+    label: "Đánh giá",
+    icon: IconFloatLeft,
+    link: `/admin/reviews`,
   },
 ];
 

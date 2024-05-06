@@ -1,5 +1,5 @@
 import { Grid, Paper, SimpleGrid, Text, Transition } from "@mantine/core";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, ReactElement, useEffect, useState } from "react";
 import Seat from "./Seat";
 import classes from "./LayoutSeat.module.css";
 import { SeatOverView, SeatStatus } from "../../types";

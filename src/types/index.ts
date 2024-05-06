@@ -135,6 +135,7 @@ export type Cinema = {
   status: string;
   locationName: string;
   hotline: string;
+  SeatTypes?: SeatType[];
   image?: string;
   imageFile?: File | null;
   city?: string | null;
@@ -157,6 +158,15 @@ export type MenuFoodTS = {
   status: string;
   price: number;
   imageFile?: File | null;
+  OrderFoods?: OrderFoodTS[];
+};
+
+export type OrderFoodTS = {
+  id?: string;
+  quantity: number;
+  totalPrice: number;
+  menuFoodId: string;
+  MenuFood?: MenuFoodTS;
 };
 
 export type SeatOverView = {
@@ -219,6 +229,7 @@ export type BookingTypeTS = {
   id: string;
   userId: string;
   User?: UserTS;
+  date: Date;
   Staff?: UserTS;
   staffId: string;
   showId: string;

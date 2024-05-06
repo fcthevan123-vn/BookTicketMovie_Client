@@ -49,6 +49,11 @@ const reviewServices = {
     );
     return res.data;
   },
+
+  async getAllReviewsInSystem() {
+    const res = await axios.get(`/api/v1/review/all-review`);
+    return res.data;
+  },
 };
 
 export default reviewServices;

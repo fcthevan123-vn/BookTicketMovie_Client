@@ -129,28 +129,6 @@ function TicketPreview() {
               </Text>
             </div>
 
-            <div className="flex justify-between mb-2">
-              <div>
-                <Text size="sm" fw={500}>
-                  Phòng {dataTotal?.MovieHall?.name}:
-                </Text>
-
-                <Text size="xs" c={"dimmed"} ml={"xs"}>
-                  {allPrice.typeRoomPrice}%
-                </Text>
-              </div>
-
-              <Text size="sm">
-                {(
-                  (allPrice.originalPrice * allPrice.typeRoomPrice) /
-                  100
-                ).toLocaleString("it-IT", {
-                  style: "currency",
-                  currency: "VND",
-                })}
-              </Text>
-            </div>
-
             {discount.nameDiscount && (
               <div className="flex justify-between mb-2">
                 <div>
@@ -164,9 +142,9 @@ function TicketPreview() {
                 </div>
 
                 <Text size="sm">
-                  -
+                  {/* -{allPrice.originalPrice} */}-
                   {(
-                    (allPrice.originalTotalPrice * discount.percentDiscount) /
+                    (allPrice.totalPrice * discount.percentDiscount) /
                     100
                   ).toLocaleString("it-IT", {
                     style: "currency",
@@ -193,7 +171,7 @@ function TicketPreview() {
                 Phương thức thanh toán:
               </Text>
               <Text size="sm">
-                {paymentMethod == "direct" ? "Trực tiếp" : "Online"}
+                {paymentMethod == "direct" ? "Trực tiếp" : "Online - VN Pay"}
               </Text>
             </div>
           </Grid.Col>

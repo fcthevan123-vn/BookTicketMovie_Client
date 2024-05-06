@@ -68,7 +68,7 @@ function Seat({ dataSeat, dataOrdered }: Props) {
                   ? `var(--mantine-color-violet-6)`
                   : `var(--mantine-color-${dataSeat.SeatType.color}-6)`
               }`,
-              border: `${isChecked ? `4px solid rgb(241 241 241 / 81%)` : ""}`,
+              border: `${isChecked ? `4px solid white` : ""}`,
               boxShadow: `${
                 isChecked
                   ? "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset"

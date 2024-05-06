@@ -7,6 +7,7 @@ import {
   Divider,
   Badge,
   LoadingOverlay,
+  Transition,
 } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import {
@@ -23,7 +24,6 @@ import { Cinema, MovieHall, MovieTS, Show } from "../../types";
 import moment from "moment";
 import { useSetState } from "@mantine/hooks";
 import apiProvinceVietNam from "../../untils/apiProvinceVietNam";
-import { getAllNameProvince } from "../../untils/helper";
 
 type dataShowType = {
   cinema: Cinema;
@@ -54,46 +54,32 @@ type DataQueryType = {
 function ShowTime({ data }: { data: allShowsMovieHallType }) {
   return (
     <div className="mt-1">
-      <Badge variant="outline" size="lg" color="violet" radius="sm">
-        {data.movieHall.name}
-      </Badge>
+      {data.allShows.length > 0 && (
+        <Badge variant="outline" size="lg" color="violet" radius="sm">
+          {data.movieHall.name}
+        </Badge>
+      )}
 
-      <div className="mt-5 grid grid-cols-6 2xl:grid-cols-8 gap-4">
-        {data.allShows.map((show, index) => (
-          <Link key={index} to={`/pick-seat-by-show/${show.id}`}>
-            <div className="font-thin border w-[120px] py-2 px-3 shadow-sm r rounded cursor-pointer transition duration-500 ease-in-out hover:bg-violet-500 hover:text-white flex flex-col items-center">
-              <p>{moment(show.startTime).format("HH:mm")}</p>
-              <p className="mt-1 text text-xs  ">
-                {show.availableSeats - show.bookedSeats}/{show.availableSeats}{" "}
-                ghế
-              </p>
-            </div>
-          </Link>
-        ))}
-      </div>
+      {data.allShows.length > 0 && (
+        <div className="mt-5 grid grid-cols-6 2xl:grid-cols-8 gap-4">
+          {data.allShows.map((show, index) => (
+            <Link key={index} to={`/pick-seat-by-show/${show.id}`}>
+              <div className="font-thin border w-[120px] py-2 px-3 shadow-sm r rounded cursor-pointer transition duration-500 ease-in-out hover:bg-violet-500 hover:text-white flex flex-col items-center">
+                <p>{moment(show.startTime).format("HH:mm")}</p>
+                <p className="mt-1 text text-xs  ">
+                  {show.availableSeats - show.bookedSeats}/{show.availableSeats}{" "}
+                  ghế
+                </p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
 
 function ShowOfCinema({ data }: { data: dataShowType }) {
-  const [nameProvince, setNameProvince] = useState("");
-  const getNameProvince = useCallback(async () => {
-    try {
-      const res = await getAllNameProvince(
-        data.cinema.location as string[],
-        ", "
-      );
-
-      setNameProvince(res as string);
-    } catch (error) {
-      ErrToast(error as Error, "getNameProvince");
-    }
-  }, [data.cinema.location]);
-
-  useEffect(() => {
-    getNameProvince();
-  }, [getNameProvince]);
-
   return (
     <div className="w-3/4 rounded-md shadow border-2 p-7 mb-10">
       <div className="grid gap-3">
@@ -101,12 +87,12 @@ function ShowOfCinema({ data }: { data: dataShowType }) {
 
         <div className="flex gap-5 text-sm items-center text-gray-400 font-light">
           <p className="">
-            {data.cinema.detailLocation}, {nameProvince}
+            {data.cinema.detailLocation}, {data.cinema.locationName}
           </p>
           -<p className="cursor-pointer hover:underline">Xem Bản đồ</p>
         </div>
 
-        <div className="flex flex-col gap-7">
+        <div className="flex flex-col gap-7 ">
           <>
             {data.allShowsMovieHall.map((item, index) => (
               <ShowTime data={item} key={index}></ShowTime>
@@ -125,6 +111,7 @@ function SelectShowPage() {
   const [movieData, setMovieData] = useState<movieDataType>();
   const [showData, setShowData] = useState<dataShowType[]>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isMount, setIsMount] = useState<boolean>(false);
   const [dataSelect, setDataSelect] = useSetState({
     city: [
       {
@@ -221,6 +208,7 @@ function SelectShowPage() {
 
   const getAllCinema = useCallback(
     async (data: typeof dataQuery) => {
+      setIsMount(false);
       setIsLoading(true);
       setShowData(undefined);
       try {
@@ -243,6 +231,8 @@ function SelectShowPage() {
         setIsLoading(false);
       } catch (error) {
         ErrToast(error as Error, "getAllCinema");
+      } finally {
+        setIsMount(true);
       }
     },
     [setDataSelect]
@@ -512,21 +502,32 @@ function SelectShowPage() {
         />
         <Divider size="md" color="violet.2" mx={100}></Divider>
 
-        <div className="flex flex-col justify-center items-center mt-8">
-          {showData && showData.length > 0 ? (
-            <>
-              {showData.map((show, index) => (
-                <ShowOfCinema key={index} data={show}></ShowOfCinema>
-              ))}
-            </>
-          ) : (
-            <div className="border-2 w-3/4 rounded-lg px-4 py-10 shadow-md border-gray-300">
-              <p className="text-xl text-center text-gray-400 font-extralight">
-                Không tìm thấy suất chiếu
-              </p>
+        <Transition
+          mounted={isMount}
+          transition="pop-bottom-left"
+          duration={600}
+          timingFunction="ease"
+        >
+          {(styles) => (
+            <div style={styles}>
+              <div className="flex flex-col justify-center items-center mt-8">
+                {showData && showData.length > 0 ? (
+                  <>
+                    {showData.map((show, index) => (
+                      <ShowOfCinema key={index} data={show}></ShowOfCinema>
+                    ))}
+                  </>
+                ) : (
+                  <div className="border-2 w-3/4 rounded-lg px-4 py-10 shadow-md border-gray-300">
+                    <p className="text-xl text-center text-gray-400 font-extralight">
+                      Không tìm thấy suất chiếu
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
           )}
-        </div>
+        </Transition>
       </div>
     </div>
   );

@@ -75,6 +75,10 @@ const cinemaServices = {
     const res = await axios.post("/api/v1/cinema/search", data);
     return res.data;
   },
+  async getCinemaByStaffId(staffId: string) {
+    const res = await axios.get(`/api/v1/cinema/by-staff?staffId=${staffId}`);
+    return res.data;
+  },
 };
 
 export default cinemaServices;

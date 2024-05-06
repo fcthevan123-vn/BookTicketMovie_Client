@@ -10,9 +10,9 @@ import {
   TextInput,
   Tooltip,
 } from "@mantine/core";
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useEffect, useMemo, useState } from "react";
 import { usePickSeatContext } from "../Provider/PickSeatProvider";
-import { SeatTS } from "../../types";
+import { RoomType, SeatTS } from "../../types";
 import ModalConfirmBook from "../Modals/ModalConfirmBook";
 import { IconCheck } from "@tabler/icons-react";
 import { useInputState } from "@mantine/hooks";
@@ -20,9 +20,36 @@ import { discountServices } from "../../services";
 
 type SeatToPayProps = {
   dataSeat: SeatTS;
+  dataRoomType: RoomType;
 };
 
-function SeatToPay({ dataSeat }: SeatToPayProps) {
+function SeatToPay({ dataSeat, dataRoomType }: SeatToPayProps) {
+  const cDate = new Date();
+  const isWeekend = cDate.getDay() % 6 == 0;
+
+  const price = useMemo(() => {
+    if (isWeekend) {
+      return (
+        dataSeat.SeatType.price + dataRoomType.priceHoliday[1]
+      ).toLocaleString("it-IT", {
+        style: "currency",
+        currency: "VND",
+      });
+    } else {
+      return (
+        dataSeat.SeatType.price + dataRoomType.priceNormal[1]
+      ).toLocaleString("it-IT", {
+        style: "currency",
+        currency: "VND",
+      });
+    }
+  }, [
+    dataRoomType.priceHoliday,
+    dataRoomType.priceNormal,
+    dataSeat.SeatType.price,
+    isWeekend,
+  ]);
+
   return (
     <div className="flex justify-between mb-3">
       <div>
@@ -34,10 +61,13 @@ function SeatToPay({ dataSeat }: SeatToPayProps) {
 
       <div>
         <Text size="sm">
-          {dataSeat.SeatType.price.toLocaleString("it-IT", {
+          {/* {dataSeat.SeatType.price.toLocaleString("it-IT", {
             style: "currency",
             currency: "VND",
-          })}
+          })} */}
+
+          {/* {dataSeat.SeatType.price + dataRoomType.priceNormal[1]} */}
+          {price}
         </Text>
       </div>
     </div>
@@ -59,34 +89,40 @@ function PaymentPreview() {
   const [discountStatus, setDiscountStatus] = useState<ReactElement>();
   const [openModalConfirm, setOpenModalConfirm] = useState(false);
 
-  let calculatePrice: number | undefined = undefined;
-  let totalPrice: number | undefined = undefined;
+  // let totalPrice: number | undefined = undefined;
 
-  if (dataTotal) {
-    calculatePrice = parseInt(
-      (
-        (parseFloat(dataTotal.MovieHall.RoomType.priceMultiplier) - 1) *
-        100
-      ).toFixed(0)
-    );
-  }
+  function CalculateTotalPriceSeat(allSeat: SeatTS[], dataRoomType: RoomType) {
+    const cDate = new Date();
+    const isWeekend = cDate.getDay() % 6 == 0;
 
-  function CalculateTotalPriceSeat(allSeat: SeatTS[]) {
     let total = 0;
     if (allSeat.length > 0) {
       for (const seat of allSeat) {
-        total += seat.SeatType.price;
+        if (isWeekend) {
+          const price = seat.SeatType.price + dataRoomType.priceHoliday[1];
+          total += price;
+        } else {
+          const price = seat.SeatType.price + dataRoomType.priceNormal[1];
+          total += price;
+        }
       }
     }
 
     return total;
   }
 
-  const priceSeat = CalculateTotalPriceSeat(seatSelected);
+  // const priceSeat = CalculateTotalPriceSeat(seatSelected, dataTotal);
 
-  if (calculatePrice) {
-    totalPrice = priceSeat + (calculatePrice * priceSeat) / 100;
-  }
+  const priceSeat = useMemo(() => {
+    return CalculateTotalPriceSeat(
+      seatSelected,
+      dataTotal?.MovieHall.RoomType as RoomType
+    );
+  }, [dataTotal, seatSelected]);
+
+  // if (calculatePrice) {
+  //   totalPrice = priceSeat + (calculatePrice * priceSeat) / 100;
+  // }
 
   async function validateDiscount(nameDiscount: string) {
     if (nameDiscount.length > 0) {
@@ -120,15 +156,15 @@ function PaymentPreview() {
   }
 
   useEffect(() => {
-    if (calculatePrice && totalPrice && priceSeat) {
+    if (priceSeat) {
       setAllPrice({
         originalPrice: priceSeat,
-        typeRoomPrice: calculatePrice,
-        totalPrice: totalPrice,
-        originalTotalPrice: totalPrice,
+        typeRoomPrice: 0,
+        totalPrice: priceSeat,
+        originalTotalPrice: priceSeat,
       });
     }
-  }, [calculatePrice, priceSeat, setAllPrice, totalPrice]);
+  }, [priceSeat, setAllPrice]);
 
   return (
     <div className="w-full">
@@ -141,7 +177,11 @@ function PaymentPreview() {
       <Paper shadow="xs" radius="md" withBorder p="xs" w={"100%"}>
         <ScrollArea.Autosize mah={320} offsetScrollbars scrollbarSize={6}>
           {seatSelected.map((seat) => (
-            <SeatToPay dataSeat={seat} key={seat.id}></SeatToPay>
+            <SeatToPay
+              dataRoomType={dataTotal?.MovieHall?.RoomType as RoomType}
+              dataSeat={seat}
+              key={seat.id}
+            ></SeatToPay>
           ))}
         </ScrollArea.Autosize>
 
@@ -158,7 +198,7 @@ function PaymentPreview() {
           </Text>
         </div>
 
-        <div className="flex justify-between mb-2">
+        {/* <div className="flex justify-between mb-2">
           <div>
             <Text size="sm" fw={500}>
               Phòng {dataTotal?.MovieHall?.name}:
@@ -177,7 +217,7 @@ function PaymentPreview() {
                 currency: "VND",
               })}
           </Text>
-        </div>
+        </div> */}
         {/* Discount */}
         <div className=" mb-2">
           <div className="flex justify-between">
@@ -190,8 +230,7 @@ function PaymentPreview() {
             <Text size="sm">
               -
               {discount.nameDiscount &&
-                totalPrice &&
-                ((discount.percentDiscount * totalPrice) / 100).toLocaleString(
+                ((discount.percentDiscount * priceSeat) / 100).toLocaleString(
                   "it-IT",
                   {
                     style: "currency",

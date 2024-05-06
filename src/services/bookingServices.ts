@@ -22,6 +22,11 @@ const bookingServices = {
     return res.data;
   },
 
+  async getBookingByStaff(staffId: string) {
+    const res = await axios.get(`/api/v1/booking/by-staff?staffId=${staffId}`);
+    return res.data;
+  },
+
   async updateBooking(data: object) {
     const res = await axios.post(`/api/v1/booking/update`, data);
     return res.data;

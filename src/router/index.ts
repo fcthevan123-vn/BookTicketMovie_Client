@@ -189,6 +189,14 @@ const router: IRouter[] = [
   },
 
   {
+    path: "/admin/reviews",
+    isProtected: true,
+    isAdmin: true,
+    layout: AdminLayout,
+    element: AdminPage,
+  },
+
+  {
     path: "/admin/manage-booking",
     isProtected: true,
     isAdmin: true,

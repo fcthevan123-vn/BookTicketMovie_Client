@@ -1,5 +1,12 @@
 import axios from "../axios";
 
+type queryDataTS = {
+  cinema: string | null;
+  movie: string | null;
+  movieHall: string | null;
+  timeType: string | null;
+};
+
 const userServices = {
   async handleRegister(informationUser: object) {
     const res = await axios.post("/api/v1/user/register", informationUser);
@@ -14,6 +21,18 @@ const userServices = {
   },
   async getUserById(id: string) {
     const res = await axios.get(`/api/v1/user/${id}/info-user`);
+    return res.data;
+  },
+
+  async advanceStatistic(data: queryDataTS) {
+    const res = await axios.get(
+      `/api/v1/user/statistic-admin?cinemaId=${data.cinema}&movieHallId=${data.movieHall}&movieId=${data.movie}&timeType=${data.timeType}`
+    );
+    return res.data;
+  },
+
+  async dailyStatistic(data: Date) {
+    const res = await axios.get(`/api/v1/user/statistic-by-day?date=${data}`);
     return res.data;
   },
 
@@ -34,6 +53,11 @@ const userServices = {
 
   async getStatisticRegister() {
     const res = await axios.get(`/api/v1/user/statistic/register`);
+    return res.data;
+  },
+
+  async getAdminDashboard() {
+    const res = await axios.get(`/api/v1/user/dashboard`);
     return res.data;
   },
 
@@ -81,6 +105,13 @@ const userServices = {
 
   async getUserByType(type: string) {
     const res = await axios.get(`api/v1/user/search?type=${type}`);
+    return res.data;
+  },
+
+  async statisticCinema(cinemaId: string) {
+    const res = await axios.get(
+      `/api/v1/user/statistic-cinema?cinemaId=${cinemaId}`
+    );
     return res.data;
   },
 };

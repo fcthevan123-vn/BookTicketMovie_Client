@@ -7,6 +7,14 @@ import React, {
 } from "react";
 import { SeatOverView, SeatTS } from "../../../types";
 
+type OrderFoodType = {
+  menuFoodId: string;
+  quantity: number;
+  totalPrice: number;
+  name: string;
+  price: number;
+};
+
 type PickSeatContextType = {
   allPrice: {
     originalPrice: number;
@@ -14,6 +22,9 @@ type PickSeatContextType = {
     totalPrice: number;
     originalTotalPrice: number;
   };
+  foodSelected: OrderFoodType[];
+  setFoodSelected: (dataTotal: OrderFoodType[]) => void;
+
   isLoading: boolean;
   setIsLoading: (value: boolean) => void;
   seatSelected: SeatTS[];
@@ -64,6 +75,7 @@ export function PickSeatProvider({ children }: { children: React.ReactNode }) {
     nameDiscount: "",
   });
   const [paymentMethod, setPaymentMethod] = useState("online");
+  const [foodSelected, setFoodSelected] = useState<OrderFoodType[]>([]);
 
   const applyDiscount = useCallback(() => {
     if (discount.nameDiscount.length > 0) {
@@ -78,7 +90,27 @@ export function PickSeatProvider({ children }: { children: React.ReactNode }) {
         };
       });
     }
-  }, [discount.nameDiscount.length, discount.percentDiscount, discount]);
+  }, [discount.nameDiscount.length, discount.percentDiscount]);
+
+  // const applyFood = useCallback(() => {
+  //   if (foodSelected.length > 0) {
+  //     const sum = foodSelected.reduce(
+  //       (partialSum, food) => partialSum + food.totalPrice,
+  //       0
+  //     );
+
+  //     console.log("sum", sum);
+
+  //     const foodPrice = allPrice.totalPrice + sum;
+
+  //     setAllPrice((prev) => {
+  //       return {
+  //         ...prev,
+  //         totalPrice: foodPrice,
+  //       };
+  //     });
+  //   }
+  // }, [foodSelected]);
 
   useEffect(() => {
     applyDiscount();
@@ -94,6 +126,8 @@ export function PickSeatProvider({ children }: { children: React.ReactNode }) {
   return (
     <PickSeatContext.Provider
       value={{
+        foodSelected,
+        setFoodSelected,
         dataTotal,
         setDataTotal,
         isDisabledSeat,

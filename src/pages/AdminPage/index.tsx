@@ -15,6 +15,7 @@ import ShowTimePage from "./ShowTimePage";
 import ManageEventPage from "./ManageEventPage";
 import ManageDiscountPage from "./ManageDiscountPage";
 import ManageFoodPage from "./ManageFoodPage/ManageFoodPage";
+import MangeReview from "./ManageReview/MangeReview";
 
 type cinemaRows = {
   name: React.ReactNode;
@@ -155,6 +156,14 @@ const allPath = [
       { title: "Food & Drink", href: "#" },
     ],
     jsx: <ManageFoodPage></ManageFoodPage>,
+  },
+  {
+    urlInclude: "reviews",
+    breadcrumbs: [
+      { title: "Admin", href: "/admin/reviews" },
+      { title: "Reviews", href: "#" },
+    ],
+    jsx: <MangeReview></MangeReview>,
   },
 ];
 

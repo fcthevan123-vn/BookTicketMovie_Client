@@ -7,17 +7,12 @@ import RoomTypePage from "./RoomType";
 import ManageLayout from "./ManageLayout/ManageLayout";
 import AllSeatType from "./AllSeatType/AllSeatType";
 import ManageShow from "./ManageShow/ManageShow";
+import Dashboard from "./Dashboard/Dashboard";
 
 const allPath = [
   {
     urlInclude: "dashboard",
-    jsx: (
-      <>
-        <div>
-          <h1>dashboard</h1>
-        </div>
-      </>
-    ),
+    jsx: <Dashboard></Dashboard>,
   },
   {
     urlInclude: "manage-booking",

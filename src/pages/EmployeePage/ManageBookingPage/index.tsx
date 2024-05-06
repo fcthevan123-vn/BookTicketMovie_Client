@@ -1,25 +1,31 @@
-import { ActionIcon, Badge, Select, Text, Tooltip } from "@mantine/core";
-import { useCallback, useEffect, useState } from "react";
+import { Badge, Button, NumberFormatter, Text } from "@mantine/core";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import bookingServices from "../../../services/bookingServices";
 import NormalToast from "../../../components/AllToast/NormalToast";
 import { BookingTypeTS } from "../../../types";
-import { useTableCustom } from "../../../components/Provider/TableFilterProvider";
+
 import moment from "moment";
-import { IconCheck, IconX } from "@tabler/icons-react";
-import TableFilter from "../../../components/TableFilter";
 import { useAuthenticate } from "../../../hooks";
 import { loadingApi } from "../../../untils/loadingApi";
 import { modals } from "@mantine/modals";
+import {
+  MRT_ColumnDef,
+  MRT_Row,
+  MantineReactTable,
+  useMantineReactTable,
+} from "mantine-react-table";
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
+import { IconTableExport } from "@tabler/icons-react";
+import { fontRoboto } from "../../../untils/font-roboto";
 
 function ManageBookingPage() {
-  const [statusBooking, setStatusBooking] = useState("Tất cả");
   const [data, setData] = useState<BookingTypeTS[]>([]);
   const [, , dataUser] = useAuthenticate();
-  const { setRows, headers, setHeaders, setIsLoading } = useTableCustom();
 
   const getBooking = useCallback(async () => {
     try {
-      const res = await bookingServices.getBookingByStatus(statusBooking);
+      const res = await bookingServices.getBookingByStaff(dataUser.id);
       if (res.statusCode === 0) {
         setData(res.data);
       }
@@ -31,18 +37,47 @@ function ManageBookingPage() {
         color: "red",
       });
     }
-  }, [statusBooking]);
+  }, [dataUser.id]);
+
+  const handleExportRows = (rows: MRT_Row<BookingTypeTS>[]) => {
+    const doc = new jsPDF();
+    // const myFont = font;
+    // doc.addFileToVFS("MyFont.ttf", myFont);
+    // doc.addFont("MyFont.ttf", "MyFont", "normal");
+    // doc.setFont("MyFont");
+    const tableData = rows.map((row) => {
+      const dataConvert = {
+        id: row.original.id,
+        movie: row.original.Show.Movie?.title,
+        dateTime: `${moment(row.original.Show.startTime).format(
+          "HH:mm DD/YY"
+        )} - ${moment(row.original.Show.endTime).format("HH:mm DD/YY")}`,
+      };
+      return Object.values(dataConvert);
+    });
+    const tableHeaders = ["Id vé", "Phim", "Giờ chiếu"];
+
+    autoTable(doc, {
+      head: [tableHeaders],
+      body: tableData,
+    });
+
+    doc.save("mrt-pdf-example.pdf");
+  };
 
   const openConfirm = (idBooking: string, status: string, message: string) =>
     modals.openConfirmModal({
-      title: <p className="text-orange-500 font-semibold">{message}</p>,
+      title: <p className="text-violet-500 text-lg font-semibold">{message}</p>,
       radius: "lg",
       children: (
-        <Text size="sm">Bạn có chắc chắn muốn {message} này không?</Text>
+        <Text size="sm" fw={700}>
+          Đây là một hành độg quan trọng, hãy kiểm tra kỹ trước khi thực hiện.
+          Nếu muốn tiếp tục hãy nhấn xác nhận.
+        </Text>
       ),
       confirmProps: {
         radius: "md",
-        color: "orange",
+        color: "violet",
       },
       cancelProps: { radius: "md" },
       labels: { confirm: "Xác nhận", cancel: "Huỷ" },
@@ -61,14 +96,14 @@ function ManageBookingPage() {
         staffId: staffId,
         status: status,
       };
-      setIsLoading(true);
+
       const api = bookingServices.updateBooking(dataPass);
       const res = await loadingApi(api, "Cập nhật vé");
 
       if (res) {
         getBooking();
       }
-      setIsLoading(false);
+
       return res;
     } catch (error) {
       const err = error as Error;
@@ -80,283 +115,234 @@ function ManageBookingPage() {
     }
   }
 
+  const columns = useMemo<MRT_ColumnDef<BookingTypeTS>[]>(
+    () => [
+      {
+        accessorKey: "id",
+        header: "Id vé",
+      },
+      {
+        id: "movieDetails",
+        enableResizing: false,
+        header: "Thông tin phim",
+        accessorFn: (row) =>
+          `${row.Show.Movie?.title} ${row.Show.Movie?.genre.join(" - ")} ${
+            row.Show.Movie?.duration
+          }`,
+        Cell: ({ row }) => (
+          <div>
+            <Text fz="sm" fw={500}>
+              {row?.original.Show?.Movie?.title}
+            </Text>
+            <Text fz="xs" c={"dimmed"}>
+              {row?.original.Show?.Movie?.genre.join(" - ")}
+            </Text>
+            <Text fz="xs" c={"dimmed"}>
+              {row?.original.Show?.Movie?.duration} phút
+            </Text>
+          </div>
+        ),
+        size: 250,
+      },
+      {
+        id: "userDetails",
+        enableResizing: false,
+        header: "Người đặt",
+        accessorFn: (row) =>
+          `${row.User?.fullName} ${row.User?.phone} ${row.User?.email}`,
+        Cell: ({ row }) => (
+          <div>
+            <Text fz="sm" fw={500}>
+              {row?.original.User?.fullName}
+            </Text>
+            <Text fz="xs" c={"dimmed"}>
+              {row?.original.User?.phone}
+            </Text>
+            <Text fz="xs" c={"dimmed"}>
+              {row?.original.User?.email}
+            </Text>
+          </div>
+        ),
+        size: 250,
+      },
+      {
+        enableResizing: false,
+        id: "roomDetail",
+        header: "Thông tin phòng",
+        accessorFn: (row) =>
+          `${row.Show.MovieHall?.name} ${row?.Show?.MovieHall?.Cinema?.name} ${row?.Show?.MovieHall?.RoomType?.name}`,
+        Cell: ({ row }) => (
+          <div>
+            <Text fz="sm" fw={500}>
+              {row?.original.Show?.MovieHall?.name}
+            </Text>
+            <Text fz="xs" c={"dimmed"}>
+              {row?.original.Show?.MovieHall?.Cinema?.name}
+            </Text>
+            <Text fz="xs" c={"dimmed"}>
+              {row?.original.Show?.MovieHall?.RoomType?.name}
+            </Text>
+          </div>
+        ),
+      },
+      {
+        // accessorKey: "priceNormal",
+        id: "time",
+        enableResizing: false,
+        header: "Giờ chiếu",
+        size: 200,
+        accessorFn: (row) =>
+          `${moment(row?.Show?.startTime).format("HH:mm DD/MM")} ${moment(
+            row?.Show?.endTime
+          ).format("HH:mm DD/MM")}`,
+        Cell: ({ row }) => (
+          <div>
+            <Text fz="sm">
+              Bắt đầu:{" "}
+              {moment(row?.original.Show?.startTime).format("HH:mm DD/MM")}
+            </Text>
+            <Text fz="sm">
+              Kết thúc:{" "}
+              {moment(row?.original.Show?.endTime).format("HH:mm DD/MM")}
+            </Text>
+          </div>
+        ),
+      },
+      {
+        id: "seats",
+        enableResizing: false,
+        header: "Ghế",
+        size: 150,
+        enableColumnFilter: false,
+        Cell: ({ row }) => (
+          <div>
+            {row.original.SeatStatuses.map((seat) => (
+              <div key={seat.id}>
+                <Text fz="sm">Số ghế: {seat?.Seat?.name}</Text>
+              </div>
+            ))}
+          </div>
+        ),
+      },
+      {
+        accessorKey: "totalPrice",
+        enableResizing: false,
+        header: "Tổng tiền",
+        size: 100,
+        Cell: ({ row }) => (
+          <NumberFormatter
+            value={row.original.totalPrice}
+            suffix="VND"
+            thousandSeparator
+          ></NumberFormatter>
+        ),
+      },
+      {
+        id: "date",
+        enableResizing: false,
+        header: "Ngày đặt",
+        size: 100,
+        accessorFn: (row) => `${moment(row?.createdAt).format("DD/MM/YYYY")}`,
+        Cell: ({ row }) => (
+          <Text fz="sm">{moment(row?.original.date).format("DD/MM/YYYY")}</Text>
+        ),
+      },
+      {
+        id: "status",
+        enableResizing: false,
+        header: "Trạng thái",
+        size: 150,
+        accessorFn: (row) => `${row.status}`,
+        Cell: ({ row }) => (
+          <Badge
+            radius={"md"}
+            tt="capitalize"
+            size="md"
+            color={
+              row.original.status === "Đã huỷ"
+                ? "red"
+                : row.original.status === "Đã nhận vé"
+                ? "cyan"
+                : row.original.status === "Đã thanh toán"
+                ? "green"
+                : "blue"
+            }
+          >
+            {row.original.status}
+          </Badge>
+        ),
+      },
+    ],
+    []
+  );
+
+  const table = useMantineReactTable({
+    columns,
+    data: data ? data : [],
+    enableColumnPinning: true,
+    // enableColumnResizing: true,
+    mantineSearchTextInputProps: {
+      placeholder: "Tìm kiếm",
+      radius: "md",
+    },
+    initialState: {
+      showGlobalFilter: true,
+      columnPinning: {
+        right: ["mrt-row-actions"],
+      },
+    },
+    // state: {
+    //   isLoading: isLoading,
+    // },
+    enableRowActions: true,
+    renderRowActions: ({ row }) => (
+      <div className="flex flex-col gap-2">
+        <div className="w-fit">
+          {row.original.status == "Đã thanh toán" ? (
+            <Button
+              size="compact-xs"
+              radius={"md"}
+              onClick={() =>
+                openConfirm(
+                  row.original.id,
+                  "Đã nhận vé",
+                  "Xác nhận người dùng đã nhận vé"
+                )
+              }
+            >
+              Đã nhận vé
+            </Button>
+          ) : null}
+        </div>
+      </div>
+    ),
+    mantinePaperProps: {
+      radius: "md",
+    },
+
+    renderTopToolbarCustomActions: ({ table }) => (
+      <Button
+        disabled={table.getPrePaginationRowModel().rows.length === 0}
+        //export all rows, including from the next page, (still respects filtering and sorting)
+        onClick={() => handleExportRows(table.getPrePaginationRowModel().rows)}
+        leftSection={<IconTableExport />}
+        variant="filled"
+      >
+        Export All Rows
+      </Button>
+    ),
+  });
+
   useEffect(() => {
     getBooking();
   }, [getBooking]);
 
-  useEffect(() => {
-    if (data) {
-      const rowRender = data.map((row, index) => {
-        return {
-          number: <Text fz="sm">{index + 1}</Text>,
-          movieDetail: (
-            <div>
-              <Text fz="sm" fw={500}>
-                {row.Show?.Movie?.title}
-              </Text>
-              <Text fz="xs" c={"dimmed"}>
-                {row.Show?.Movie?.genre.join(" - ")}
-              </Text>
-              <Text fz="xs" c={"dimmed"}>
-                {row.Show?.Movie?.duration} phút
-              </Text>
-            </div>
-          ),
-          RoomType: (
-            <div>
-              <Text fz="sm" fw={500}>
-                Phòng: {row.Show?.MovieHall?.name}
-              </Text>
-              <Text fz="xs" c={"dimmed"}>
-                Rạp: {row.Show?.MovieHall?.Cinema?.name}
-              </Text>
-              <Text fz="xs" c={"dimmed"}>
-                Kiểu phòng: {row.Show?.MovieHall?.RoomType?.name}
-              </Text>
-            </div>
-          ),
-          timeShow: (
-            <div>
-              <Text fz="sm">
-                Bắt đầu: {moment(row?.Show?.startTime).format("hh:mm DD/MM")}
-              </Text>
-              <Text fz="sm">
-                Kết thúc: {moment(row?.Show?.startTime).format("hh:mm DD/MM")}
-              </Text>
-              <Text fz="sm">
-                Ngày: {moment(row.Show?.date).format("DD/MM/YYYY")}
-              </Text>
-            </div>
-          ),
-          seat: (
-            <div>
-              {row.SeatStatuses.map((seat) => (
-                <div key={seat.id}>
-                  <Text fz="sm">Số ghế: {seat?.Seat?.name}</Text>
-                </div>
-              ))}
-            </div>
-          ),
-          totalPrice: (
-            <div>
-              <Text fz="sm">
-                {row.totalPrice.toLocaleString("it-IT", {
-                  style: "currency",
-                  currency: "VND",
-                })}
-              </Text>
-            </div>
-          ),
-          orderedDate: (
-            <div>
-              <Text fz="sm">{moment(row.createdAt).format("DD/MM/YYYY")}</Text>
-            </div>
-          ),
-          user: (
-            <div>
-              <Text fz="sm" fw={500}>
-                {row.User?.fullName}
-              </Text>
-              <Text fz="xs" c={"dimmed"}>
-                {row.User?.phone}
-              </Text>
-              <Text fz="xs" c={"dimmed"}>
-                {row.User?.email}
-              </Text>
-            </div>
-          ),
-          status: (
-            <div>
-              <Badge
-                radius={"md"}
-                tt="capitalize"
-                size="md"
-                color={
-                  row.status === "Đã huỷ"
-                    ? "red"
-                    : row.status === "Chưa thanh toán"
-                    ? "orange"
-                    : row.status === "Đã xác nhận"
-                    ? "violet"
-                    : row.status === "Đã thanh toán"
-                    ? "green"
-                    : "blue"
-                }
-              >
-                {row?.status}
-              </Badge>
-            </div>
-          ),
-          action: (
-            <div className="flex gap-3">
-              {row.status == "Chờ xác nhận" ? (
-                <Tooltip label="Xác nhận">
-                  <ActionIcon
-                    variant="filled"
-                    color={"violet"}
-                    size="sm"
-                    onClick={() =>
-                      openConfirm(row.id, "Đã xác nhận", "Xác nhận đặt vé")
-                    }
-                    radius={"md"}
-                    aria-label="Settings"
-                  >
-                    <IconCheck
-                      style={{ width: "80%", height: "80%" }}
-                      stroke={1.5}
-                    />
-                  </ActionIcon>
-                </Tooltip>
-              ) : null}
-
-              {row.status == "Chờ xác nhận" ? (
-                <Tooltip label="Huỷ vé">
-                  <ActionIcon
-                    variant="filled"
-                    color={"red"}
-                    size="sm"
-                    onClick={() =>
-                      openConfirm(row.id, "Đã huỷ", "Xác nhận huỷ vé")
-                    }
-                    radius={"md"}
-                    aria-label="Settings"
-                  >
-                    <IconX
-                      style={{ width: "80%", height: "80%" }}
-                      stroke={1.5}
-                    />
-                  </ActionIcon>
-                </Tooltip>
-              ) : null}
-
-              {row.status == "Đã xác nhận" ? (
-                <>
-                  <Tooltip label="Xác nhận thanh toán">
-                    <ActionIcon
-                      variant="filled"
-                      color={"green"}
-                      size="sm"
-                      onClick={() =>
-                        openConfirm(
-                          row.id,
-                          "Đã thanh toán",
-                          "Xác nhận thanh toán"
-                        )
-                      }
-                      radius={"md"}
-                      aria-label="Settings"
-                    >
-                      <IconCheck
-                        style={{ width: "80%", height: "80%" }}
-                        stroke={1.5}
-                      />
-                    </ActionIcon>
-                  </Tooltip>
-
-                  <Tooltip label="Huỷ vé">
-                    <ActionIcon
-                      variant="filled"
-                      color={"red"}
-                      size="sm"
-                      onClick={() =>
-                        openConfirm(row.id, "Đã huỷ", "Xác nhận huỷ vé")
-                      }
-                      radius={"md"}
-                      aria-label="Settings"
-                    >
-                      <IconX
-                        style={{ width: "80%", height: "80%" }}
-                        stroke={1.5}
-                      />
-                    </ActionIcon>
-                  </Tooltip>
-                </>
-              ) : null}
-            </div>
-          ),
-        };
-      });
-
-      setRows(rowRender);
-
-      setHeaders([
-        {
-          label: "STT",
-          value: "number",
-          isSortable: true,
-        },
-        {
-          label: "Thông tin phim",
-          value: "movieDetail",
-          isSortable: false,
-        },
-        {
-          label: "Thông tin phòng",
-          value: "RoomType",
-          isSortable: false,
-        },
-        {
-          label: "Giờ chiếu",
-          value: "timeShow",
-          isSortable: false,
-        },
-        {
-          label: "Ghế",
-          value: "seat",
-          isSortable: false,
-        },
-        {
-          label: "Tổng giá tiền",
-          value: "totalPrice",
-          isSortable: false,
-        },
-        {
-          label: "Ngày đã đặt",
-          value: "orderedDate",
-          isSortable: false,
-        },
-        {
-          label: "Người đặt",
-          value: "user",
-          isSortable: false,
-        },
-        {
-          label: "Trạng thái",
-          value: "status",
-          isSortable: false,
-        },
-        {
-          label: "#",
-          value: "action",
-          isSortable: false,
-        },
-      ]);
-    }
-  }, [data]);
-
   return (
     <div>
-      <div className="flex justify-end">
-        <Select
-          mb={"lg"}
-          radius={"md"}
-          size="xs"
-          defaultValue={statusBooking}
-          allowDeselect={false}
-          label="Trạng thái vé"
-          onChange={(e) => setStatusBooking(e as string)}
-          placeholder="Pick value"
-          data={[
-            "Tất cả",
-            "Chờ xác nhận",
-            "Đã xác nhận",
-            "Đã thanh toán",
-            "Đã huỷ",
-          ]}
-        />
-      </div>
       <div>
-        <TableFilter headers={headers}></TableFilter>
+        {/* <TableFilter headers={headers}></TableFilter> */}
+
+        <MantineReactTable table={table} />
       </div>
     </div>
   );
