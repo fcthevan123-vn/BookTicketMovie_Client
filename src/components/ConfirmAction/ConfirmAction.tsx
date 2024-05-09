@@ -25,9 +25,13 @@ function ConfirmAction({ setDisable, textCheck }: Props) {
   }, [checkConfirm, textCheck, value]);
 
   return (
-    <div>
+    <div className="mt-3">
+      <Text size="xs" c={"red"} fw={600}>
+        Đây là một hành động có ảnh hướng lớn đến dữ liệu hệ thống và rất nhiều
+        dữ liệu khác. Vui lòng kiểm tra và xác nhận bên dưới!
+      </Text>
       <Text
-        mt={"xs"}
+        mt={"5"}
         size="xs"
         fw={700}
       >{`Nhập "${textCheck}" để xác nhận thực hiện hành động"`}</Text>

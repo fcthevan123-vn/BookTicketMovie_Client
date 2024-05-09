@@ -5,9 +5,10 @@ type Props = {
   img: File | string;
   width: number | string;
   height: number | string;
+  radius?: string | number;
 };
 
-export function PreviewImages({ img, width, height }: Props) {
+export function PreviewImages({ img, width, height, radius }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   let imageUrl;
 
@@ -21,7 +22,7 @@ export function PreviewImages({ img, width, height }: Props) {
     <div className="">
       {isLoading ? null : <Skeleton h={height} w={width} radius={"md"} />}
       <Image
-        radius="md"
+        radius={radius ? radius : "md"}
         h={height}
         w={width}
         style={isLoading ? {} : { display: "none" }}

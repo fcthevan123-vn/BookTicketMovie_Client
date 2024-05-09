@@ -25,7 +25,12 @@ import { useCallback, useEffect, useState } from "react";
 import { movieServices } from "../../services";
 import emptyMovie from "../../assets/Image/empty_movie.svg";
 import { DataTableMoviesProps } from "../../components/Provider/MovieProvider/MovieProvider";
-import { useDisclosure, useSetState, useToggle } from "@mantine/hooks";
+import {
+  useDebouncedState,
+  useDisclosure,
+  useSetState,
+  useToggle,
+} from "@mantine/hooks";
 import { dataSelectOfMovie, selectAgeRequire } from "../../untils/helper";
 import { ErrToast } from "../../components/AllToast/NormalToast";
 import ViewDetailAgeRequire from "../../components/Modals/ViewDetailAgeRequire";
@@ -69,6 +74,7 @@ function MoviePage() {
   const [isOpenSearch, toggle] = useToggle([true, false]);
   const [page, setPage] = useState(1);
   const [opened, { open, close }] = useDisclosure(false);
+  const [titleValue, setTitleValue] = useDebouncedState("", 300);
 
   const [queryData, setQueryData] = useSetState<QueryData>({
     title: "",
@@ -86,36 +92,40 @@ function MoviePage() {
   });
 
   const handleFilterMovie = useCallback(
-    async (data: QueryData) => {
+    async (data: QueryData, titleValue: string) => {
       try {
-        setQueryData({
-          isLoading: true,
-        });
-        const res = await movieServices.advanceSearch(data);
+        const dataPass = {
+          ...data,
+          title: titleValue,
+        };
+        // setQueryData({
+        //   isLoading: true,
+        // });
+        const res = await movieServices.advanceSearch(dataPass);
 
         if (res.statusCode == 0) {
           setAllMovies(res.data);
         }
 
-        const pagination = Math.ceil(res.rows / 8);
+        // const pagination = Math.ceil(res.rows / 8);
 
-        setTimeout(() => {
-          setQueryData({
-            isLoading: false,
-            totalPage: pagination,
-            totalMovie: res.rows,
-          });
-        }, 400);
+        // setTimeout(() => {
+        //   setQueryData({
+        //     isLoading: false,
+        //     totalPage: pagination,
+        //     totalMovie: res.rows,
+        //   });
+        // }, 400);
       } catch (error) {
         ErrToast(error as Error, "Tìm kiếm phim bị lỗi");
       }
     },
-    [setQueryData]
+    []
   );
 
   useEffect(() => {
-    handleFilterMovie(queryData);
-  }, [handleFilterMovie]);
+    handleFilterMovie(queryData, titleValue);
+  }, [handleFilterMovie, queryData, titleValue]);
 
   return (
     <div className="px-3 py-4">
@@ -138,12 +148,8 @@ function MoviePage() {
               radius="md"
               placeholder="Tìm kiếm tên phim"
               leftSection={<IconSearch stroke={1.5} />}
-              value={queryData.title}
-              onChange={(e) => {
-                setQueryData({
-                  title: e.currentTarget.value,
-                });
-              }}
+              defaultValue={titleValue}
+              onChange={(event) => setTitleValue(event.currentTarget.value)}
             />
 
             <MultiSelect
@@ -224,15 +230,17 @@ function MoviePage() {
               onChange={(e) => setQueryData({ status: e })}
             />
 
-            <NumberInput
+            <Select
               radius="md"
               label="Đánh giá"
-              min={1}
-              max={5}
-              clampBehavior="strict"
-              placeholder="Chọn theo số sao"
-              value={queryData.rating}
-              onChange={(e) => setQueryData({ rating: e })}
+              placeholder="Chọn tìm kiếm"
+              value={queryData.rating as string}
+              onChange={(e) => setQueryData({ rating: e as string })}
+              data={[
+                { value: "DESC", label: "Giảm dần" },
+                { value: "ASC", label: "Tăng dần" },
+              ]}
+              clearable
               leftSection={
                 <ThemeIcon variant="white" size="md" color="yellow">
                   <IconStarFilled style={{ width: "80%", height: "80%" }} />
@@ -245,19 +253,19 @@ function MoviePage() {
         <Divider my={"xs"} size={"sm"}></Divider>
 
         <div className=" flex gap-3 bottom-4">
-          <Button
+          {/* <Button
             size="compact-sm"
             onClick={() => handleFilterMovie(queryData)}
           >
             Áp dụng
-          </Button>
+          </Button> */}
           <Button
             size="compact-sm"
             variant="light"
             onClick={() => {
               setPage(1);
               setQueryData(intinialData);
-              handleFilterMovie(intinialData);
+              handleFilterMovie(intinialData, titleValue);
             }}
           >
             Khôi phục
@@ -327,7 +335,7 @@ function MoviePage() {
               page: e,
             };
             setPage(e);
-            handleFilterMovie(convertData);
+            handleFilterMovie(convertData, titleValue);
           }}
           radius={"md"}
           className="flex justify-center mt-12 mb-20"

@@ -14,12 +14,12 @@ import { RiSlideshow2Line } from "react-icons/ri";
 import { useRef, useState } from "react";
 import Autoplay from "embla-carousel-autoplay";
 import classes from "./StatusMovie.module.css";
-import { DataTableMoviesProps } from "../../Provider/MovieProvider/MovieProvider";
 import MovieSmallPreview from "../../MovieSmallPreview";
+import { MovieTS } from "../../../types";
 
 interface StatusMovieProps {
-  dataActiveMovies: DataTableMoviesProps[] | undefined;
-  dataNextMovies: DataTableMoviesProps[] | undefined;
+  dataActiveMovies: MovieTS[] | undefined;
+  dataNextMovies: MovieTS[] | undefined;
 }
 
 export function StatusMovie({

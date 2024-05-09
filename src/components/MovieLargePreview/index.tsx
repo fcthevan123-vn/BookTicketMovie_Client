@@ -3,12 +3,12 @@ import { useRef } from "react";
 import classes from "./MovieLargePreview.module.css";
 import Autoplay from "embla-carousel-autoplay";
 import { Carousel } from "@mantine/carousel";
-import { DataTableMoviesProps } from "../Provider/MovieProvider/MovieProvider";
 import moment from "moment";
 import { Link } from "react-router-dom";
+import { MovieTS } from "../../types";
 
 type Props = {
-  dataMovies: DataTableMoviesProps;
+  dataMovies: MovieTS;
 };
 
 function MovieLargePreview({ dataMovies }: Props) {
@@ -30,16 +30,17 @@ function MovieLargePreview({ dataMovies }: Props) {
             // onMouseEnter={autoplay.current.stop}
             onMouseLeave={autoplay.current.reset}
           >
-            {dataMovies.images.map((movieImage, index) => (
-              <Carousel.Slide key={index}>
-                <Image
-                  fallbackSrc="https://placehold.co/600x400"
-                  src={movieImage}
-                  height={"100%"}
-                  className={classes.img}
-                />
-              </Carousel.Slide>
-            ))}
+            {dataMovies.images &&
+              dataMovies.images.map((movieImage, index) => (
+                <Carousel.Slide key={index}>
+                  <Image
+                    fallbackSrc="https://placehold.co/600x400"
+                    src={movieImage}
+                    height={"100%"}
+                    className={classes.img}
+                  />
+                </Carousel.Slide>
+              ))}
           </Carousel>
 
           <div className={classes.body}>

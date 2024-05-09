@@ -79,6 +79,11 @@ const cinemaServices = {
     const res = await axios.get(`/api/v1/cinema/by-staff?staffId=${staffId}`);
     return res.data;
   },
+
+  async filterCinema(data: object) {
+    const res = await axios.post(`/api/v1/cinema/filter-cinema`, data);
+    return res.data;
+  },
 };
 
 export default cinemaServices;

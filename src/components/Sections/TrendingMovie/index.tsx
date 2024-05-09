@@ -4,11 +4,11 @@ import Autoplay from "embla-carousel-autoplay";
 import { AiFillFire } from "react-icons/ai";
 import { useRef } from "react";
 import classes from "./TrendingMovie.module.css";
-import { DataTableMoviesProps } from "../../Provider/MovieProvider/MovieProvider";
 import MovieLargePreview from "../../MovieLargePreview";
+import { MovieTS } from "../../../types";
 
 interface TrendingMovieProps {
-  dataMovies: DataTableMoviesProps[] | undefined;
+  dataMovies: MovieTS[] | undefined;
 }
 
 export function TrendingMovie({ dataMovies }: TrendingMovieProps) {

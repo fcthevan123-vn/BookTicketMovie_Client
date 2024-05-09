@@ -235,7 +235,7 @@ function TopSecton({ dataMovie }: Props) {
                   radius={"md"}
                   ml="xs"
                   onClick={() => open()}
-                  disabled={!isLogged || !dataUser.isVerifyEmail ? true : false}
+                  // disabled={!isLogged || !dataUser.isVerifyEmail ? true : false}
                   gradient={{ from: "violet", to: "pink.7", deg: 90 }}
                 >
                   Xem trailer
@@ -252,9 +252,9 @@ function TopSecton({ dataMovie }: Props) {
                     onClick={() =>
                       window.location.replace(`/movie/${dataMovie.id}#reviews`)
                     }
-                    disabled={
-                      !isLogged || !dataUser.isVerifyEmail ? true : false
-                    }
+                    // disabled={
+                    //   !isLogged || !dataUser.isVerifyEmail ? true : false
+                    // }
                     gradient={{ from: "violet", to: "pink.7", deg: 90 }}
                   >
                     Xem đánh giá

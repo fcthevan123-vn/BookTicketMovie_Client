@@ -13,3 +13,4 @@ export { default as eventServices } from "./eventServices";
 export { default as discountServices } from "./discountServices";
 export { default as paymentServices } from "./paymentServices";
 export { default as foodServices } from "./foodServices";
+export { default as notificationServices } from "./notificationServices";

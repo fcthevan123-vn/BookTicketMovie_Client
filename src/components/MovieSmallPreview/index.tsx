@@ -1,13 +1,13 @@
 import { Card, Image, Text, Rating, Button, Tooltip } from "@mantine/core";
 import classes from "./MovieSmallPreview.module.css";
-import { DataTableMoviesProps } from "../Provider/MovieProvider/MovieProvider";
 import moment from "moment";
 import Autoplay from "embla-carousel-autoplay";
 import { useRef } from "react";
 import { Carousel } from "@mantine/carousel";
 import { Link } from "react-router-dom";
+import { MovieTS } from "../../types";
 type Props = {
-  dataMovie: DataTableMoviesProps;
+  dataMovie: MovieTS;
 };
 
 export default function MovieSmallPreview({ dataMovie }: Props) {
@@ -24,15 +24,16 @@ export default function MovieSmallPreview({ dataMovie }: Props) {
           draggable={false}
           withIndicators
         >
-          {dataMovie.images.map((movieImage, index) => (
-            <Carousel.Slide key={index}>
-              <Image
-                fallbackSrc="https://raw.githubusercontent.com/koehlersimon/fallback/master/Resources/Public/Images/placeholder.jpg"
-                src={movieImage}
-                className={classes.img}
-              />
-            </Carousel.Slide>
-          ))}
+          {dataMovie.images &&
+            dataMovie.images.map((movieImage, index) => (
+              <Carousel.Slide key={index}>
+                <Image
+                  fallbackSrc="https://raw.githubusercontent.com/koehlersimon/fallback/master/Resources/Public/Images/placeholder.jpg"
+                  src={movieImage}
+                  className={classes.img}
+                />
+              </Carousel.Slide>
+            ))}
         </Carousel>
       </Card.Section>
 
@@ -57,7 +58,12 @@ export default function MovieSmallPreview({ dataMovie }: Props) {
           Đến: {moment(dataMovie.endDate).format("DD - MM - YYYY")}
         </Text>
       </div>
-      <Rating value={4} readOnly size="xs" mt={1}></Rating>
+      <Rating
+        value={dataMovie.averageRating}
+        readOnly
+        size="xs"
+        mt={1}
+      ></Rating>
 
       <Link to={`/movie/${dataMovie.id}`}>
         <Button

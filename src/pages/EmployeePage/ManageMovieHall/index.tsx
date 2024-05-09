@@ -23,6 +23,7 @@ import {
   MantineReactTable,
   useMantineReactTable,
 } from "mantine-react-table";
+import ConfirmAction from "../../../components/ConfirmAction/ConfirmAction";
 
 type FormAddMovieHallProps = {
   opened: boolean;
@@ -56,6 +57,7 @@ function FormAddMovieHall({
     roomTypesData: [],
     layoutsData: [],
   };
+  const [isConfirm, setIsConfirm] = useState(false);
   if (data.Cinema?.RoomTypes) {
     const roomTypesData = data.Cinema?.RoomTypes.map((rt) => {
       return {
@@ -200,7 +202,23 @@ function FormAddMovieHall({
             {...form.getInputProps("status")}
           />
         </SimpleGrid>
-        <Button type="submit" size="xs" radius={"md"} mt={"md"}>
+
+        {isUpdate && (
+          <div>
+            <ConfirmAction
+              setDisable={() => setIsConfirm(true)}
+              textCheck="Tôi đã xác nhận"
+            ></ConfirmAction>
+          </div>
+        )}
+
+        <Button
+          disabled={isConfirm}
+          type="submit"
+          size="xs"
+          radius={"md"}
+          mt={"md"}
+        >
           Lưu
         </Button>
       </form>

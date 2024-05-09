@@ -10,14 +10,10 @@ import { loadingApi } from "../../../untils/loadingApi";
 import { modals } from "@mantine/modals";
 import {
   MRT_ColumnDef,
-  MRT_Row,
   MantineReactTable,
   useMantineReactTable,
 } from "mantine-react-table";
-import { jsPDF } from "jspdf";
-import autoTable from "jspdf-autotable";
-import { IconTableExport } from "@tabler/icons-react";
-import { fontRoboto } from "../../../untils/font-roboto";
+import socket from "../../../untils/socketio";
 
 function ManageBookingPage() {
   const [data, setData] = useState<BookingTypeTS[]>([]);
@@ -38,32 +34,6 @@ function ManageBookingPage() {
       });
     }
   }, [dataUser.id]);
-
-  const handleExportRows = (rows: MRT_Row<BookingTypeTS>[]) => {
-    const doc = new jsPDF();
-    // const myFont = font;
-    // doc.addFileToVFS("MyFont.ttf", myFont);
-    // doc.addFont("MyFont.ttf", "MyFont", "normal");
-    // doc.setFont("MyFont");
-    const tableData = rows.map((row) => {
-      const dataConvert = {
-        id: row.original.id,
-        movie: row.original.Show.Movie?.title,
-        dateTime: `${moment(row.original.Show.startTime).format(
-          "HH:mm DD/YY"
-        )} - ${moment(row.original.Show.endTime).format("HH:mm DD/YY")}`,
-      };
-      return Object.values(dataConvert);
-    });
-    const tableHeaders = ["Id vé", "Phim", "Giờ chiếu"];
-
-    autoTable(doc, {
-      head: [tableHeaders],
-      body: tableData,
-    });
-
-    doc.save("mrt-pdf-example.pdf");
-  };
 
   const openConfirm = (idBooking: string, status: string, message: string) =>
     modals.openConfirmModal({
@@ -112,6 +82,8 @@ function ManageBookingPage() {
         message: err.message,
         color: "red",
       });
+    } finally {
+      socket.emit("newNotification");
     }
   }
 
@@ -319,18 +291,6 @@ function ManageBookingPage() {
     mantinePaperProps: {
       radius: "md",
     },
-
-    renderTopToolbarCustomActions: ({ table }) => (
-      <Button
-        disabled={table.getPrePaginationRowModel().rows.length === 0}
-        //export all rows, including from the next page, (still respects filtering and sorting)
-        onClick={() => handleExportRows(table.getPrePaginationRowModel().rows)}
-        leftSection={<IconTableExport />}
-        variant="filled"
-      >
-        Export All Rows
-      </Button>
-    ),
   });
 
   useEffect(() => {

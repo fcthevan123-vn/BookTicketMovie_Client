@@ -1,5 +1,5 @@
 import cx from "clsx";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Container,
   Avatar,
@@ -16,8 +16,10 @@ import {
   Button,
   Stack,
   useMantineColorScheme,
+  Indicator,
+  ScrollArea,
 } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useSetState } from "@mantine/hooks";
 
 import classes from "./DefaultHeader.module.css";
 import { BiMoon, BiMoviePlay, BiSun, BiUserCircle } from "react-icons/bi";
@@ -34,13 +36,22 @@ import { useDispatch } from "react-redux";
 import { useLocation, Link } from "react-router-dom";
 import { useAuthenticate } from "../../../hooks";
 import { userSlice } from "../../../redux/reducers";
-import { authenticateServices, userServices } from "../../../services";
 import {
+  authenticateServices,
+  notificationServices,
+  userServices,
+} from "../../../services";
+import {
+  IconBell,
   IconDashboard,
   IconFileText,
   IconHome,
   IconSearch,
 } from "@tabler/icons-react";
+import socket from "../../../untils/socketio";
+
+import { NotificationTS } from "../../../types";
+import moment from "moment";
 
 export default function DefaultHeader() {
   const theme = useMantineTheme();
@@ -51,6 +62,11 @@ export default function DefaultHeader() {
   const [isLogged, , dataUser] = useAuthenticate();
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const dark = colorScheme === "dark";
+  const [notification, setNotification] = useSetState({
+    allNotification: [] as NotificationTS[],
+    unreadNotification: [] as NotificationTS[],
+    unreadCount: 0,
+  });
 
   const dispatch = useDispatch();
 
@@ -71,6 +87,10 @@ export default function DefaultHeader() {
       {
         label: "Phim",
         link: "movie",
+      },
+      {
+        label: "Rạp phim",
+        link: "cinema",
       },
       {
         label: "Giới thiệu",
@@ -143,9 +163,23 @@ export default function DefaultHeader() {
     },
   ];
 
+  const generateColor = (noti: NotificationTS) => {
+    if (noti.status == "read") {
+      return "gray";
+    }
+    if (noti.typeNotification == "error") {
+      return "red";
+    } else if (noti.typeNotification == "warning") {
+      return "orange";
+    } else {
+      return "violet";
+    }
+  };
+
   const getProfile = async () => {
     const res = await userServices.getProfile();
     if (res.statusCode === 0) {
+      socket.emit("newNotification");
       dispatch(
         userSlice.actions.handleLogin({
           id: res?.data?.id,
@@ -162,6 +196,25 @@ export default function DefaultHeader() {
       );
     }
   };
+
+  const getAllNoti = useCallback(
+    async (userId: string) => {
+      try {
+        const res = await notificationServices.getAllNoti(userId);
+
+        setNotification(res.data);
+      } catch (error) {
+        // ErrToast(error as Error, "getAllNotification");
+      }
+    },
+    [setNotification]
+  );
+
+  useEffect(() => {
+    socket.on("fetchNotification", () => {
+      getAllNoti(dataUser.id);
+    });
+  }, [dataUser.id, getAllNoti]);
 
   useEffect(() => {
     getProfile();
@@ -195,118 +248,207 @@ export default function DefaultHeader() {
           </Badge>
           <Burger opened={opened} onClick={toggle} hiddenFrom="xs" size="sm" />
           {isLogged ? (
-            <Menu
-              width={260}
-              position="bottom-end"
-              transitionProps={{ transition: "pop-top-right" }}
-              onClose={() => setUserMenuOpened(false)}
-              onOpen={() => setUserMenuOpened(true)}
-              withinPortal
-              radius="lg"
-            >
-              <Menu.Target>
-                <UnstyledButton
-                  className={
-                    cx(classes.user, {
-                      [classes.userActive]: userMenuOpened,
-                    }) + " bg-white shadow-xl drop-shadow-xl"
-                  }
-                >
-                  <Group gap="xs">
-                    {/* <Avatar
+            <div className="flex justify-center items-center gap-3">
+              {/* notification */}
+              <Menu
+                onClose={() =>
+                  socket.emit(
+                    "read_notification",
+                    notification.unreadNotification
+                  )
+                }
+                shadow="md"
+                width={450}
+                withArrow
+                radius={"lg"}
+                transitionProps={{ transition: "pop", duration: 300 }}
+              >
+                <Menu.Target>
+                  <Indicator
+                    size={20}
+                    disabled={notification.unreadCount == 0 ? true : false}
+                    withBorder
+                    label={notification.unreadCount}
+                  >
+                    <ActionIcon
+                      variant="light"
+                      size="57"
+                      radius="lg"
+                      color="white"
+                      aria-label="Settings"
+                    >
+                      <IconBell
+                        style={{ width: "50%", height: "50%" }}
+                        stroke={1.5}
+                      />
+                    </ActionIcon>
+                  </Indicator>
+                </Menu.Target>
+
+                <Menu.Dropdown>
+                  {notification.allNotification.length > 0 ? (
+                    <ScrollArea h={450} scrollbarSize={4} offsetScrollbars>
+                      {notification.allNotification.map((noti) => (
+                        <Menu.Item color={generateColor(noti)} key={noti.id}>
+                          <Link to={`${noti.linkNotification}`}>
+                            <Text fw={500} size="sm">
+                              {noti.title}
+                            </Text>
+
+                            <Text
+                              fw={300}
+                              lineClamp={3}
+                              ta={"left"}
+                              c={"black"}
+                              size="sm"
+                            >
+                              {noti.message}
+                            </Text>
+
+                            <Text fw={500} ta={"right"} c={"dimmed"} size="sm">
+                              {moment(noti.createdAt).fromNow()}
+                            </Text>
+                          </Link>
+                        </Menu.Item>
+                      ))}
+                    </ScrollArea>
+                  ) : (
+                    <Menu.Item>
+                      <Text fw={500} size="sm">
+                        Bạn chưa có thông báo nào
+                      </Text>
+
+                      <Text
+                        fw={300}
+                        lineClamp={3}
+                        ta={"left"}
+                        c={"black"}
+                        size="sm"
+                      >
+                        ...
+                      </Text>
+                    </Menu.Item>
+                  )}
+                </Menu.Dropdown>
+              </Menu>
+
+              <Menu
+                width={260}
+                position="bottom-end"
+                transitionProps={{ transition: "pop-top-right" }}
+                onClose={() => setUserMenuOpened(false)}
+                onOpen={() => setUserMenuOpened(true)}
+                withinPortal
+                radius="lg"
+              >
+                <Menu.Target>
+                  <UnstyledButton
+                    className={
+                      cx(classes.user, {
+                        [classes.userActive]: userMenuOpened,
+                      }) + " bg-white shadow-xl drop-shadow-xl"
+                    }
+                  >
+                    <Group gap="xs">
+                      {/* <Avatar
                       src={data.user.image}
                       alt={data.user.name}
                       radius="xl"
                       size={30}
                     /> */}
-                    <Avatar
-                      size={32}
-                      radius="xl"
-                      bg={"white"}
-                      color="violet"
-                      ml={"sm"}
-                    >
-                      <AiOutlineUser size="1.3rem" />
-                    </Avatar>
-                    <Stack className="my-1 mx-2" align="start" gap={"xs"}>
-                      <Text
-                        size="sm"
-                        style={{
-                          fontWeight: "500",
-                          color: "white",
-                        }}
-                        mr={3}
+                      <Avatar
+                        size={32}
+                        radius="xl"
+                        bg={"white"}
+                        color="violet"
+                        ml={"sm"}
                       >
-                        {data.user.name}
-                      </Text>
-                      <Text
-                        size="sm"
-                        style={{
-                          lineHeight: 1,
-                          color: theme.white,
-                        }}
-                        mr={3}
-                      >
-                        {data.user.email}
-                      </Text>
-                    </Stack>
-                  </Group>
-                </UnstyledButton>
-              </Menu.Target>
-              <Menu.Dropdown>
-                <Menu.Label className={classes.menuItem}>Tài khoản</Menu.Label>
-                <Menu.Item
-                  className={classes.menuItem}
-                  color="blue"
-                  leftSection={<BiUserCircle size="0.9rem" stroke={"1.5"} />}
-                >
-                  {dataUser?.fullName}
-                </Menu.Item>
-                <Menu.Item
-                  className="break-all"
-                  leftSection={<AiOutlineMail size="0.9rem" stroke={"1.5"} />}
-                >
-                  <p className="">{dataUser?.email}</p>
-                </Menu.Item>
-                <Menu.Divider className={classes.menuItem} />
-                <Menu.Label>Cài đặt</Menu.Label>
-                <Link to={`/user/${dataUser.id}/profile`}>
+                        <AiOutlineUser size="1.3rem" />
+                      </Avatar>
+                      <Stack className="my-1 mx-2" align="start" gap={"xs"}>
+                        <Text
+                          size="sm"
+                          style={{
+                            fontWeight: "500",
+                            color: "white",
+                          }}
+                          mr={3}
+                        >
+                          {data.user.name}
+                        </Text>
+                        <Text
+                          size="sm"
+                          style={{
+                            lineHeight: 1,
+                            color: theme.white,
+                          }}
+                          mr={3}
+                        >
+                          {data.user.email}
+                        </Text>
+                      </Stack>
+                    </Group>
+                  </UnstyledButton>
+                </Menu.Target>
+                <Menu.Dropdown>
+                  <Menu.Label className={classes.menuItem}>
+                    Tài khoản
+                  </Menu.Label>
                   <Menu.Item
+                    className={classes.menuItem}
+                    color="blue"
+                    leftSection={<BiUserCircle size="0.9rem" stroke={"1.5"} />}
+                  >
+                    {dataUser?.fullName}
+                  </Menu.Item>
+                  <Menu.Item
+                    className="break-all"
+                    leftSection={<AiOutlineMail size="0.9rem" stroke={"1.5"} />}
+                  >
+                    <p className="">{dataUser?.email}</p>
+                  </Menu.Item>
+                  <Menu.Divider className={classes.menuItem} />
+                  <Menu.Label>Cài đặt</Menu.Label>
+                  <Link to={`/user/${dataUser.id}/profile`}>
+                    <Menu.Item
+                      leftSection={
+                        <AiOutlineSetting size="0.9rem" stroke={"1.5"} />
+                      }
+                    >
+                      Trang cá nhân
+                    </Menu.Item>
+                  </Link>
+
+                  <Menu.Item
+                    // closeMenuOnClick={false}
+                    onClick={() => toggleColorScheme()}
                     leftSection={
-                      <AiOutlineSetting size="0.9rem" stroke={"1.5"} />
+                      dark ? (
+                        <BiSun size="0.9rem" stroke={"1.5"} />
+                      ) : (
+                        <BiMoon size="0.9rem" stroke={"1.5"} />
+                      )
                     }
                   >
-                    Trang cá nhân
+                    {dark ? "Chế độ sáng" : "Chế độ tối"}
                   </Menu.Item>
-                </Link>
 
-                <Menu.Item
-                  // closeMenuOnClick={false}
-                  onClick={() => toggleColorScheme()}
-                  leftSection={
-                    dark ? (
-                      <BiSun size="0.9rem" stroke={"1.5"} />
-                    ) : (
-                      <BiMoon size="0.9rem" stroke={"1.5"} />
-                    )
-                  }
-                >
-                  {dark ? "Chế độ sáng" : "Chế độ tối"}
-                </Menu.Item>
+                  <Menu.Divider />
 
-                <Menu.Divider />
+                  <Menu.Label>Hành động</Menu.Label>
 
-                <Menu.Label>Hành động</Menu.Label>
-
-                <Menu.Item
-                  color="red"
-                  leftSection={<AiOutlineLogout size="0.9rem" stroke={"1.5"} />}
-                  onClick={() => handleLogout()}
-                >
-                  Đăng xuất
-                </Menu.Item>
-              </Menu.Dropdown>
-            </Menu>
+                  <Menu.Item
+                    color="red"
+                    leftSection={
+                      <AiOutlineLogout size="0.9rem" stroke={"1.5"} />
+                    }
+                    onClick={() => handleLogout()}
+                  >
+                    Đăng xuất
+                  </Menu.Item>
+                </Menu.Dropdown>
+              </Menu>
+            </div>
           ) : (
             <div>
               <Link to={"/register"}>

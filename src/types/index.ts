@@ -190,6 +190,7 @@ export type MovieTS = {
   title: string;
   description: string;
   directors: string[];
+  averageRating: number;
   actors: string[];
   language: string;
   discountId?: string | null;
@@ -203,7 +204,7 @@ export type MovieTS = {
   genre: string[];
   duration: number;
   trailerLink?: string;
-  ageRequire: string;
+  ageRequire: number;
   countBooked?: number;
   createdAt?: string;
   updatedAt?: string;
@@ -272,4 +273,17 @@ export interface DiscountTS {
 export interface DataSelectOfMovieTS {
   genre: string[];
   country: string[];
+}
+
+export interface NotificationTS {
+  id?: string;
+  userId: string;
+  User?: UserTS;
+  title: string;
+  message: string;
+  linkNotification: string;
+  typeNotification: string;
+  status: string;
+  createdAt?: string;
+  updatedAt?: string;
 }

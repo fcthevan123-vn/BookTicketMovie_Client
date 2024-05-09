@@ -5,7 +5,8 @@ import { roomTypeServices } from "../../../services";
 import { ErrToast } from "../../../components/AllToast/NormalToast";
 import { loadingApi } from "../../../untils/loadingApi";
 import { modals } from "@mantine/modals";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import ConfirmAction from "../../../components/ConfirmAction/ConfirmAction";
 
 type FormRoomTypeProps = {
   data: UserTS;
@@ -32,6 +33,8 @@ export function FormRoomType({
   isUpdate,
   dataUpdate,
 }: FormRoomTypeProps) {
+  const [isConfirm, setIsConfirm] = useState(false);
+
   const form = useForm<formTypes>({
     initialValues: {
       id: "",
@@ -226,7 +229,22 @@ export function FormRoomType({
           </div>
         </div>
 
-        <Button size="xs" type="submit" radius={"md"} mt={"md"}>
+        {isUpdate && (
+          <div>
+            <ConfirmAction
+              setDisable={() => setIsConfirm(true)}
+              textCheck="Tôi đã xác nhận"
+            ></ConfirmAction>
+          </div>
+        )}
+
+        <Button
+          disabled={isConfirm}
+          size="xs"
+          type="submit"
+          radius={"md"}
+          mt={"md"}
+        >
           Lưu
         </Button>
       </form>

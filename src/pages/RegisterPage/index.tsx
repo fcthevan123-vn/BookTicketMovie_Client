@@ -1,13 +1,5 @@
 import FormRegister from "../../components/Forms/FormRegister";
-import {
-  BackgroundImage,
-  Box,
-  Center,
-  Image,
-  Tabs,
-  Transition,
-  Text,
-} from "@mantine/core";
+import { BackgroundImage, Tabs } from "@mantine/core";
 import { AiOutlineUser } from "react-icons/ai";
 import { IoCreateOutline } from "react-icons/io5";
 import FormLogin from "../../components/Forms/FormLogin";

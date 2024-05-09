@@ -6,6 +6,7 @@ import { IconCheck, IconExclamationCircle } from "@tabler/icons-react";
 import { paymentServices } from "../../services";
 import { ErrToast } from "../../components/AllToast/NormalToast";
 import { useAuthenticate } from "../../hooks";
+import socket from "../../untils/socketio";
 
 type ResponseInfoTs = {
   label: string;
@@ -111,14 +112,25 @@ function PaymentAuthPage() {
             "Hệ thống đã tạo vé cho bạn thành công. Hy vọng bạn có những phút giây trải nghiệm thật vui vẻ với dịch vụ của chúng tôi.",
           icon: <IconCheck style={{ width: "70%", height: "70%" }} />,
           action: (
-            <Button
-              mt="md"
-              radius="md"
-              component="a"
-              href={`/user/${dataUser.id}/all-tickets`}
-            >
-              Xem vé của bạn
-            </Button>
+            <div className="flex gap-3">
+              <Button
+                mt="md"
+                radius="md"
+                component="a"
+                href={`/user/${dataUser.id}/all-tickets`}
+              >
+                Xem vé của bạn
+              </Button>{" "}
+              <Button
+                mt="md"
+                variant="light"
+                radius="md"
+                component="a"
+                href={`/`}
+              >
+                Về trang chủ
+              </Button>
+            </div>
           ),
           label: "Thanh toán thành công",
           status: "Thành công",
@@ -129,6 +141,8 @@ function PaymentAuthPage() {
       console.log("error", error);
 
       ErrToast(error as Error, "Thanh toán thất bại");
+    } finally {
+      socket.emit("newNotification");
     }
   }, [signData]);
 

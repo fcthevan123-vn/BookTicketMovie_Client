@@ -2,25 +2,20 @@ import { useCallback, useEffect, useState } from "react";
 import { ErrToast } from "../../../components/AllToast/NormalToast";
 import { cinemaServices, userServices } from "../../../services";
 import { useAuthenticate } from "../../../hooks";
-import { TablerIconsProps } from "@tabler/icons-react";
 import { useSetState } from "@mantine/hooks";
 import { BookingTypeTS, Cinema, MovieHall, Show } from "../../../types";
 import {
   Badge,
   Box,
   Divider,
-  Image,
   NumberFormatter,
   Select,
   Text,
-  ThemeIcon,
   Transition,
 } from "@mantine/core";
 import { AreaChart } from "@mantine/charts";
-import { DateInput } from "@mantine/dates";
 import { PreviewImages } from "../../../components/PreviewImage";
 import moment from "moment";
-import { Link } from "react-router-dom";
 
 type dataSelectType = {
   movieHall: {

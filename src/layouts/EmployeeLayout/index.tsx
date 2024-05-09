@@ -1,15 +1,33 @@
-import { useDisclosure } from "@mantine/hooks";
-import { AppShell, Badge, Burger, Text } from "@mantine/core";
-import { IconHome, IconLogout } from "@tabler/icons-react";
+import { useDisclosure, useSetState } from "@mantine/hooks";
+import {
+  ActionIcon,
+  AppShell,
+  Badge,
+  Burger,
+  Indicator,
+  Menu,
+  ScrollArea,
+  Text,
+} from "@mantine/core";
+import { IconBell, IconHome, IconLogout } from "@tabler/icons-react";
 import classes from "./EmployeeLayout.module.css";
 import { modals } from "@mantine/modals";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { userSlice } from "../../redux/reducers";
-import { authenticateServices } from "../../services";
+import {
+  authenticateServices,
+  cinemaServices,
+  notificationServices,
+} from "../../services";
 import { loadingApi } from "../../untils/loadingApi";
 import { EmployeeNav } from "../../components/Navbars/EmployeeNav";
 import { useAuthenticate } from "../../hooks";
+import { ErrToast } from "../../components/AllToast/NormalToast";
+import socket from "../../untils/socketio";
+import { useCallback, useEffect, useState } from "react";
+import { Cinema, NotificationTS } from "../../types";
+import moment from "moment";
 
 type EmployeeLayoutProps = {
   children: React.ReactNode;
@@ -18,9 +36,37 @@ type EmployeeLayoutProps = {
 function EmployeeLayout({ children }: EmployeeLayoutProps) {
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
+  const [cinemaData, setCinemaData] = useState<Cinema>();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [, , dataUser] = useAuthenticate();
+  const [notification, setNotification] = useSetState({
+    allNotification: [] as NotificationTS[],
+    unreadNotification: [] as NotificationTS[],
+    unreadCount: 0,
+  });
+
+  const getAllNoti = useCallback(
+    async (userId: string) => {
+      try {
+        const res = await notificationServices.getAllNoti(userId);
+
+        setNotification(res.data);
+      } catch (error) {
+        // ErrToast(error as Error, "getAllNotification");
+      }
+    },
+    [setNotification]
+  );
+
+  const getCinema = useCallback(async (userId: string) => {
+    try {
+      const res = await cinemaServices.getCinemaByStaffId(userId);
+      setCinemaData(res.data);
+    } catch (error) {
+      console.log("error", error);
+    }
+  }, []);
 
   const handleLogout = async () => {
     const api = await authenticateServices.handleLogout();
@@ -54,6 +100,29 @@ function EmployeeLayout({ children }: EmployeeLayoutProps) {
       onConfirm: () => handleLogout(),
     });
 
+  const generateColor = (noti: NotificationTS) => {
+    if (noti.status == "read") {
+      return "gray";
+    }
+    if (noti.typeNotification == "error") {
+      return "red";
+    } else if (noti.typeNotification == "warning") {
+      return "orange";
+    } else {
+      return "violet";
+    }
+  };
+
+  useEffect(() => {
+    getCinema(dataUser.id);
+  }, [dataUser.id, getCinema]);
+
+  useEffect(() => {
+    socket.on("fetchNotification", () => {
+      getAllNoti(dataUser.id);
+    });
+  }, [dataUser.id, getAllNoti]);
+
   return (
     <AppShell
       header={{ height: 60 }}
@@ -73,31 +142,118 @@ function EmployeeLayout({ children }: EmployeeLayoutProps) {
           },
         }}
       >
-        <div className="flex items-center h-full mx-5  gap-2">
-          <div>
-            <Burger
-              color="white"
-              opened={mobileOpened}
-              onClick={toggleMobile}
-              hiddenFrom="sm"
-              size="sm"
-            />
-            <Burger
-              color="white"
-              opened={desktopOpened}
-              onClick={toggleDesktop}
-              visibleFrom="sm"
-              size="sm"
-            />
+        <div className="flex items-center  justify-between h-full mx-5  gap-2">
+          <div className="flex gap-2">
+            <div>
+              <Burger
+                color="white"
+                opened={mobileOpened}
+                onClick={toggleMobile}
+                hiddenFrom="sm"
+                size="sm"
+              />
+              <Burger
+                color="white"
+                opened={desktopOpened}
+                onClick={toggleDesktop}
+                visibleFrom="sm"
+                size="sm"
+              />
+            </div>
+            <div className={classes.header + " border-l ps-3"}>
+              <Text fw={700} size="sm" c={"white"}>
+                Nhân viên: {dataUser.fullName}
+              </Text>
+              <Badge radius={"sm"} tt="capitalize" color="pink">
+                {cinemaData ? cinemaData.name : ""}
+              </Badge>
+            </div>
           </div>
-          <div className={classes.header + " border-l ps-3"}>
-            <Text fw={700} size="sm" c={"white"}>
-              Nhân viên: {dataUser.fullName}
-            </Text>
-            <Badge radius={"sm"} tt="capitalize" color="pink">
-              Galaxy Nguyễn Văn Quá
-            </Badge>
-          </div>
+
+          <Menu
+            onClose={() =>
+              socket.emit("read_notification", notification.unreadNotification)
+            }
+            shadow="md"
+            width={450}
+            withArrow
+            arrowOffset={0}
+            radius={"lg"}
+            transitionProps={{ transition: "pop", duration: 300 }}
+          >
+            <Menu.Target>
+              <Indicator
+                size={14}
+                disabled={notification.unreadCount == 0 ? true : false}
+                withBorder
+                color="pink"
+                label={notification.unreadCount}
+              >
+                <ActionIcon
+                  size="45"
+                  radius="lg"
+                  color="pink"
+                  aria-label="Settings"
+                >
+                  <IconBell
+                    style={{ width: "50%", height: "50%" }}
+                    stroke={1.5}
+                  />
+                </ActionIcon>
+              </Indicator>
+            </Menu.Target>
+
+            <Menu.Dropdown>
+              {notification.allNotification.length > 0 ? (
+                <ScrollArea
+                  mah={450}
+                  h={100}
+                  scrollbarSize={4}
+                  offsetScrollbars
+                >
+                  {notification.allNotification.map((noti) => (
+                    <Menu.Item color={generateColor(noti)} key={noti.id}>
+                      <Link to={`${noti.linkNotification}`}>
+                        <Text fw={500} size="sm">
+                          {noti.title}
+                        </Text>
+
+                        <Text
+                          fw={300}
+                          lineClamp={3}
+                          ta={"left"}
+                          c={"black"}
+                          size="sm"
+                        >
+                          {noti.message}
+                        </Text>
+
+                        <Text fw={500} ta={"right"} c={"black"} size="xs">
+                          {moment(noti.createdAt).fromNow()}
+                        </Text>
+                      </Link>
+                    </Menu.Item>
+                  ))}
+                </ScrollArea>
+              ) : (
+                <Menu.Item>
+                  <Text fw={500} size="sm">
+                    Bạn chưa có thông báo nào
+                  </Text>
+
+                  <Text
+                    fw={300}
+                    lineClamp={3}
+                    ta={"left"}
+                    c={"black"}
+                    size="sm"
+                  >
+                    ...
+                  </Text>
+                </Menu.Item>
+              )}
+            </Menu.Dropdown>
+          </Menu>
         </div>
       </AppShell.Header>
       <AppShell.Navbar
