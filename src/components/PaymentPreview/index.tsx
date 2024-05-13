@@ -1,5 +1,6 @@
 import {
   ActionIcon,
+  Alert,
   Button,
   Divider,
   Group,
@@ -14,18 +15,22 @@ import { ReactElement, useEffect, useMemo, useState } from "react";
 import { usePickSeatContext } from "../Provider/PickSeatProvider";
 import { RoomType, SeatTS } from "../../types";
 import ModalConfirmBook from "../Modals/ModalConfirmBook";
-import { IconCheck } from "@tabler/icons-react";
+import { IconAlertCircle, IconCheck } from "@tabler/icons-react";
 import { useInputState } from "@mantine/hooks";
 import { discountServices } from "../../services";
+import moment from "moment";
+import { modals } from "@mantine/modals";
 
 type SeatToPayProps = {
   dataSeat: SeatTS;
   dataRoomType: RoomType;
+  date: string;
 };
 
-function SeatToPay({ dataSeat, dataRoomType }: SeatToPayProps) {
-  const cDate = new Date();
-  const isWeekend = cDate.getDay() % 6 == 0;
+function SeatToPay({ dataSeat, dataRoomType, date }: SeatToPayProps) {
+  const weekday = moment(date).format("dddd");
+
+  const isWeekend = weekday === "thứ bảy" || weekday === "chủ nhật";
 
   const price = useMemo(() => {
     if (isWeekend) {
@@ -89,11 +94,59 @@ function PaymentPreview() {
   const [discountStatus, setDiscountStatus] = useState<ReactElement>();
   const [openModalConfirm, setOpenModalConfirm] = useState(false);
 
+  const openConfirmBook = (setOpenModalConfirm: () => void) =>
+    modals.openConfirmModal({
+      title: (
+        <Text fw={600} size="lg" c={"violet"}>
+          Xác nhận đặt vé
+        </Text>
+      ),
+      size: "lg",
+      children: (
+        <Alert
+          variant="light"
+          color="red"
+          radius="md"
+          title={<Text fw={900}>Cảnh báo không thể huỷ vé</Text>}
+          icon={<IconAlertCircle></IconAlertCircle>}
+        >
+          <Text>
+            Hệ thống của chúng tôi không xử lý việc yêu cầu huỷ vé của người
+            dùng dưới bất kể lý do nào. Hãy kiểm tra chắc chắn sau đó mới nhấn
+            xác nhận.
+          </Text>
+        </Alert>
+      ),
+      overlayProps: {
+        backgroundOpacity: 0.55,
+        blur: 5,
+      },
+      confirmProps: {
+        size: "xs",
+        radius: "md",
+      },
+      cancelProps: {
+        size: "xs",
+        radius: "md",
+      },
+      radius: "lg",
+      lockScroll: false,
+      centered: true,
+      labels: { confirm: "Đồng ý", cancel: "Huỷ" },
+      onCancel: () => console.log("Cancel"),
+      onConfirm: setOpenModalConfirm,
+    });
+
   // let totalPrice: number | undefined = undefined;
 
-  function CalculateTotalPriceSeat(allSeat: SeatTS[], dataRoomType: RoomType) {
-    const cDate = new Date();
-    const isWeekend = cDate.getDay() % 6 == 0;
+  function CalculateTotalPriceSeat(
+    allSeat: SeatTS[],
+    dataRoomType: RoomType,
+    date: string
+  ) {
+    const weekday = moment(date).format("dddd");
+
+    const isWeekend = weekday === "thứ bảy" || weekday === "chủ nhật";
 
     let total = 0;
     if (allSeat.length > 0) {
@@ -116,7 +169,8 @@ function PaymentPreview() {
   const priceSeat = useMemo(() => {
     return CalculateTotalPriceSeat(
       seatSelected,
-      dataTotal?.MovieHall.RoomType as RoomType
+      dataTotal?.MovieHall.RoomType as RoomType,
+      dataTotal?.date ? dataTotal.date : "18/05/2002"
     );
   }, [dataTotal, seatSelected]);
 
@@ -179,6 +233,7 @@ function PaymentPreview() {
           {seatSelected.map((seat) => (
             <SeatToPay
               dataRoomType={dataTotal?.MovieHall?.RoomType as RoomType}
+              date={dataTotal?.date as string}
               dataSeat={seat}
               key={seat.id}
             ></SeatToPay>
@@ -290,7 +345,8 @@ function PaymentPreview() {
 
         <div className="mt-4 flex justify-center">
           <Button
-            onClick={() => setOpenModalConfirm(true)}
+            // onClick={() => setOpenModalConfirm(true)}
+            onClick={() => openConfirmBook(() => setOpenModalConfirm(true))}
             size="compact-sm"
             variant="filled"
             radius="md"

@@ -1,10 +1,7 @@
 import {
   ActionIcon,
-  Button,
-  Divider,
   LoadingOverlay,
   MultiSelect,
-  NumberInput,
   Pagination,
   ScrollArea,
   Select,
@@ -53,20 +50,6 @@ type QueryData = {
 const dataFilter = {
   ...dataSelectOfMovie,
   ageRequired: selectAgeRequire,
-};
-
-const intinialData = {
-  title: "",
-  ageRequire: null,
-  country: [],
-  genre: [],
-  subtitle: [],
-  status: "all",
-  rating: undefined,
-  page: 1,
-  totalPage: 1,
-  limit: 8,
-  isLoading: false,
 };
 
 function MoviePage() {
@@ -250,7 +233,7 @@ function MoviePage() {
           </div>
         </ScrollArea>
 
-        <Divider my={"xs"} size={"sm"}></Divider>
+        {/* <Divider my={"xs"} size={"sm"}></Divider> */}
 
         <div className=" flex gap-3 bottom-4">
           {/* <Button
@@ -259,17 +242,47 @@ function MoviePage() {
           >
             Áp dụng
           </Button> */}
-          <Button
+          {/* <Button
             size="compact-sm"
             variant="light"
             onClick={() => {
               setPage(1);
-              setQueryData(intinialData);
-              handleFilterMovie(intinialData, titleValue);
+              setTitleValue("");
+              setQueryData({
+                title: "",
+                ageRequire: null,
+                country: [],
+                genre: [],
+                subtitle: [],
+                status: null,
+                rating: undefined,
+                page: 1,
+                totalPage: 1,
+                limit: 8,
+                isLoading: false,
+                totalMovie: 1,
+              });
+              handleFilterMovie(
+                {
+                  title: "",
+                  ageRequire: null,
+                  country: [],
+                  genre: [],
+                  subtitle: [],
+                  status: "all",
+                  rating: undefined,
+                  page: 1,
+                  totalPage: 1,
+                  limit: 8,
+                  isLoading: false,
+                  totalMovie: 1,
+                },
+                titleValue
+              );
             }}
           >
             Khôi phục
-          </Button>
+          </Button> */}
         </div>
       </div>
 

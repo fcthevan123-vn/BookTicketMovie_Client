@@ -2,19 +2,46 @@ import {
   Blockquote,
   Divider,
   Grid,
+  NumberFormatter,
   Paper,
   ScrollArea,
   Text,
 } from "@mantine/core";
 import { usePickSeatContext } from "../Provider/PickSeatProvider";
-import { SeatTS } from "../../types";
+import { RoomType, SeatTS } from "../../types";
 import moment from "moment";
 
 type SeatToPayProps = {
   dataSeat: SeatTS;
+  dataRoomType: RoomType;
+  date: string;
 };
 
-function SeatToPay({ dataSeat }: SeatToPayProps) {
+function SeatToPay({ dataSeat, dataRoomType, date }: SeatToPayProps) {
+  console.log("dataSeat", dataSeat, dataRoomType);
+
+  function CalculateTotalPriceSeat(
+    dataSeat: SeatTS,
+    dataRoomType: RoomType,
+    date: string
+  ) {
+    const weekday = moment(date).format("dddd");
+
+    const isWeekend = weekday === "thứ bảy" || weekday === "chủ nhật";
+
+    let total = 0;
+
+    if (isWeekend) {
+      const price = dataSeat.SeatType.price + dataRoomType.priceHoliday[1];
+      total += price;
+    } else {
+      const price = dataSeat.SeatType.price + dataRoomType.priceNormal[1];
+      total += price;
+    }
+
+    return total;
+  }
+
   return (
     <Blockquote
       radius="lg"
@@ -37,10 +64,15 @@ function SeatToPay({ dataSeat }: SeatToPayProps) {
 
         <div>
           <Text size="sm">
-            {dataSeat.SeatType.price.toLocaleString("it-IT", {
+            {/* {dataSeat.SeatType.price.toLocaleString("it-IT", {
               style: "currency",
               currency: "VND",
-            })}
+            })} */}
+            <NumberFormatter
+              value={CalculateTotalPriceSeat(dataSeat, dataRoomType, date)}
+              suffix=" VND"
+              thousandSeparator
+            ></NumberFormatter>
           </Text>
         </div>
       </div>
@@ -112,7 +144,12 @@ function TicketPreview() {
           <Grid.Col span={7}>
             <ScrollArea h={220} type="always" scrollbarSize={6}>
               {seatSelected.map((seat) => (
-                <SeatToPay dataSeat={seat} key={seat.id}></SeatToPay>
+                <SeatToPay
+                  dataSeat={seat}
+                  key={seat.id}
+                  dataRoomType={dataTotal?.MovieHall.RoomType as RoomType}
+                  date={dataTotal?.date as string}
+                ></SeatToPay>
               ))}
             </ScrollArea>
 
@@ -144,7 +181,7 @@ function TicketPreview() {
                 <Text size="sm">
                   {/* -{allPrice.originalPrice} */}-
                   {(
-                    (allPrice.totalPrice * discount.percentDiscount) /
+                    (allPrice.originalPrice * discount.percentDiscount) /
                     100
                   ).toLocaleString("it-IT", {
                     style: "currency",

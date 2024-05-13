@@ -214,6 +214,11 @@ const movieServices = {
     const res = await axios.post(`api/v1/movie/search`, data);
     return res.data;
   },
+
+  async suggestMovie(userId: string) {
+    const res = await axios.get(`api/v1/user/suggest-movie?userId=${userId}`);
+    return res.data;
+  },
 };
 
 export default movieServices;

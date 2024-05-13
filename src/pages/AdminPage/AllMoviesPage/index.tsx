@@ -5,8 +5,6 @@ import { IconAdjustments, IconEdit } from "@tabler/icons-react";
 import { MovieTS } from "../../../types";
 import { ErrToast } from "../../../components/AllToast/NormalToast";
 import {
-  MRT_GlobalFilterTextInput,
-  MRT_ToggleFiltersButton,
   MantineReactTable,
   useMantineReactTable,
   type MRT_ColumnDef,
@@ -173,17 +171,7 @@ function AllMoviesPage() {
     mantinePaperProps: {
       radius: "md",
     },
-    positionGlobalFilter: "left",
-    renderTopToolbar: ({ table }) => {
-      return (
-        <div className="flex justify-between p-3">
-          <div className="flex items-center">
-            <MRT_GlobalFilterTextInput table={table} />
-            <MRT_ToggleFiltersButton table={table} />
-          </div>
-        </div>
-      );
-    },
+
     renderRowActions: ({ row }) => (
       <div className="flex gap-2">
         <ActionIcon

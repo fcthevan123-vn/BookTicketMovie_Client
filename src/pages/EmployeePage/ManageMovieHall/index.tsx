@@ -135,7 +135,10 @@ function FormAddMovieHall({
       size={"lg"}
       opened={opened}
       radius={"md"}
-      onClose={close}
+      onClose={() => {
+        setIsConfirm(false);
+        close();
+      }}
       title={
         <Text fw={700} c={"violet"}>
           {isUpdate ? "Chỉnh sửa phòng" : "Thêm phòng mới"}
@@ -206,7 +209,7 @@ function FormAddMovieHall({
         {isUpdate && (
           <div>
             <ConfirmAction
-              setDisable={() => setIsConfirm(true)}
+              setDisable={setIsConfirm}
               textCheck="Tôi đã xác nhận"
             ></ConfirmAction>
           </div>

@@ -10,9 +10,7 @@ import {
 import { Rating, Text } from "@mantine/core";
 import moment from "moment";
 
-type Props = {};
-
-function MangeReview({}: Props) {
+function MangeReview() {
   const [data, setData] = useState<ReviewTS[]>();
 
   const getAllReview = useCallback(async () => {
@@ -94,7 +92,7 @@ function MangeReview({}: Props) {
 
         accessorFn: (row) => `${moment(row?.updatedAt).format("DD/MM/YYYY")}`,
         Cell: ({ renderedCellValue }) => (
-          <Text fz="sm">Bắt đầu: {renderedCellValue}</Text>
+          <Text fz="sm">{renderedCellValue}</Text>
         ),
       },
     ],

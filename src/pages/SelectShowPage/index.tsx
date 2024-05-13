@@ -8,6 +8,8 @@ import {
   Badge,
   LoadingOverlay,
   Transition,
+  Text,
+  NumberFormatter,
 } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import {
@@ -51,21 +53,44 @@ type DataQueryType = {
   movieId: string;
 };
 
-function ShowTime({ data }: { data: allShowsMovieHallType }) {
+function ShowTime({ data, date }: { data: allShowsMovieHallType; date: Date }) {
+  console.log("data", data);
+  const weekday = moment(date).format("dddd");
+
+  const isWeekend = weekday === "thứ bảy" || weekday === "chủ nhật";
   return (
     <div className="mt-1">
       {data.allShows.length > 0 && (
-        <Badge variant="outline" size="lg" color="violet" radius="sm">
-          {data.movieHall.name}
-        </Badge>
+        <div className="flex gap-4  items-end">
+          <Badge variant="outline" size="lg" color="violet" radius="sm">
+            {data.movieHall.name}
+          </Badge>
+
+          <Text size="xs" fw={500}>
+            Giá ghế thấp nhất:
+            <NumberFormatter
+              className="ms-2"
+              value={
+                isWeekend
+                  ? data.movieHall.RoomType.priceHoliday[1]
+                  : data.movieHall.RoomType.priceNormal[1]
+              }
+              suffix=" VND"
+              thousandSeparator
+            ></NumberFormatter>
+          </Text>
+        </div>
       )}
 
       {data.allShows.length > 0 && (
         <div className="mt-5 grid grid-cols-6 2xl:grid-cols-8 gap-4">
           {data.allShows.map((show, index) => (
             <Link key={index} to={`/pick-seat-by-show/${show.id}`}>
-              <div className="font-thin border w-[120px] py-2 px-3 shadow-sm r rounded cursor-pointer transition duration-500 ease-in-out hover:bg-violet-500 hover:text-white flex flex-col items-center">
-                <p>{moment(show.startTime).format("HH:mm")}</p>
+              <div className="font-thin border w-[140px] py-2 px-3 shadow-sm r rounded cursor-pointer transition duration-500 ease-in-out hover:bg-violet-500 hover:text-white flex flex-col items-center">
+                <p>
+                  {moment(show.startTime).format("HH:mm")} -{" "}
+                  {moment(show.endTime).format("HH:mm")}
+                </p>
                 <p className="mt-1 text text-xs  ">
                   {show.availableSeats - show.bookedSeats}/{show.availableSeats}{" "}
                   ghế
@@ -79,7 +104,7 @@ function ShowTime({ data }: { data: allShowsMovieHallType }) {
   );
 }
 
-function ShowOfCinema({ data }: { data: dataShowType }) {
+function ShowOfCinema({ data, date }: { data: dataShowType; date: Date }) {
   return (
     <div className="w-3/4 rounded-md shadow border-2 p-7 mb-10">
       <div className="grid gap-3">
@@ -89,13 +114,13 @@ function ShowOfCinema({ data }: { data: dataShowType }) {
           <p className="">
             {data.cinema.detailLocation}, {data.cinema.locationName}
           </p>
-          -<p className="cursor-pointer hover:underline">Xem Bản đồ</p>
+          {/* -<p className="cursor-pointer hover:underline">Xem Bản đồ</p> */}
         </div>
 
         <div className="flex flex-col gap-7 ">
           <>
             {data.allShowsMovieHall.map((item, index) => (
-              <ShowTime data={item} key={index}></ShowTime>
+              <ShowTime date={date} data={item} key={index}></ShowTime>
             ))}
           </>
         </div>
@@ -514,7 +539,11 @@ function SelectShowPage() {
                 {showData && showData.length > 0 ? (
                   <>
                     {showData.map((show, index) => (
-                      <ShowOfCinema key={index} data={show}></ShowOfCinema>
+                      <ShowOfCinema
+                        date={dataQuery.selectedDate}
+                        key={index}
+                        data={show}
+                      ></ShowOfCinema>
                     ))}
                   </>
                 ) : (

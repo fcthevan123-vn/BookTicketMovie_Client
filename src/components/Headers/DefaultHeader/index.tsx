@@ -19,7 +19,7 @@ import {
   Indicator,
   ScrollArea,
 } from "@mantine/core";
-import { useDisclosure, useSetState } from "@mantine/hooks";
+import { useDisclosure, useLocalStorage, useSetState } from "@mantine/hooks";
 
 import classes from "./DefaultHeader.module.css";
 import { BiMoon, BiMoviePlay, BiSun, BiUserCircle } from "react-icons/bi";
@@ -66,6 +66,12 @@ export default function DefaultHeader() {
     allNotification: [] as NotificationTS[],
     unreadNotification: [] as NotificationTS[],
     unreadCount: 0,
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [value, setValue] = useLocalStorage({
+    key: "isSuggest",
+    defaultValue: true,
   });
 
   const dispatch = useDispatch();
@@ -124,6 +130,7 @@ export default function DefaultHeader() {
         withCloseButton: true,
       });
       dispatch(userSlice.actions.toggleLogin({}));
+      setValue(false);
     }
   };
 

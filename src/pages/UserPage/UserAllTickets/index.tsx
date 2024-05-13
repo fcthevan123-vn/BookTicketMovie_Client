@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAuthenticate } from "../../../hooks";
-import NormalToast from "../../../components/AllToast/NormalToast";
+
 import bookingServices from "../../../services/bookingServices";
 import { BookingTypeTS } from "../../../types";
 import { Badge, Button, NumberFormatter, Text } from "@mantine/core";
@@ -27,12 +27,12 @@ function UserAllTickets() {
         setData(res.data);
       }
     } catch (error) {
-      const err = error as Error;
-      NormalToast({
-        title: "getAllBookings",
-        color: "red",
-        message: err.message,
-      });
+      // const err = error as Error;
+      // NormalToast({
+      //   title: "getAllBookings",
+      //   color: "red",
+      //   message: err.message,
+      // });
     }
   }, [dataUser.id]);
 

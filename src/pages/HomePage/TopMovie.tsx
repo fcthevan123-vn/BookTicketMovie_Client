@@ -2,6 +2,7 @@ import { Badge, Box, Button, Rating, Stack, Text } from "@mantine/core";
 import { PreviewImages } from "../../components/PreviewImage";
 import { MovieTS } from "../../types";
 import { Link } from "react-router-dom";
+import { IconStarFilled, IconTicket } from "@tabler/icons-react";
 
 type Props = {
   topBookMovie: MovieTS;
@@ -28,6 +29,7 @@ function TopMovie({ topBookMovie, topStarMovie }: Props) {
               variant="gradient"
               radius={"md"}
               tt={"none"}
+              leftSection={<IconTicket></IconTicket>}
               gradient={{ from: "pink", to: "orange", deg: 90 }}
             >
               Đặt vé nhiều nhất
@@ -73,7 +75,7 @@ function TopMovie({ topBookMovie, topStarMovie }: Props) {
                   </Text>
                   <div className="flex">
                     <Rating
-                      value={topBookMovie.ageRequire}
+                      value={topBookMovie.averageRating}
                       readOnly
                       mb={"xs"}
                     />
@@ -122,7 +124,8 @@ function TopMovie({ topBookMovie, topStarMovie }: Props) {
               variant="gradient"
               radius={"md"}
               tt={"none"}
-              gradient={{ from: "indigo", to: "pink", deg: 90 }}
+              leftSection={<IconStarFilled></IconStarFilled>}
+              gradient={{ from: "pink", to: "orange", deg: 90 }}
             >
               Đánh giá tích cực nhất
             </Badge>

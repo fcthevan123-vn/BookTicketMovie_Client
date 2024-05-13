@@ -8,6 +8,7 @@ import { Button, Select, SimpleGrid } from "@mantine/core";
 import { DateTimePicker } from "@mantine/dates";
 import { modals } from "@mantine/modals";
 import NormalToast from "../../../components/AllToast/NormalToast";
+import { useAuthenticate } from "../../../hooks";
 
 type Props = {
   updateData: () => Promise<void>;
@@ -22,6 +23,7 @@ function FormShow({ updateData, movieData }: Props) {
   const [dateShow, setDateShow] = useState<Date>();
   const [movieValue, setMovieValue] = useState("");
   const [movie, setMovie] = useState<MovieTS>();
+  const [, , dataUser] = useAuthenticate();
 
   //   console.log("movieData", movieData);
 
@@ -38,7 +40,11 @@ function FormShow({ updateData, movieData }: Props) {
     try {
       const res = await cinemaServices.getAllCinemas();
       if (res.statusCode === 0) {
-        const data = res.data.map((data: Cinema) => {
+        const filterCinema = res.data.filter(
+          (data: Cinema) => data.userId == dataUser.id
+        );
+
+        const data = filterCinema.map((data: Cinema) => {
           const itemsMovie = data.MovieHalls!.map((movieHall) => {
             return {
               value: movieHall.id,
@@ -134,7 +140,7 @@ function FormShow({ updateData, movieData }: Props) {
         <Select
           radius={"md"}
           placeholder="Đọc kỹ thông tin trước khi chọn"
-          label="Phòng chiếu: "
+          label="Phim: "
           allowDeselect={false}
           data={generateMovieSelect}
           withAsterisk

@@ -31,15 +31,17 @@ function ModalUpdateInformation({ opened, close }: Props) {
     // functions will be used to validate values at corresponding key
     validate: {
       fullName: (value) =>
-        value.length < 2 ? "Name must have at least 2 letters" : null,
+        value.length < 5 ? "Tên phải có ít nhất 5 ký tự" : null,
       address: (value) =>
-        value.length < 5 ? "Address must have at least 5 letters" : null,
+        value.length < 5 ? "Địa chỉ phải có ít nhất 5 ký tự" : null,
       phone: (value) =>
-        /(84|0[3|5|7|8|9])+([0-9]{8})\b/g.test(value) ? null : "Phone invalid",
-      sex: (value) => (value.length == 0 ? "Please select your gender" : null),
+        /(84|0[3|5|7|8|9])+([0-9]{8})\b/g.test(value)
+          ? null
+          : "Số điện thoại không hợp lệ",
+      sex: (value) => (value.length == 0 ? "Vui lòng chọn giới tính" : null),
       age: (value) =>
         value.length == 0 || parseInt(value) < 8
-          ? "Age must larger than 8"
+          ? "Độ tuổi phải lớn hơn 8"
           : null,
     },
     validateInputOnChange: true,

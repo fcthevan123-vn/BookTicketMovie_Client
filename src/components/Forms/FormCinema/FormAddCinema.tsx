@@ -3,7 +3,6 @@ import {
   FileInput,
   Select,
   SimpleGrid,
-  Text,
   TextInput,
 } from "@mantine/core";
 import { hasLength, isNotEmpty, useForm } from "@mantine/form";
@@ -381,11 +380,6 @@ function FormAddCinema({ isUpdate, getAllCinema, cinemaData }: Props) {
         </SimpleGrid>
         {cinemaData && (
           <>
-            <Text size="sm" mt={"sm"} fw={500} ta={"left"} c={"red"}>
-              Chỉnh sửa rạp phim sẽ ảnh hưởng rất lớn đến nhiều dữ liệu, hãy cân
-              nhắc và cẩn thận trước khi thực hiện!
-            </Text>
-
             <ConfirmAction
               setDisable={setDisabled}
               textCheck="Tôi đã xác nhận"

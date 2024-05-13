@@ -5,6 +5,7 @@ type queryDataTS = {
   movie: string | null;
   movieHall: string | null;
   timeType: string | null;
+  date: Date;
 };
 
 const userServices = {
@@ -26,7 +27,7 @@ const userServices = {
 
   async advanceStatistic(data: queryDataTS) {
     const res = await axios.get(
-      `/api/v1/user/statistic-admin?cinemaId=${data.cinema}&movieHallId=${data.movieHall}&movieId=${data.movie}&timeType=${data.timeType}`
+      `/api/v1/user/statistic-admin?cinemaId=${data.cinema}&movieHallId=${data.movieHall}&movieId=${data.movie}&timeType=${data.timeType}&date=${data.date}`
     );
     return res.data;
   },
@@ -36,8 +37,10 @@ const userServices = {
     return res.data;
   },
 
-  async getUserStatistic(id: string) {
-    const res = await axios.get(`/api/v1/user/get-statistic/${id}`);
+  async getUserStatistic(id: string, date: Date, timeType: string) {
+    const res = await axios.get(
+      `/api/v1/user/get-statistic/${id}?date=${date}&timeType=${timeType}`
+    );
     return res.data;
   },
 

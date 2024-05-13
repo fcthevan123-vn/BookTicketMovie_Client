@@ -1,4 +1,4 @@
-import { useState, ReactNode, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { userServices } from "../../services";
@@ -16,7 +16,7 @@ function ProviderGetProfile({ children }: ProviderGetProfileProps) {
   useEffect(() => {
     const getProfile = async () => {
       const res = await userServices.getProfile();
-      console.log("res", res);
+
       if (res.err === 0) {
         const { token } = res;
 

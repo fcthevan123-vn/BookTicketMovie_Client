@@ -16,6 +16,7 @@ import {
 import { AreaChart } from "@mantine/charts";
 import { PreviewImages } from "../../../components/PreviewImage";
 import moment from "moment";
+import { DateInput } from "@mantine/dates";
 
 type dataSelectType = {
   movieHall: {
@@ -44,6 +45,7 @@ function Dashboard() {
     movie: "-1",
     movieHall: "-1",
     timeType: "days",
+    date: new Date(),
   });
   const [isMounted, setIsMounted] = useSetState({
     page: false,
@@ -201,39 +203,61 @@ function Dashboard() {
                         Thống kê doanh thu đặt vé
                       </Text>
 
-                      <div className="flex gap-3 items-end mt-1">
-                        <Text size="sm" fw={400}>
-                          Thời gian:
-                        </Text>
+                      <div className="flex gap-5 items-end mt-1">
+                        <div className="flex gap-2">
+                          <Text size="sm" fw={400}>
+                            Ngày:
+                          </Text>
 
-                        <Select
-                          size="xs"
-                          radius={"md"}
-                          allowDeselect={false}
-                          defaultValue={"days"}
-                          w={100}
-                          data={[
-                            {
-                              value: "days",
-                              label: "Ngày",
-                            },
-                            {
-                              value: "weeks",
-                              label: "Tuần",
-                            },
-                            {
-                              value: "months",
-                              label: "Tháng",
-                            },
-                          ]}
-                          value={queryData.timeType}
-                          onChange={(e) =>
-                            setQueryData({
-                              timeType: e as string,
-                            })
-                          }
-                          searchable
-                        ></Select>
+                          <DateInput
+                            value={queryData.date}
+                            onChange={(e) =>
+                              setQueryData({
+                                date: e as Date,
+                              })
+                            }
+                            maxDate={new Date()}
+                            size="xs"
+                            radius={"md"}
+                            placeholder="Date input"
+                            w={130}
+                            valueFormat="DD/MM/YYYY"
+                          />
+                        </div>
+                        <div className="flex gap-2">
+                          <Text size="sm" fw={400}>
+                            Thống kê theo:
+                          </Text>
+
+                          <Select
+                            size="xs"
+                            radius={"md"}
+                            allowDeselect={false}
+                            defaultValue={"days"}
+                            w={100}
+                            data={[
+                              {
+                                value: "days",
+                                label: "Ngày",
+                              },
+                              {
+                                value: "weeks",
+                                label: "Tuần",
+                              },
+                              {
+                                value: "months",
+                                label: "Tháng",
+                              },
+                            ]}
+                            value={queryData.timeType}
+                            onChange={(e) =>
+                              setQueryData({
+                                timeType: e as string,
+                              })
+                            }
+                            searchable
+                          ></Select>
+                        </div>
                       </div>
                     </div>
 

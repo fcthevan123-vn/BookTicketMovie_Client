@@ -11,6 +11,7 @@ function ConfirmAction({ setDisable, textCheck }: Props) {
 
   const checkConfirm = useCallback(
     (value: string, textCheck: string) => {
+      console.log("value, textCheck", value, textCheck);
       if (value !== textCheck) {
         setDisable(true);
       } else {

@@ -28,6 +28,7 @@ import { IconTheater } from "@tabler/icons-react";
 import { IconBrandZoom } from "@tabler/icons-react";
 import { IconStar } from "@tabler/icons-react";
 import { DateInput } from "@mantine/dates";
+import moment from "moment";
 
 type StatItemType = {
   icon: (props: TablerIconsProps) => JSX.Element;
@@ -87,6 +88,7 @@ const DashboardPage = () => {
     movie: "-1",
     movieHall: "-1",
     timeType: "days",
+    date: new Date(),
   });
   const [dataSelect, setDataSelect] = useSetState<dataSelectType>({
     cinema: [
@@ -194,7 +196,6 @@ const DashboardPage = () => {
     async (date: Date) => {
       try {
         const res = await userServices.dailyStatistic(date);
-        console.log("res", res);
         setDataDaily({
           countReview: res.countReview,
           countShow: res.countShow,
@@ -257,39 +258,62 @@ const DashboardPage = () => {
                       Thống kê doanh thu đặt vé
                     </Text>
 
-                    <div className="flex gap-3 items-end mt-1">
-                      <Text size="sm" fw={400}>
-                        Thời gian:
-                      </Text>
+                    <div className="flex gap-5 items-end mt-1">
+                      <div className="flex gap-2">
+                        <Text size="sm" fw={400}>
+                          Ngày:
+                        </Text>
 
-                      <Select
-                        size="xs"
-                        radius={"md"}
-                        allowDeselect={false}
-                        defaultValue={"days"}
-                        w={100}
-                        data={[
-                          {
-                            value: "days",
-                            label: "Ngày",
-                          },
-                          {
-                            value: "weeks",
-                            label: "Tuần",
-                          },
-                          {
-                            value: "months",
-                            label: "Tháng",
-                          },
-                        ]}
-                        value={queryData.timeType}
-                        onChange={(e) =>
-                          setQueryData({
-                            timeType: e as string,
-                          })
-                        }
-                        searchable
-                      ></Select>
+                        <DateInput
+                          value={queryData.date}
+                          onChange={(e) => {
+                            console.log("e", moment(e).format("DD/YY"));
+                            setQueryData({
+                              date: e as Date,
+                            });
+                          }}
+                          maxDate={new Date()}
+                          size="xs"
+                          radius={"md"}
+                          placeholder="Date input"
+                          w={130}
+                          valueFormat="DD/MM/YYYY"
+                        />
+                      </div>
+                      <div className="flex gap-2">
+                        <Text size="sm" fw={400}>
+                          Thống kê theo:
+                        </Text>
+
+                        <Select
+                          size="xs"
+                          radius={"md"}
+                          allowDeselect={false}
+                          defaultValue={"days"}
+                          w={100}
+                          data={[
+                            {
+                              value: "days",
+                              label: "Ngày",
+                            },
+                            {
+                              value: "weeks",
+                              label: "Tuần",
+                            },
+                            {
+                              value: "months",
+                              label: "Tháng",
+                            },
+                          ]}
+                          value={queryData.timeType}
+                          onChange={(e) =>
+                            setQueryData({
+                              timeType: e as string,
+                            })
+                          }
+                          searchable
+                        ></Select>
+                      </div>
                     </div>
                   </div>
 

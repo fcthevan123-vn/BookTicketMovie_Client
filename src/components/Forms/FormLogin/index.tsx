@@ -6,20 +6,28 @@ import { useNavigate } from "react-router-dom";
 import { userSlice } from "../../../redux/reducers";
 import { useDispatch } from "react-redux";
 import { loadingApi } from "../../../untils/loadingApi";
+import socket from "../../../untils/socketio";
+import { useLocalStorage } from "@mantine/hooks";
 
 function FormLogin() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [login, setLogin] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [value, setValue] = useLocalStorage({
+    key: "isSuggest",
+    defaultValue: true,
+  });
 
   const form = useForm({
     initialValues: { email: "", password: "" },
 
     // functions will be used to validate values at corresponding key
     validate: {
-      email: (value) => (/^\S+@\S+$/.test(value) ? null : "Email invalid"),
-      password: (value) => (value.length == 0 ? "Password invalid" : null),
+      email: (value) => (/^\S+@\S+$/.test(value) ? null : "Email không hợp lệ"),
+      password: (value) => (value.length == 0 ? "Mật khẩu không hợp lệ" : null),
     },
     validateInputOnChange: true,
   });
@@ -27,6 +35,8 @@ function FormLogin() {
   const getProfile = async () => {
     const res = await userServices.getProfile();
     if (res.statusCode === 0) {
+      socket.emit("newNotification");
+
       dispatch(
         userSlice.actions.handleLogin({
           id: res?.data?.id,
@@ -64,6 +74,7 @@ function FormLogin() {
     const api = authenticateServices.handleLogin(email, password);
     const res = await loadingApi(api, "Đăng nhập");
     if (res === true) {
+      setValue(true);
       getProfile();
     }
     setIsLoading(false);

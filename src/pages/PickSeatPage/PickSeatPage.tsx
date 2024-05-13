@@ -138,7 +138,7 @@ function PickSeatPage() {
                         color="teal.8"
                         withArrow
                         label={generateAgeRequired(
-                          dataTotal?.Movie?.ageRequire as string
+                          dataTotal?.Movie?.ageRequire as unknown as string
                         )}
                       >
                         <ActionIcon
